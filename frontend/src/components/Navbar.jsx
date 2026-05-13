@@ -1,4 +1,3 @@
-import React from "react";
 import Logo from "../assets/logo.png";
 import { ChevronDown, Search } from "lucide-react";
 import { useState } from "react";
@@ -187,6 +186,9 @@ const Navbar = () => {
         <button className="cursor-pointer">Accedi</button>
         <span className="text-black/50">|</span>
         <button className="cursor-pointer">Registrati</button>
+        <button>Accedi</button>
+        <span className="text-black/50">|</span>
+        <button>Registrati</button>
       </div>
     </nav>
   );
