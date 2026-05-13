@@ -4,7 +4,7 @@ import { ChevronDown, Search } from "lucide-react";
 const Navbar = () => {
   return (
     <nav className="bg-[#ffd400] text-black flex justify-between items-center p-4 h-20 text-sm md:text-[15px] font-medium text-nowrap">
-      {/*  Gruppo sinitro*/}
+      {/*  Gruppo sinistro*/}
       <div className="flex items-center space-x-4 relative">
         <img
           src={Logo}
