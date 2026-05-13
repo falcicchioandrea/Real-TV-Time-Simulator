@@ -9,18 +9,20 @@ const Navbar = () => {
     setOpenMenu(openMenu === name ? null : name);
   };
   return (
-    <nav className="bg-[#ffd400] text-black flex justify-between items-center p-4 h-20 text-sm md:text-[15px] font-medium text-nowrap">
+      <nav className="relative z-50 bg-[#ffd400] text-black flex justify-between items-center p-4 h-20 text-sm md:text-[15px] font-medium text-nowrap" 
+      onMouseLeave={() => setOpenMenu(null)}>
       {/*  Gruppo sinistro*/}
       <div className="flex items-center space-x-4 relative">
         <img
           src={Logo}
           alt="Logo"
           className="w-40 cursor-pointer brightness-125"
+          onClick={() => toggleMenu(null)}
         />
-        <ul className="hidden xl:flex space-x-6">
+        <ul className="hidden md:flex space-x-6">
           <div className="relative">
             <li
-              className="cursor-pointer flex items-center gap-1"
+              className="cursor-pointer flex items-center gap-1 px-3 py-1 rounded-md hover:bg-[black] hover:text-white"
               onClick={() => toggleMenu("serie")}
             >
               Serie{" "}
@@ -48,7 +50,7 @@ const Navbar = () => {
           </div>
           <div className="relative">
             <li
-              className="cursor-pointer flex items-center gap-1"
+              className="cursor-pointer flex items-center gap-1 px-3 py-1 rounded-md hover:bg-[black] hover:text-white"
               onClick={() => toggleMenu("film")}
             >
               Film <ChevronDown size={14} />
@@ -67,7 +69,7 @@ const Navbar = () => {
 
           <div className="relative">
             <li
-              className="cursor-pointer flex items-center gap-1"
+              className="cursor-pointer flex items-center gap-1 px-3 py-1 rounded-md hover:bg-[black] hover:text-white"
               onClick={() => toggleMenu("generi")}
             >
               Generi <ChevronDown size={14} />
@@ -183,9 +185,13 @@ const Navbar = () => {
       </div>
       {/* Gruppo destro */}
       <div className="flex items-center space-x-4 relative">
-        <button className="cursor-pointer">Accedi</button>
-        <span className="text-black/50">|</span>
-        <button className="cursor-pointer">Registrati</button>
+        <button className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white">
+          Accedi
+        </button>
+        <span className="text-black/50" >|</span>
+        <button className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white">
+          Registrati
+        </button>
       </div>
     </nav>
   );
