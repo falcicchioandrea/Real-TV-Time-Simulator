@@ -32,7 +32,7 @@ const Navbar = () => {
       {/* Gruppo destro */}
       <div className="flex items-center space-x-4 relative">
         <button>Accedi</button>
-        <span className="text-black-50">|</span>
+        <span className="text-black/50">|</span>
         <button>Registrati</button>
       </div>
     </nav>
