@@ -3,7 +3,7 @@ import { ChevronDown, Search } from "lucide-react";
 import { useState } from "react";
 import LoginModal from "./LoginModal";
 
-const Navbar = () => {
+const Navbar = ({ onOpenLoginModal }) => {
   const [openMenu, setOpenMenu] = useState(null);
   const [IsLoginOpen, setIsLoginOpen] = useState(false);
 
@@ -189,21 +189,17 @@ const Navbar = () => {
         {/* Gruppo destro */}
         <div className="flex items-center space-x-4 relative">
           <button className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white"
-            onClick={() => setIsLoginOpen(true)}
+            onClick={() => onOpenLoginModal()}
           >
             Accedi
           </button>
           <span className="text-black/50" >|</span>
           <button className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white"
-            onClick={() => setIsLoginOpen(true)}>
+            onClick={() => onOpenLoginModal()}>
             Registrati
           </button>
         </div>
       </nav>
-      <LoginModal
-      isOpen={IsLoginOpen}
-      onClose={()=> setIsLoginOpen(false)}
-      />
     </>
   );
 };
