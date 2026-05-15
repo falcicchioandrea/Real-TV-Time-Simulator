@@ -7,7 +7,7 @@ const Hero = () => {
         <img src={heroBg} alt="Hero background" 
         className="w-full h-[480px] object-cover opacity-65"/>
 
-        <div className="">
+        <div>
             <button className="absolute cursor-pointer bottom-40 left-15 bg-black text-white font-bold py-4 px-10 rounded-2xl hover:bg-zinc-800">
                 REGISTRATI GRATUITAMENTE
             </button>
