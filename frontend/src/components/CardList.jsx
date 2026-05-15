@@ -34,9 +34,9 @@ const CardList = () => {
             imageUrl: "placeholder"
         },
         {
-            id: 5,
-            title: "Card 5",
-            description: "Descrizione 5",
+            id: 6,
+            title: "Card 6",
+            description: "Descrizione 6",
             imageUrl: "placeholder"
         },
 
@@ -45,13 +45,13 @@ const CardList = () => {
   return (
     <div className="text-black md:px-4">
         <div>
-            <h2 className="inline-block pb-5 pt-5 font-medium text-xl cursor-pointer">Serie TV di tendenza</h2>
+            <h2 className="pb-5 pt-5 font-medium text-xl cursor-pointer">Serie TV di tendenza</h2>
 
             <div className="flex flex-shrink-0 overflow-x-auto scroll-smooth">
                 {data.map((item) => (
                     <div className= "flex-shrink-0">
                         <img src={CardImg} alt="" className="h-44 w-full pl-4 pr-4 pt-2 cursor-pointer" />
-                        <p className="text-center pt-1">Una serie TV</p>
+                        <p className="text-center pt-1">{item.description}</p>
                     </div>
                 ))}
             </div>
@@ -62,7 +62,7 @@ const CardList = () => {
                 {data.map((item) => (
                     <div className= "flex-shrink-0">
                         <img src={CardImg} alt="" className="h-44 w-full pl-4 pr-4 pt-2 cursor-pointer" />
-                        <p className="text-center pt-1">Un film imperdibile</p>
+                        <p className="text-center pt-1">{item.description}</p>
                     </div>
                 ))}
             </div>
@@ -73,7 +73,7 @@ const CardList = () => {
                 {data.map((item) => (
                     <div className= "flex-shrink-0">
                         <img src={CardImg} alt="" className="h-44 w-full pl-4 pr-4 pt-2 cursor-pointer" />
-                        <p className="text-center pt-1">Una serie TV</p>
+                        <p className="text-center pt-1">{item.description}</p>
                     </div>
                 ))}
             </div>
@@ -84,7 +84,7 @@ const CardList = () => {
                 {data.map((item) => (
                     <div className= "flex-shrink-0">
                         <img src={CardImg} alt="" className="h-44 w-full pl-4 pr-4 pt-2 cursor-pointer" />
-                        <p className="text-center pt-1">Un film imperdibile</p>
+                        <p className="text-center pt-1">{item.description}</p>
                     </div>
                 ))}
             </div>
