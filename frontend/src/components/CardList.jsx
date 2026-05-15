@@ -21,18 +21,74 @@ const CardList = () => {
             description: "Descrizione 3",
             imageUrl: "placeholder"
         },
+        {
+            id: 4,
+            title: "Card 4",
+            description: "Descrizione 4",
+            imageUrl: "placeholder"
+        },
+        {
+            id: 5,
+            title: "Card 5",
+            description: "Descrizione 5",
+            imageUrl: "placeholder"
+        },
+        {
+            id: 6,
+            title: "Card 6",
+            description: "Descrizione 6",
+            imageUrl: "placeholder"
+        },
+
     ];
 
   return (
-    <div>
-        <h2>Serie TV di tendenza</h2>
+    <div className="text-black md:px-4">
+        <div>
+            <h2 className="pb-5 pt-5 font-medium text-xl cursor-pointer">Serie TV di tendenza</h2>
 
-        {data.map((item) => (
-            <div>
-                <img src={CardImg} alt="" />
-                <p>Una serie TV</p>
+            <div className="flex flex-shrink-0 overflow-x-auto scroll-smooth">
+                {data.map((item) => (
+                    <div className= "flex-shrink-0">
+                        <img src={CardImg} alt="" className="h-44 w-full pl-4 pr-4 pt-2 cursor-pointer" />
+                        <p className="text-center pt-1">{item.description}</p>
+                    </div>
+                ))}
             </div>
-        ))}
+
+            <h2 className="inline-block pb-5 pt-5 font-medium text-xl cursor-pointer">Film di tendenza</h2>
+
+            <div className="flex flex-shrink-0 overflow-x-auto scroll-smooth">
+                {data.map((item) => (
+                    <div className= "flex-shrink-0">
+                        <img src={CardImg} alt="" className="h-44 w-full pl-4 pr-4 pt-2 cursor-pointer" />
+                        <p className="text-center pt-1">{item.description}</p>
+                    </div>
+                ))}
+            </div>
+
+            <h2 className="inline-block pb-5 pt-5 font-medium text-xl cursor-pointer">Le Serie TV più viste</h2>
+
+            <div className="flex flex-shrink-0 overflow-x-auto scroll-smooth">
+                {data.map((item) => (
+                    <div className= "flex-shrink-0">
+                        <img src={CardImg} alt="" className="h-44 w-full pl-4 pr-4 pt-2 cursor-pointer" />
+                        <p className="text-center pt-1">{item.description}</p>
+                    </div>
+                ))}
+            </div>
+
+            <h2 className="inline-block pb-5 pt-5 font-medium text-xl cursor-pointer">I Film più visti</h2>
+
+            <div className="flex flex-shrink-0 overflow-x-auto scroll-smooth">
+                {data.map((item) => (
+                    <div className= "flex-shrink-0">
+                        <img src={CardImg} alt="" className="h-44 w-full pl-4 pr-4 pt-2 cursor-pointer" />
+                        <p className="text-center pt-1">{item.description}</p>
+                    </div>
+                ))}
+            </div>
+        </div>    
     </div>
   )
 }
