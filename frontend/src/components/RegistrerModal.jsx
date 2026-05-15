@@ -13,9 +13,14 @@ const RegisterModal = ({isOpen, onClose, onSwitchToLogin}) =>{
                     className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition cursor-pointer">
                         X
                 </button>          
-                <h2 className="text-xl text-center font-bold text-white mb-4">Registrati su TV Time</h2>  
+                <h2 className="text-xl text-center font-bold text-white mb-4">Registrati a TV Time</h2>  
                 {/* Form di registrazione */}
                 <form className="flex flex-col gap-4 text-white">
+                    <input 
+                        type="text"
+                        placeholder='Nome utente'
+                        className='p-3 rounded-md bg-zinc-800 outline-none focus:ring-1 focus:ring-white text-white'
+                    />
                     <input 
                         type="email"
                         placeholder='Email'
@@ -26,6 +31,11 @@ const RegisterModal = ({isOpen, onClose, onSwitchToLogin}) =>{
                         placeholder='Password'
                         className='p-3 rounded-md bg-zinc-800 outline-none focus:ring-1 focus:ring-white text-white'
                     />
+                    <input
+                        type="password"
+                        placeholder='Conferma password'
+                        className='p-3 rounded-md bg-zinc-800 outline-none focus:ring-1 focus:ring-white text-white'
+                    />
                     <button 
                         type="submit"
                         className=" font-bold text-black bg-[#ffd400] mr-20 ml-20 rounded-lg hover:bg-yellow-500 cursor-pointer transition-colors">
@@ -34,11 +44,11 @@ const RegisterModal = ({isOpen, onClose, onSwitchToLogin}) =>{
                 </form>
 
                 <p className="text-gray-400 text-sm mt-2 text-center">
-                    Non hai un account? 
+                    Hai già un account? 
                     <span 
                         onClick={onSwitchToLogin}
                         className="text-[#ffd400] font-semibold cursor-pointer hover:underline ">
-                            Registrati
+                            Accedi
                     </span>
                 </p>
 
