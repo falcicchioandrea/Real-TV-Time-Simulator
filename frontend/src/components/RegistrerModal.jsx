@@ -1,6 +1,6 @@
-import React from 'react'
+import React from "react";
 
-const LoginModal = ({isOpen, onClose, onSwitchToRegister}) =>{
+const RegisterModal = ({isOpen, onClose, onSwitchToLogin}) =>{
     // Se isOpen è falso, non viene visualizzata interfaccia Login
     if(!isOpen) return null
 
@@ -13,8 +13,8 @@ const LoginModal = ({isOpen, onClose, onSwitchToRegister}) =>{
                     className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition cursor-pointer">
                         X
                 </button>          
-                <h2 className="text-xl text-center font-bold text-white mb-4">Accedi al tuo account</h2>  
-                {/* Form di login */}
+                <h2 className="text-xl text-center font-bold text-white mb-4">Registrati su TV Time</h2>  
+                {/* Form di registrazione */}
                 <form className="flex flex-col gap-4 text-white">
                     <input 
                         type="email"
@@ -29,14 +29,14 @@ const LoginModal = ({isOpen, onClose, onSwitchToRegister}) =>{
                     <button 
                         type="submit"
                         className=" font-bold text-black bg-[#ffd400] mr-20 ml-20 rounded-lg hover:bg-yellow-500 cursor-pointer transition-colors">
-                        Accedi
+                        Registrati  
                     </button>
                 </form>
 
                 <p className="text-gray-400 text-sm mt-2 text-center">
                     Non hai un account? 
                     <span 
-                        onClick={onSwitchToRegister}
+                        onClick={onSwitchToLogin}
                         className="text-[#ffd400] font-semibold cursor-pointer hover:underline ">
                             Registrati
                     </span>
@@ -48,4 +48,4 @@ const LoginModal = ({isOpen, onClose, onSwitchToRegister}) =>{
         
 }
     
-export default LoginModal
+export default RegisterModal
