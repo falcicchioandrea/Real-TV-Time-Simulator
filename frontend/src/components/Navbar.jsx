@@ -1,7 +1,6 @@
 import Logo from "../assets/logo.png";
 import { ChevronDown, Search } from "lucide-react";
 import { useState } from "react";
-import LoginModal from "./LoginModal";
 
 const Navbar = ({ onOpenLoginModal }) => {
   const [openMenu, setOpenMenu] = useState(null);
@@ -194,8 +193,7 @@ const Navbar = ({ onOpenLoginModal }) => {
             Accedi
           </button>
           <span className="text-black/50" >|</span>
-          <button className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white"
-            onClick={() => onOpenLoginModal()}>
+          <button className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white">
             Registrati
           </button>
         </div>
