@@ -1,6 +1,7 @@
 import Logo from "../assets/logo.png";
 import { ChevronDown, Search } from "lucide-react";
 import { useState } from "react";
+import genres from "../data/genres.json";
 
 const Navbar = ({ onOpenLoginModal, onOpenRegisterModal }) => {
   const [openMenu, setOpenMenu] = useState(null);
@@ -77,99 +78,14 @@ const Navbar = ({ onOpenLoginModal, onOpenRegisterModal }) => {
               </li>
               {openMenu === "generi" && (
                 <ul className="absolute top-full left-0 mt-2 bg-black shadow-md rounded z-50 grid grid-cols-4 gap-x-8 gap-y-1 p-4 w-[750px]">
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Animazione
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Anime
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Arti marziali
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Avventura
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Azione
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Casa e giardino
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Commedia
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Commedia romantica
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Crimine
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Cucina
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Documentario
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Drammatico
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Famiglia
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Fantascienza
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Fantasy
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Game Show
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Guerra
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Horror
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Indie
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Mistero
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Musical
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Notizie
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Reality
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Soap opera
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Sport
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Storico
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Suspense
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Talk show
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Thriller
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Viaggi
-                  </li>
-                  <li className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white">
-                    Western
-                  </li>
+                  {genres.map((genre) => (
+                    <li
+                      key={genre} // key serve a identificare ogni elemento della lista
+                      className="px-4 py-2 hover:bg-[#ffd400] hover:text-black hover:rounded cursor-pointer relative text-white"
+                    >
+                      {genre}
+                    </li>
+                  ))}
                 </ul>
               )}
             </div>
