@@ -2,10 +2,10 @@ import React from 'react'
 import Hero from '../components/Hero'
 import CardList from '../components/CardList'
 
-const Homepage = () => {
+const Homepage = ({ onOpenRegisterModal }) => {
   return (
     <div>
-        <Hero />
+        <Hero onOpenRegisterModal={onOpenRegisterModal} />
         <CardList />
     </div>
   )

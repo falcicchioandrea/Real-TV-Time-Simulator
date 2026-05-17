@@ -78,6 +78,7 @@ const Navbar = ({ onOpenLoginModal, onOpenRegisterModal }) => {
               </li>
               {openMenu === "generi" && (
                 <ul className="absolute top-full left-0 mt-2 bg-black shadow-md rounded z-50 grid grid-cols-4 gap-x-8 gap-y-1 p-4 w-[750px]">
+                  {/* Mappa ogni genere e crea un elemento della lista per ciascuno */}
                   {genres.map((genre) => (
                     <li
                       key={genre} // key serve a identificare ogni elemento della lista
