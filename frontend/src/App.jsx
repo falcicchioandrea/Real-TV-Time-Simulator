@@ -14,7 +14,8 @@ function App() {
         onOpenLoginModal={() => setIsLoginOpen(true)} 
         onOpenRegisterModal={() => setIsRegisterOpen(true)}
       /> 
-      <Homepage />
+      <Homepage 
+        onOpenRegisterModal={() => setIsRegisterOpen(true)} />
       <LoginModal
         isOpen={IsLoginOpen} // Controlla se il modal è aperto o chiuso 
         onClose={()=> setIsLoginOpen(false)} // Passa la funzione di chiusura del modal al LoginModal
