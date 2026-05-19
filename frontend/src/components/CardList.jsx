@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useRef} from 'react'
 import CardImg from '../assets/herobg_placeholder.png'
 
 const CardList = () => {
@@ -45,20 +45,23 @@ const CardList = () => {
   return (
     <div className="text-black md:px-4">
         <div>
-            <h2 className="pb-5 pt-5 font-medium text-xl cursor-pointer">Serie TV di tendenza</h2>
+            <h2 className="pb-5 pt-5 font-medium text-xl cursor-pointer">Serie TV di tendenza </h2>
 
-            <div className="flex flex-shrink-0 overflow-x-auto scroll-smooth">
+            <div className="flex flex-shrink-0 overflow-x-auto scroll-smooth [&::-webkit-scrollbar]:hidden">
                 {data.map((item) => (
                     <div className= "flex-shrink-0">
                         <img src={CardImg} alt="" className="h-44 w-full pl-4 pr-4 pt-2 cursor-pointer" />
+                        <div>
+                        <h2 className="text-center pt-2">{item.tile}</h2>
                         <p className="text-center pt-1">{item.description}</p>
+                        </div>
                     </div>
                 ))}
             </div>
 
             <h2 className="inline-block pb-5 pt-5 font-medium text-xl cursor-pointer">Film di tendenza</h2>
 
-            <div className="flex flex-shrink-0 overflow-x-auto scroll-smooth">
+            <div className="flex flex-shrink-0 overflow-x-auto scroll-smooth [&::-webkit-scrollbar]:hidden">
                 {data.map((item) => (
                     <div className= "flex-shrink-0">
                         <img src={CardImg} alt="" className="h-44 w-full pl-4 pr-4 pt-2 cursor-pointer" />
@@ -69,7 +72,7 @@ const CardList = () => {
 
             <h2 className="inline-block pb-5 pt-5 font-medium text-xl cursor-pointer">Le Serie TV più viste</h2>
 
-            <div className="flex flex-shrink-0 overflow-x-auto scroll-smooth">
+            <div className="flex flex-shrink-0 overflow-x-auto scroll-smooth [&::-webkit-scrollbar]:hidden">
                 {data.map((item) => (
                     <div className= "flex-shrink-0">
                         <img src={CardImg} alt="" className="h-44 w-full pl-4 pr-4 pt-2 cursor-pointer" />
@@ -80,7 +83,7 @@ const CardList = () => {
 
             <h2 className="inline-block pb-5 pt-5 font-medium text-xl cursor-pointer">I Film più visti</h2>
 
-            <div className="flex flex-shrink-0 overflow-x-auto scroll-smooth">
+            <div className="flex flex-shrink-0 overflow-x-auto scroll-smooth [&::-webkit-scrollbar]:hidden">
                 {data.map((item) => (
                     <div className= "flex-shrink-0">
                         <img src={CardImg} alt="" className="h-44 w-full pl-4 pr-4 pt-2 cursor-pointer" />

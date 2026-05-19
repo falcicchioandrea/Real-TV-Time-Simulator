@@ -1,7 +1,7 @@
 import React from 'react'
 import heroBg from '../assets/herobg_placeholder.png'
 
-const Hero = (onOpenRegisterModal) => {
+const Hero = ({onOpenRegisterModal }) => {
   return (
     <div className="relative w-full h-[500px]">
         <img src={heroBg} alt="Hero background" 
