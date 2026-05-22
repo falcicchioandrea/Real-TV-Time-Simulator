@@ -28,17 +28,17 @@ const LoginModal = ({isOpen, onClose, onSwitchToRegister}) =>{
                     />
                     <button 
                         type="submit"
-                        className=" font-bold text-black bg-[#ffd400] mr-20 ml-20 rounded-lg hover:bg-yellow-500 cursor-pointer transition-colors">
+                        className=" font-bold text-black bg-[#ffd400] mr-20 ml-20 rounded-lg hover:bg-yellow-500 cursor-pointer transition-colors p-1">
                         Accedi
                     </button>
                 </form>
 
                 <p className="text-gray-400 text-sm mt-2 text-center">
-                    Non hai un account? 
+                    Non hai un account?&nbsp; 
                     <span 
                         onClick={onSwitchToRegister}
-                        className="text-[#ffd400] font-semibold cursor-pointer hover:underline ">
-                            Registrati
+                        className="text-[#ffd400] font-semibold cursor-pointer hover:underline "> 
+                        Registrati
                     </span>
                 </p>
 

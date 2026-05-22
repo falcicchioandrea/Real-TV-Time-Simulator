@@ -38,16 +38,16 @@ const RegisterModal = ({isOpen, onClose, onSwitchToLogin}) =>{
                     />
                     <button 
                         type="submit"
-                        className=" font-bold text-black bg-[#ffd400] mr-20 ml-20 rounded-lg hover:bg-yellow-500 cursor-pointer transition-colors">
+                        className=" font-bold text-black bg-[#ffd400] mr-20 ml-20 rounded-lg hover:bg-yellow-500 cursor-pointer transition-colors p-1">
                         Registrati  
                     </button>
                 </form>
 
                 <p className="text-gray-400 text-sm mt-2 text-center">
-                    Hai già un account? 
+                    Hai già un account?&nbsp;  
                     <span 
                         onClick={onSwitchToLogin}
-                        className="text-[#ffd400] font-semibold cursor-pointer hover:underline ">
+                        className="text-[#ffd400] font-semibold cursor-pointer hover:underline">
                             Accedi
                     </span>
                 </p>
