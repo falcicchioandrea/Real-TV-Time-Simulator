@@ -1,5 +1,6 @@
 import Logo from "../assets/logo.png";
 import { Search } from "lucide-react";
+import { Link } from "react-router";
 
 const Navbar = ({ onOpenLoginModal, onOpenRegisterModal }) => {
   return (
@@ -7,11 +8,13 @@ const Navbar = ({ onOpenLoginModal, onOpenRegisterModal }) => {
       <nav className="relative z-50 bg-[#ffd400] text-black flex justify-between items-center p-4 h-20 text-sm md:text-[15px] font-medium text-nowrap">
         {/*  Gruppo sinistro*/}
         <div className="flex items-center space-x-4 relative">
-          <img
-            src={Logo}
-            alt="Logo"
-            className="w-40 cursor-pointer brightness-125"
-          />
+          <Link to="/">
+            <img
+              src={Logo}
+              alt="Logo"
+              className="w-40 cursor-pointer brightness-125"
+            />
+          </Link>
           <div className="flex items-center border-b border-black">
             <Search size={16} className="mr-2" />
             <input
