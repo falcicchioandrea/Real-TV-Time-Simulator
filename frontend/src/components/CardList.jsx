@@ -63,7 +63,7 @@ const CardList = () => {
               <img
                 src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                 alt={item.title}
-                className="h-44 w-full object-cover cursor-pointer"
+                className="h-44 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer"
               />
               <h2 className="text-center pt-2 text-sm">{item.title}</h2>
             </SwiperSlide>
@@ -79,7 +79,7 @@ const CardList = () => {
               <img
                 src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                 alt={item.title}
-                className="h-44 w-full object-cover cursor-pointer"
+                className="h-44 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer"
               />
               <h2 className="text-center pt-2 text-sm">{item.title}</h2>
             </SwiperSlide>
@@ -95,7 +95,7 @@ const CardList = () => {
               <img
                 src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                 alt={item.title}
-                className="h-44 w-full object-cover cursor-pointer"
+                className="h-44 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer"
               />
               <h2 className="text-center pt-2 text-sm">{item.title}</h2>
             </SwiperSlide>
@@ -111,7 +111,7 @@ const CardList = () => {
               <img
                 src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                 alt={item.title}
-                className="h-44 w-full object-cover cursor-pointer"
+                className="h-44 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer"
               />
               <h2 className="text-center pt-2 text-sm">{item.title}</h2>
             </SwiperSlide>
