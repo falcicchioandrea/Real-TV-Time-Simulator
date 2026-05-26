@@ -99,13 +99,13 @@ const Moviepage = () => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <button className="flex items-center gap-2 bg-[#e50914] hover:bg-[#f40612] text-white font-semibold py-2 px-4 rounded-full text-sm">
+                <button className="flex cursor-pointer items-center gap-2 bg-[#e50914] hover:bg-[#f40612] text-white font-semibold py-2 px-4 rounded-full text-sm">
                   <Play className="w-5 h-5" />
                   Watch Trailer
                 </button>
               </a>
             )}
-            <button className="flex items-center gap-2 font-semibold py-2 px-4 rounded-full text-sm border transition-colors">
+            <button className="flex items-center cursor-pointer gap-2 font-semibold py-2 px-4 rounded-full text-sm border hover:bg-white/10">
               <Heart className={"*:w-5 h-5"} />
               {isFavorite ? "Added to Favorites" : "Add to Favorites"}
             </button>
