@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import { Link } from "react-router";
 
 const CardList = () => {
   const [nowPlaying, setNowPlaying] = useState([]);
@@ -60,11 +61,13 @@ const CardList = () => {
         <Swiper slidesPerView="auto" spaceBetween={16}>
           {nowPlaying.map((item) => (
             <SwiperSlide key={item.id} style={{ width: "128px" }}>
-              <img
-                src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                alt={item.title}
-                className="h-44 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer"
-              />
+              <Link to={`/movie/${item.id}`}>
+                <img
+                  src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                  alt={item.title}
+                  className="h-44 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer"
+                />
+              </Link>
               <h2 className="text-center pt-2 text-sm">{item.title}</h2>
             </SwiperSlide>
           ))}
@@ -76,11 +79,13 @@ const CardList = () => {
         <Swiper slidesPerView="auto" spaceBetween={16}>
           {popular.map((item) => (
             <SwiperSlide key={item.id} style={{ width: "128px" }}>
-              <img
-                src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                alt={item.title}
-                className="h-44 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer"
-              />
+              <Link to={`/movie/${item.id}`}>
+                <img
+                  src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                  alt={item.title}
+                  className="h-44 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer"
+                />
+              </Link>
               <h2 className="text-center pt-2 text-sm">{item.title}</h2>
             </SwiperSlide>
           ))}
@@ -92,11 +97,13 @@ const CardList = () => {
         <Swiper slidesPerView="auto" spaceBetween={16}>
           {topRated.map((item) => (
             <SwiperSlide key={item.id} style={{ width: "128px" }}>
-              <img
-                src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                alt={item.title}
-                className="h-44 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer"
-              />
+              <Link to={`/movie/${item.id}`}>
+                <img
+                  src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                  alt={item.title}
+                  className="h-44 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer"
+                />
+              </Link>
               <h2 className="text-center pt-2 text-sm">{item.title}</h2>
             </SwiperSlide>
           ))}
@@ -108,11 +115,13 @@ const CardList = () => {
         <Swiper slidesPerView="auto" spaceBetween={16} className="pb-5">
           {upcoming.map((item) => (
             <SwiperSlide key={item.id} style={{ width: "128px" }}>
-              <img
-                src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                alt={item.title}
-                className="h-44 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer"
-              />
+              <Link to={`/movie/${item.id}`}>
+                <img
+                  src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                  alt={item.title}
+                  className="h-44 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer"
+                />
+              </Link>
               <h2 className="text-center pt-2 text-sm">{item.title}</h2>
             </SwiperSlide>
           ))}
