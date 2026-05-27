@@ -1,8 +1,13 @@
 import React from 'react'
+import { useState } from 'react'
 
 const LoginModal = ({isOpen, onClose, onSwitchToRegister}) =>{
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     // Se isOpen è falso, non viene visualizzata interfaccia Login
     if(!isOpen) return null
+
+    console.log("Email: ", email, "Password: ", password);
 
     return(
         //Sfondo in sovrimpressione
@@ -19,11 +24,15 @@ const LoginModal = ({isOpen, onClose, onSwitchToRegister}) =>{
                     <input 
                         type="email"
                         placeholder='Email'
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         className='p-3 rounded-md bg-zinc-800 outline-none focus:ring-1 focus:ring-white text-white'
                     />
                     <input
                         type="password"
                         placeholder='Password'
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         className='p-3 rounded-md bg-zinc-800 outline-none focus:ring-1 focus:ring-white text-white'
                     />
                     <button 

@@ -1,8 +1,15 @@
 import React from "react";
+import { useState } from "react";
 
 const RegisterModal = ({isOpen, onClose, onSwitchToLogin}) =>{
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     // Se isOpen è falso, non viene visualizzata interfaccia Login
     if(!isOpen) return null
+
+    console.log("Username: ", username, "Email: ", email, "Password: ", password, "Confirm Password: ", confirmPassword);
 
     return(
         //Sfondo in sovrimpressione
@@ -19,21 +26,29 @@ const RegisterModal = ({isOpen, onClose, onSwitchToLogin}) =>{
                     <input 
                         type="text"
                         placeholder='Nome utente'
+                        value={username} // Imposta il valore dell'input al nome utente dallo stato
+                        onChange={(e) => setUsername(e.target.value)}   // Aggiorna lo stato del nome utente quando l'input cambia
                         className='p-3 rounded-md bg-zinc-800 outline-none focus:ring-1 focus:ring-white text-white'
                     />
                     <input 
                         type="email"
                         placeholder='Email'
+                        value={email} // Imposta il valore dell'input all'email dallo stato
+                        onChange={(e) => setEmail(e.target.value)}   // Aggiorna lo stato dell'email quando l'input cambia
                         className='p-3 rounded-md bg-zinc-800 outline-none focus:ring-1 focus:ring-white text-white'
                     />
                     <input
                         type="password"
                         placeholder='Password'
+                        value={password} // Imposta il valore dell'input alla password dallo stato
+                        onChange={(e) => setPassword(e.target.value)}   // Aggiorna lo stato della password quando l'input cambia
                         className='p-3 rounded-md bg-zinc-800 outline-none focus:ring-1 focus:ring-white text-white'
                     />
                     <input
                         type="password"
                         placeholder='Conferma password'
+                        value={confirmPassword}  // Imposta il valore dell'input alla conferma password dallo stato
+                        onChange={(e) => setConfirmPassword(e.target.value)}  // Aggiorna lo stato della conferma password quando l'input cambia
                         className='p-3 rounded-md bg-zinc-800 outline-none focus:ring-1 focus:ring-white text-white'
                     />
                     <button 
