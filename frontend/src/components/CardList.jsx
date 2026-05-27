@@ -19,7 +19,7 @@ const CardList = () => {
   };
 
   useEffect(() => {
-    fetch(   // fetch è una funzione JavaScript che consente di effettuare richieste HTTP asincrone a un server. 
+    fetch("https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1",   // fetch è una funzione JavaScript che consente di effettuare richieste HTTP asincrone a un server. 
       options,
     )
       .then((res) => res.json()) 
