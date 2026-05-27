@@ -56,7 +56,7 @@ const CardList = () => {
     <div className="text-black md:px-4">
       <div>
         <h2 className="pb-5 pt-5 font-medium text-xl cursor-pointer">
-          Di tendenza
+          Film di tendenza
         </h2>
         <Swiper slidesPerView="auto" spaceBetween={16}>
           {nowPlaying.map((item) => (
@@ -74,7 +74,7 @@ const CardList = () => {
         </Swiper>
 
         <h2 className="inline-block pb-5 pt-5 font-medium text-xl cursor-pointer">
-          Popolari
+          Film popolari
         </h2>
         <Swiper slidesPerView="auto" spaceBetween={16}>
           {popular.map((item) => (
@@ -92,7 +92,7 @@ const CardList = () => {
         </Swiper>
 
         <h2 className="inline-block pb-5 pt-5 font-medium text-xl cursor-pointer">
-          Le Serie TV più viste
+          Film più votati
         </h2>
         <Swiper slidesPerView="auto" spaceBetween={16}>
           {topRated.map((item) => (
@@ -110,7 +110,7 @@ const CardList = () => {
         </Swiper>
 
         <h2 className="inline-block pb-5 pt-5 font-medium text-xl cursor-pointer">
-          I Film più visti
+          Film in arrivo
         </h2>
         <Swiper slidesPerView="auto" spaceBetween={16} className="pb-5">
           {upcoming.map((item) => (
