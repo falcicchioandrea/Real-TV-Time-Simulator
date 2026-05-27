@@ -43,7 +43,7 @@ const LoginModal = ({isOpen, onClose, onSwitchToRegister}) =>{
                 </form>
 
                 <p className="text-gray-400 text-sm mt-2 text-center">
-                    Non hai un account?&nbsp; 
+                    Non hai un account?&nbsp;  {/* &nbsp; --> è un'entità HTML che rappresenta uno spazio non interruzione (andare a capo), utilizzata per aggiungere spazi tra gli elementi senza permettere l'interruzione di linea.*/}
                     <span 
                         onClick={onSwitchToRegister}
                         className="text-[#ffd400] font-semibold cursor-pointer hover:underline "> 
