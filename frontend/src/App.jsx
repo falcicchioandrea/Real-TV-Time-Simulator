@@ -5,6 +5,7 @@ import RegisterModal from "./components/RegistrerModal";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Moviepage from "./pages/Moviepage";
+import Footer from "./components/Footer";
 
 function App() {
   const [IsLoginOpen, setIsLoginOpen] = React.useState(false);
@@ -33,7 +34,6 @@ function App() {
         }}
       />
       <Routes>
-        <Route path="/" element={<Homepage />} />
         <Route path="/movie/:id" element={<Moviepage />} />
         <Route
           path="/"
@@ -42,6 +42,7 @@ function App() {
           }
         />
       </Routes>
+      <Footer />
     </div>
   );
 }

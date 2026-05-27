@@ -7,8 +7,7 @@ const Homepage = ({ onOpenRegisterModal }) => {
   return (
     <div>
         <Hero onOpenRegisterModal={onOpenRegisterModal} />
-        <CardList />
-        <Footer />
+        <CardList />       
     </div>
   )
 }
