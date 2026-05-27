@@ -1,0 +1,1 @@
+import express from "express"; // Importa il modulo Express: posso farlo solo se ho "type": "module" in package.json
