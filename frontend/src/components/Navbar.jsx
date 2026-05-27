@@ -7,12 +7,12 @@ import { useNavigate } from "react-router-dom";
 const Navbar = ({ onOpenLoginModal, onOpenRegisterModal }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-
   const handleSearch = (e) => {
     if (e.key === "Enter" && searchQuery.trim() !== "") {
-      navigate(`/search?q=${searchQuery.trim()}`); // Reindirizza alla pagina di ricerca con la query
+      navigate(`/search?q=${searchQuery.trim()}`);
     }
   };
+  const resetFormValue = () => setSearchQuery("");
 
   return (
     <>
@@ -36,6 +36,7 @@ const Navbar = ({ onOpenLoginModal, onOpenRegisterModal }) => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleSearch} // Esegue la ricerca quando l'utente preme Invio
+              onBlur={resetFormValue} // Resetta il valore del campo di ricerca quando perde focus
             />
           </div>
         </div>

@@ -17,6 +17,7 @@ const SearchPage = () => {
   };
 
   useEffect(() => {
+    if (!query) return;
     fetch(
       `https://api.themoviedb.org/3/search/multi?query=${query}&include_adult=false&language=en-US&page=1`,
       options,
@@ -35,16 +36,21 @@ const SearchPage = () => {
         Stai cercando: {query}
       </h2>
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-4">
-        {results.map((item) => (
-          <Link to={`/movie/${item.id}`}>
-            <img
-              src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-              alt={item.title}
-              className="shrink-0h-44 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer"
-            />
-            <h2 className="text-center pt-2 text-sm">{item.title}</h2>
-          </Link>
-        ))}
+        {results
+          .filter((item) => item?.poster_path) // filtra i risultati che abbiano un poster valido
+          .filter((item) => item?.title || item?.name) // filtra i risultati che abbiano un titolo (movie) o un nome (tv show) valido
+          .map((item) => (
+            <Link to={`/movie/${item.id}`}>
+              <img
+                src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                alt={item.title}
+                className="aspect-2/3 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer"
+              />
+              <h2 className="text-center pt-2 text-sm">
+                {item.title || item.name}
+              </h2>
+            </Link>
+          ))}
       </div>
     </div>
   );
