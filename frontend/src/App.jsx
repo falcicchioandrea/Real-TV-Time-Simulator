@@ -41,6 +41,7 @@ function App() {
             <Homepage onOpenRegisterModal={() => setIsRegisterOpen(true)} />
           }
         />
+        <Route path="/search" element={<SearchPage />} />
       </Routes>
     </div>
   );
