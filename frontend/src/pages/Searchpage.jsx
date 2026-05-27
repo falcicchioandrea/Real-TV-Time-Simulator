@@ -22,7 +22,6 @@ const SearchPage = () => {
     )
       .then((res) => res.json())
       .then((res) => {
-        console.log("risposta TMDB:", res);
         setResults(res.results);
       })
       .catch((err) => console.error(err));
