@@ -27,8 +27,6 @@ const Navbar = ({ onOpenLoginModal, onOpenRegisterModal }) => {
             />
           </Link>
           <div className="flex items-center border-b border-black">
-            /* Campo di ricerca, bisogna impostare un useState per la query,
-            useNavigate per reindirizzare e il submit */
             <Search size={16} className="mr-2" />
             <input
               className="bg-transparent outline-none text-black placeholder-black/70 w-full"
