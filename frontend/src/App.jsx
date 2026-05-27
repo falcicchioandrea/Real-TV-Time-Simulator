@@ -5,6 +5,7 @@ import RegisterModal from "./components/RegistrerModal";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Moviepage from "./pages/Moviepage";
+import SearchPage from "./pages/Searchpage";
 
 function App() {
   const [IsLoginOpen, setIsLoginOpen] = React.useState(false);
@@ -41,6 +42,7 @@ function App() {
             <Homepage onOpenRegisterModal={() => setIsRegisterOpen(true)} />
           }
         />
+        <Route path="/search" element={<SearchPage />} />
       </Routes>
     </div>
   );

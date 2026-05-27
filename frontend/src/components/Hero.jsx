@@ -3,7 +3,7 @@ import { CheckSquare, Eye, Bell, Search } from "lucide-react";
 
 const Hero = ({ onOpenRegisterModal }) => {
   return (
-    <div className="relative w-full h-[500px] bg-[#0d0d0d]">
+    <div className="relative w-full h-125 bg-[#0d0d0d]">
       <div>
         <h1 className="font-bold text-white absolute bottom-82 left-15 text-4xl mb-4">
           Unisciti alla più grande community <br />

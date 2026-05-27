@@ -1,8 +1,19 @@
 import Logo from "../assets/logo.png";
 import { Search } from "lucide-react";
 import { Link } from "react-router";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = ({ onOpenLoginModal, onOpenRegisterModal }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+  const handleSearch = (e) => {
+    if (e.key === "Enter" && searchQuery.trim() !== "") {
+      navigate(`/search?q=${searchQuery.trim()}`);
+    }
+  };
+  const resetFormValue = () => setSearchQuery("");
+
   return (
     <>
       <nav className="relative z-50 bg-[#ffd400] text-black flex justify-between items-center p-4 h-20 text-sm md:text-[15px] font-medium text-nowrap">
@@ -22,6 +33,10 @@ const Navbar = ({ onOpenLoginModal, onOpenRegisterModal }) => {
               type="text"
               aria-label="Cerca titoli"
               placeholder="Cerca titoli"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearch} // Esegue la ricerca quando l'utente preme Invio
+              onBlur={resetFormValue} // Resetta il valore del campo di ricerca quando perde focus
             />
           </div>
         </div>
