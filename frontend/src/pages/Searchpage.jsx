@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import { Link } from "react-router";
 
 const SearchPage = () => {
   const [searchParams] = useSearchParams();
@@ -28,7 +29,25 @@ const SearchPage = () => {
   }, [query]);
 
   console.log(results);
-  return <div>Stai cercando: {query}</div>;
+  return (
+    <div className="text-black md:px-4">
+      <h2 className="pb-5 pt-5 font-medium text-xl cursor-pointer">
+        Stai cercando: {query}
+      </h2>
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-4">
+        {results.map((item) => (
+          <Link to={`/movie/${item.id}`}>
+            <img
+              src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+              alt={item.title}
+              className="shrink-0h-44 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer"
+            />
+            <h2 className="text-center pt-2 text-sm">{item.title}</h2>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default SearchPage;
