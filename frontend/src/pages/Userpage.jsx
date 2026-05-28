@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router";
+import {Heart} from "lucide-react"
 import { Swiper, SwiperSlide } from "swiper/react";
 
 const UserPage = () => {
@@ -23,12 +24,12 @@ const UserPage = () => {
   }, []); // L'array vuoto qui è vitale per bloccare il loop infinito!
 
   return (
-    <div className="min-h-screen bg-black text-white p-6"> 
-      <h1 className="font-bold text-2xl mb-4 text-[#ffd400]"><Profilo></Profilo></h1>
-      
-      <div className="mb-6 bg-zinc-900 p-4 rounded-lg inline-block">
-        <h2 className="text-base mb-1"><span className="text-gray-400">Nome utente:</span> Utente_Test</h2>
-        <h2 className="text-base"><span className="text-gray-4700">Email:</span> test@email.com</h2>
+    <div className="min-h-screen bg-black text-white p-5">
+      <div className="mb-6 bg-zinc-900 p-4 rounded-lg">
+        <h1 className="font-bold text-2xl mb-4 text-[#ffd400]">Profilo</h1> 
+        <h2 className="font-medium mb-1"><span className="text-gray-400">Nome utente:</span> Utente_Test</h2>
+        {/* 2. CORRETTO: text-gray-400 sistemato */}
+        <h2 className="font-medium"><span className="text-gray-400">Email:</span> test@email.com</h2> 
       </div>
 
       <h2 className="pb-4 font-medium text-xl">I miei film preferiti</h2>
@@ -36,13 +37,20 @@ const UserPage = () => {
       <Swiper slidesPerView="auto" spaceBetween={16}> 
         {favFilms.map((item) => (
           <SwiperSlide key={item.id} style={{ width: "128px" }}>
-            <Link to={`/movie/${item.id}`}>
-              <img
-                src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                alt={item.title}
-                className="h-44 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer rounded-md"
-              />
-            </Link>
+            <div classname="relative">
+              <Link to={`/movie/${item.id}`}>
+                <img
+                  src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                  alt={item.title}
+                  className="h-44 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer rounded-md"
+                />
+                
+              </Link>
+              <button className="absolute top-2 right-2 font-semibold py-2 px-2 rounded-full border transition-colors cursor-pointer bg-[#e6bf00]">
+                  <Heart className={"*:w-3.5 h-3.5"} />
+              </button>
+            </div>
+              
             <h2 className="text-center pt-2 text-sm truncate">{item.title}</h2>
           </SwiperSlide>
         ))}
