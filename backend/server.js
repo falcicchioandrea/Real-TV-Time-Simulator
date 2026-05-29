@@ -1,6 +1,7 @@
 import express from "express"; // Importa il modulo Express: posso farlo solo se ho "type": "module" in package.json
 import { connectToDB } from "./config/db.js"; // Importa la funzione per connettersi al database
 import dotenv from "dotenv"; // Importa il modulo dotenv per gestire le variabili d'ambiente (utile per MONGO_URI)
+import User from "./models/user.model.js";
 
 dotenv.config(); // Carica le variabili d'ambiente dal file .env
 
@@ -22,11 +23,36 @@ app.get("/", (req, res) => {
 app.post("/api/registrati", async (req, res) => {
     const { username, email, password } = req.body;
 
-    // OSS: il campo 'Conferma Password' serve solo per validare la registrazione e non va inserito nello User.Schema e nella POST 
+    try { 
+        // L'utente DEVE inserire tutti i dati richiesti
 
-    console.log( username, email, password); // Serve per verificare con PostMan che i dati vengano inviati correttamente
-    
-    return res.status(200).json({user: "Done"}); // Restituisce OK se la registrazione va a buon fine
+        if(!username || !email || !password){ 
+            throw new Error("Tutti i campi sono richiesti!")
+        }
+
+        // Voglio controllare che non si possa fare una registrazione se esistono già username e email
+        // uguali nel mio Database:
+
+        const usernameExists = await User.findOne({ username })
+
+        if(usernameExists){
+            return res.status(400).json({ message: "Esiste già un Utente con questo Username, provane un altro."})
+        }
+
+        const emailExists = await User.findOne({ email })
+
+        if(emailExists){
+            return res.status(400).json({ message: "Esiste già un Utente con questa email."})
+        }
+
+       
+
+        return res.status(200).json({user: "Registrazione andata a buon fine!"});
+        
+    } catch(error){
+
+    }
+
 });
 
 
