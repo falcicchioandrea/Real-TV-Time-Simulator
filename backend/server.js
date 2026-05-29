@@ -10,13 +10,8 @@ dotenv.config(); // Carica le variabili d'ambiente dal file .env
 
 const app = express(); // Crea un'app Express
 
-// Middleware che permette di parsare i dati che l'utente invia in formato JSON
-
+// Middlewares
 app.use(express.json());
-
-// Middleware per tradurre il cookie in formato JSON in modo che Node.js possa interpretarlo
-// correttamente
-
 app.use(cookieParser());
 
 const PORT = process.env.PORT || 5000; // Definisce la porta su cui il server ascolterà
@@ -160,30 +155,49 @@ app.get("/api/fetch-user", async (req, res) => {
     const { token } = req.cookies;
 
     if(!token){
-        return res.status(401).json({ message: "Nessun token fornito."})
+        return res
+        .status(401)
+        .json({ message: "Nessun token fornito."})
     }
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         if(!decoded){
-            return res.status(401).json( { message: "Token non valido."})
+            return res
+            .status(401)
+            .json( { message: "Token non valido."})
         }
 
     const userDoc = await User.findById(decoded.id).select("-password"); 
     
     if(!userDoc){
-        return res.status(404).json({ message: "No user found."});
+        return res
+        .status(404)
+        .json({ message: "No user found."});
     }
 
     res.status(200).json({ user: userDoc })
 
     } catch(error) {
         console.log("Errore durante il fetching dell'utente: ", error.message);
-        return res.status(400).json({ message: error.message})
+
+        return res
+        .status(400)
+        .json({ message: error.message})
     }
 })
 
+// Creo una POST per il Logout
+// 1. Il metodo clearCookie invia un comando speciale nell'header della risposta HTTP diretto al browser:
+// "Prendi il cookie che si chiama "token" e cancellalo immediatamente".
+// Tecnicamente, il server rimanda indietro lo stesso cookie ma con una data di scadenza passata (es. anno 1970).
+// Il browser, vedendo che il cookie è già "scaduto", lo elimina all'istante dalla sua memoria.
+// 2. 
+app.post("/api/esci", async (req, res) => {
+    res.clearCookie("token");
+    res.status(200).json({ message: "Logout avvenuto correttamente."})
+})
 
 app.listen(PORT, () => {
     connectToDB(); // Connette al database quando il server inizia ad ascoltare
