@@ -61,38 +61,14 @@ app.post("/api/registrati", async (req, res) => {
         // JWT (Jason Web Token): serve per gestire la sessione dell'Utente 
         // con un'alternativa 'stateless'
 
-        // Se l'utente esiste nel database, allora gli assegno un token 
         if(userDoc){
             // jwt.sign( payload, secret, options )
-            // 1. Inserisco nel payload l'ID dell'Utente: il payload non è segreto, ecco perché
-            // inseriamo solo l'ID dell'Utente e mai dati sensibili come password
 
-            // 2. Inserisco nel secret la chiave che serve a firmare il token che è salvata nel proprio
-            // file .env nascosto. Il segreto garantisce l'autenticità del token
-
-            // 3. Nel campo options stabilisco la scadenza del token: dopo 7 giorni l'utente dovrà rieffettuare
-            // il login
             const token = jwt.sign({ id: userDoc._id }, process.env.JWT_SECRET, { 
                 expiresIn: "7d",
             });
 
             // Adesso inviamo il token all'utente attraverso un cookie (per maggiore sicurezza)
-            // 1. "httpOnly: true": impedisce categoricamente a qualsiasi codice JavaScript (anche al tuo stesso codice React) di leggere o modificare questo cookie.
-            // OSS: Se un hacker riuscisse a iniettare del codice JavaScript maligno nel tuo sito (un attacco chiamato XSS - Cross-Site Scripting), 
-            // non potrebbe comunque rubare il token, perché per JavaScript quel cookie semplicemente
-            // non esiste. Il cookie verrà scambiato esclusivamente tra il browser e il server 
-            // in modo automatico a ogni richiesta HTTP, invisibile a occhi indiscreti
-
-            // 2. "secure: process.env.NODE_ENV === "production"": Questa riga serve a far viaggiare il cookie solo se la connessione è protetta.
-            // OSS: Se è impostato su true, il cookie verrà inviato solo attraverso connessioni criptate HTTPS.
-            // Perchè è scritto così? process.env.NODE_ENV === "production" è un controllo intelligente
-            // Quando stai programmando sul tuo PC in locale (localhost), la connessione è in HTTP (non sicuro). Il controllo risulterà false, permettendoti di testare il sito senza blocchi.
-            // Quando caricherai il sito online (in produzione), il controllo diventerà true e il cookie pretenderà l'HTTPS, impedendo che il token venga intercettato su reti Wi-Fi pubbliche o non protette.
-            
-            // 3. "sameSite: "strict"": Questa opzione serve a proteggere l'utente da un attacco chiamato CSRF (Cross-Site Request Forgery), ovvero quando un sito maligno prova a fare azioni a nome dell'utente.
-            // Impostandolo su "strict" (rigido), dici al browser: "Invia questo cookie al mio server SOLO SE l'utente sta navigando direttamente sul mio sito".
-            // Se l'utente è loggato sul tuo sito (il-tuo-sito.com) e clicca su un link strano mentre si trova su un altro sito (es. sito-truffa.com), il browser rifiuterà di inviare il cookie di autenticazione verso il tuo server. 
-            // In questo modo il sito truffa non potrà fare operazioni dannose sfruttando la sessione attiva dell'utente.
             
             res.cookie("token", token, {
                 httpOnly: true, 
@@ -101,15 +77,75 @@ app.post("/api/registrati", async (req, res) => {
             })
         }
 
+        // Se tutti va a buon fine allora vedo su PostMan che tutto è andato correttamente
         return res
         .status(200)
-        .json({user: "Registrazione andata a buon fine!"});
+        .json({user: userDoc, message: "L'Utente è stato creato con successo!"});
         
     } catch(error){
+        res.status(400).json({message: error.message});
 
     }
 
 });
+
+// Creo la POST per l'accesso:
+// il server riceve username e password; 
+app.post("/api/accedi", async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const userDoc = await User.findOne({ username });
+    // Se non esiste uno user Document con le stesse credenziali (username)
+    // allora invio un errore
+    
+        if(!userDoc){
+            return res.status(400).json({message: "Credenziali non valide."})
+        }
+
+        // Controllo se la password è valida facendo un confronto tra la password inserita dall'utente
+        // e quella dello userDoc: la funzione compareSync() della libreria bcryptjs permette di
+        // effettuare un confronto tra la password e l'hash in modo tale da trovare una corrispondenza
+
+        const isPasswordValid = await bcryptjs.compareSync(
+            password, 
+            userDoc.password
+        );
+
+        if(!isPasswordValid){
+            return res.status(400).json({ message: "Credenziali non valide."})
+        }
+
+
+        // JWT (identica alla POST di registrazione)
+
+        if(userDoc){
+            // jwt.sign( payload, secret, options )
+
+            const token = jwt.sign({ id: userDoc._id }, process.env.JWT_SECRET, { 
+                expiresIn: "7d",
+            });
+
+            // Adesso inviamo il token all'utente attraverso un cookie (per maggiore sicurezza)
+            
+            res.cookie("token", token, {
+                httpOnly: true, 
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "strict",
+            })
+        }
+
+        // Se tutti va a buon fine allora vedo su PostMan che tutto è andato correttamente
+        return res
+        .status(200)
+        .json({user: userDoc, message: "Accesso effettuato correttamente!"});
+
+    } catch(error) {
+        console.log("Errore durante l'accesso: ", error.message) // Per testare con PostMan
+        res.status(400).json({ message: error.message })
+
+    }
+})
 
 
 app.listen(PORT, () => {
