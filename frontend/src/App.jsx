@@ -1,7 +1,7 @@
 import Navbar from "./components/Navbar";
 import Homepage from "./pages/Homepage";
 import LoginModal from "./components/LoginModal";
-import RegisterModal from "./components/RegisterModal";
+import RegisterModal from "./components/RegisterModal"; // Controlla la 'r' interna di RegistrerModal.jsx!
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Moviepage from "./pages/Moviepage";

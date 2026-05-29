@@ -1,24 +1,25 @@
-﻿import React, { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Play, Heart } from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react"; // componenti per far scorrere film ; Swiper è il contenitore principale che gestisce lo scorrimento, mentre SwiperSlide rappresenta ogni singolo elemento (in questo caso, ogni film) all'interno dello scorrimento.
+import "swiper/css"; // Importa gli stili CSS di base per il funzionamento di Swiper, che includono le regole necessarie per il layout e l'animazione dello scorrimento. Senza questa importazione, lo scorrimento potrebbe non funzionare correttamente o non essere visualizzato come previsto.
+import { Link } from "react-router";
 
 const Moviepage = () => {
   const { id } = useParams(); // useParams è un hook fornito da react-router-dom che consente di accedere ai parametri dinamici presenti nell'URL. In questo caso, viene utilizzato per estrarre l'id del film dalla URL, che è necessario per effettuare le richieste API e recuperare i dettagli del film specifico da visualizzare sulla pagina.
   const [movie, setMovie] = useState(null);
-  const [recommendations, setRecommendations] = useState([]);
   const [trailerKey, setTrailerKey] = useState(null);
-  const [isFavorite, setIsFavorite] = useState(false);
-
-  const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNjcwM2Q5YzZmY2ViMjg5Mzg4OTMwZTYzN2JkNDA2NCIsIm5iZiI6MTc3ODM0MjY3My43MTgwMDAyLCJzdWIiOiI2OWZmNWIxMWRkZTYwM2ZmNTg1NzI0MmEiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.Hs8GxHz2S_koJDHkWqSa9hOEdsGiQWKgv1XJlVOdC3k",
-    },
-  };
+  const [recommendations, setRecommendations] = useState([]);
 
   useEffect(() => {
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNjcwM2Q5YzZmY2ViMjg5Mzg4OTMwZTYzN2JkNDA2NCIsIm5iZiI6MTc3ODM0MjY3My43MTgwMDAyLCJzdWIiOiI2OWZmNWIxMWRkZTYwM2ZmNTg1NzI0MmEiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.Hs8GxHz2S_koJDHkWqSa9hOEdsGiQWKgv1XJlVOdC3k",
+      },
+    };
     fetch(`https://api.themoviedb.org/3/movie/${id}?language=en-US`, options)
       .then((res) => res.json())
       .then((res) => setMovie(res))
@@ -38,13 +39,14 @@ const Moviepage = () => {
     )
       .then((res) => res.json())
       .then((res) => {
-        const trailer = res.results?.find(    // ? --> è l'operatore di optional chaining in JavaScript, che consente di accedere in modo sicuro senza causare errori. FIND --> è un metodo degli array in JavaScript che restituisce il primo elemento dell'array che soddisfa una condizione specificata in una funzione di callback.
+        const trailer = res.results?.find(
+          // ? --> è l'operatore di optional chaining in JavaScript, che consente di accedere in modo sicuro senza causare errori. FIND --> è un metodo degli array in JavaScript che restituisce il primo elemento dell'array che soddisfa una condizione specificata in una funzione di callback.
           (video) => video.type === "Trailer" && video.site === "YouTube",
         );
-        setTrailerKey(trailer?.key || null); // KEY --> identificatore univoco del video su YouTube, che viene utilizzato per costruire l'URL del trailer. 
+        setTrailerKey(trailer?.key || null); // KEY --> identificatore univoco del video su YouTube, che viene utilizzato per costruire l'URL del trailer.
       })
       .catch((err) => console.error(err));
-  }, [id]); // ogni volta che id cambia, vengono eseguite tutto lo useEffect 
+  }, [id]); // ogni volta che id cambia, vengono eseguite tutto lo useEffect
 
   if (!movie) {
     return (
@@ -65,9 +67,6 @@ const Moviepage = () => {
           backgroundPosition: "center",
         }}
       >
-        {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-linear-to-t from-[#181818] via-[#181818]/40 to-transparent" />
-
         {/* Movie image poster */}
         <img
           src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
@@ -78,8 +77,9 @@ const Moviepage = () => {
         <div className="relative z-10">
           <h1 className="text-4xl font-bold mb-2">{movie.title}</h1>
           <p className="text-gray-300 mb-2">
-            {movie.vote_average?.toFixed(1)} · {movie.release_date} ·{" "}  {/* toFixed(1) --> arrotonda il numero ad una cifra decimale */}
-            {movie.runtime} min 
+            ⭐{movie.vote_average?.toFixed(1)} · {movie.release_date} ·{" "}
+            {/* toFixed(1) --> arrotonda il numero ad una cifra decimale */}
+            {movie.runtime} min
           </p>
           <p className="flex gap-2 flex-wrap mb-3">
             {movie.genres?.map((genre) => (
@@ -110,6 +110,68 @@ const Moviepage = () => {
             </button>
           </div>
         </div>
+      </div>
+      {/* Movie details section */}
+      <div className="p-8">
+        <h2 className="text-2xl font-bold mb-4">Dettagli del Film</h2>
+        <ul className="grid grid-rows-2 grid-flow-col gap-4 max-w-lg">
+          <li className="bg-gray-800 rounded-lg p-4">
+            <p className="text-gray-400 text-xs uppercase mb-1">Stato</p>
+            <p className="font-semibold">{movie.status}</p>
+          </li>
+          <li className="bg-gray-800 rounded-lg p-4">
+            <p className="text-gray-400 text-xs uppercase mb-1">
+              Data di uscita
+            </p>
+            <p className="font-semibold">{movie.release_date}</p>
+          </li>
+          <li className="bg-gray-800 rounded-lg p-4">
+            <p className="text-gray-400 text-xs uppercase mb-1">
+              Lingua originale
+            </p>
+            <p className="font-semibold">
+              {movie.original_language?.toUpperCase()}
+            </p>
+          </li>
+          <li className="bg-gray-800 rounded-lg p-4">
+            <p className="text-gray-400 text-xs uppercase mb-1">Tagline</p>
+            <p className="font-semibold italic">
+              {movie.tagline || "Nessuna tagline disponibile"}
+            </p>
+          </li>
+          <li className="bg-gray-800 rounded-lg p-4">
+            <p className="text-gray-400 text-xs uppercase mb-1">Budget</p>
+            <p className="font-semibold">
+              ${movie.budget?.toLocaleString() || "Nessun budget disponibile"}
+            </p>
+          </li>
+          <li className="bg-gray-800 rounded-lg p-4">
+            <p className="text-gray-400 text-xs uppercase mb-1">Incasso</p>
+            <p className="font-semibold">
+              ${movie.revenue?.toLocaleString() || "Nessun incasso disponibile"}
+            </p>
+          </li>
+        </ul>
+      </div>
+      {/* Recommendations section */}
+      <div className="p-8">
+        <h2 className="text-2xl font-bold mb-4">Film Consigliati</h2>
+        <Swiper slidesPerView="auto" spaceBetween={16}>
+          {" "}
+          {/* slidesPerView="auto" consente a Swiper di calcolare automaticamente il numero di slide da visualizzare in base alla larghezza del contenitore e alla larghezza di ogni slide. spaceBetween={16} aggiunge uno spazio di 16 pixel tra ogni slide, migliorando la leggibilità e l'estetica dello scorrimento. Queste opzioni insieme permettono di creare un layout fluido e adattabile per la visualizzazione dei film. */}
+          {recommendations.map((item) => (
+            <SwiperSlide key={item.id} style={{ width: "128px" }}>
+              <Link to={`/movie/${item.id}`}>
+                <img
+                  src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                  alt={item.title}
+                  className="h-44 w-full hover:border-2 object-cover cursor-pointer"
+                />
+              </Link>
+              <h2 className="text-center pt-2 text-sm">{item.title}</h2>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
     </div>
   );

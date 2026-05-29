@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Link } from "react-router";
 
 const SearchPage = () => {
-  const [searchParams] = useSearchParams();   // useSearchParams --> è un hook fornito da react-router-dom che consente di accedere e manipolare i parametri della query string presenti nell'URL. 
-  const query = searchParams.get("q"); // get--> preleva il valore del parametro "q" 
+  const [searchParams] = useSearchParams(); // useSearchParams --> è un hook fornito da react-router-dom che consente di accedere e manipolare i parametri della query string presenti nell'URL.
+  const query = searchParams.get("q"); // get--> preleva il valore del parametro "q"
   const [results, setResults] = useState([]);
 
   const options = {
@@ -29,6 +29,10 @@ const SearchPage = () => {
       .catch((err) => console.error(err));
   }, [query]);
 
+  const filteredResults = results
+    .filter((item) => item?.poster_path)
+    .filter((item) => item?.title);
+
   console.log(results);
   return (
     <div className="text-black md:px-4">
@@ -36,21 +40,22 @@ const SearchPage = () => {
         Stai cercando: {query}
       </h2>
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-4">
-        {results
-          .filter((item) => item?.poster_path) // filtra i risultati che abbiano un poster valido
-          .filter((item) => item?.title) // filtra i risultati che abbiano un titolo (movie) o un nome (tv show) valido
-          .map((item) => (
-            <Link to={`/movie/${item.id}`}>
+        {filteredResults.length === 0 ? (
+          <div className="flex items-center justify-center col-span-full h-screen">
+            <h3 className="text-lg font-medium">Nessun risultato trovato</h3>
+          </div>
+        ) : (
+          filteredResults.map((item) => (
+            <Link key={item.id} to={`/movie/${item.id}`}>
               <img
                 src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                 alt={item.title}
                 className="aspect-2/3 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer"
               />
-              <h2 className="text-center pt-2 text-sm">
-                {item.title} 
-              </h2>
+              <h2 className="text-center pt-2 text-sm">{item.title}</h2>
             </Link>
-          ))}
+          ))
+        )}
       </div>
     </div>
   );
