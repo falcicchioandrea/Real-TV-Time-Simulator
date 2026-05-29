@@ -1,15 +1,16 @@
 import Logo from "../assets/logo.png";
-import { Search } from "lucide-react";
-import { Link } from "react-router";
+import { Search, User } from "lucide-react"; // Importa l'icona di ricerca da lucide-react come se fosse un componente React
+import { Link } from "react-router"; // Importa il componente Link da react-router per la navigazione tra le pagine
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
 
 const Navbar = ({ onOpenLoginModal, onOpenRegisterModal }) => {
+  const id = 1; 
   const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
   const handleSearch = (e) => {
-    if (e.key === "Enter" && searchQuery.trim() !== "") {
-      navigate(`/search?q=${searchQuery.trim()}`);
+    if (e.key === "Enter" && searchQuery.trim() !== "") {  // .trim() rimuove gli spazi bianchi all'inizio e alla fine della stringa, assicurandosi che la ricerca non venga eseguita se l'utente ha inserito solo spazi
+      navigate(`/search?q=${searchQuery.trim()}`); // Naviga alla pagina di ricerca con la query come parametro nella URL
     }
   };
   const resetFormValue = () => setSearchQuery("");
@@ -35,13 +36,18 @@ const Navbar = ({ onOpenLoginModal, onOpenRegisterModal }) => {
               placeholder="Cerca titoli"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={handleSearch} // Esegue la ricerca quando l'utente preme Invio
+              onKeyDown={handleSearch} // onKeyDown--> Rileva le lettere, i numeri, le frecce direzionali, la barra spaziatrice, ma anche i tasti "invisibili" o di sistema che non scrivono testo
               onBlur={resetFormValue} // Resetta il valore del campo di ricerca quando perde focus
             />
           </div>
         </div>
         {/* Gruppo destro */}
         <div className="flex items-center space-x-4 relative">
+          <Link to={`/profile/test1`}>
+            <button className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white">
+              <User size={20} />
+            </button>
+          </Link>
           <button
             className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white"
             onClick={() => onOpenLoginModal()}

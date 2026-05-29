@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Play, Heart } from "lucide-react";
 
 const Moviepage = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // useParams è un hook fornito da react-router-dom che consente di accedere ai parametri dinamici presenti nell'URL. In questo caso, viene utilizzato per estrarre l'id del film dalla URL, che è necessario per effettuare le richieste API e recuperare i dettagli del film specifico da visualizzare sulla pagina.
   const [movie, setMovie] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
   const [trailerKey, setTrailerKey] = useState(null);
@@ -38,13 +38,13 @@ const Moviepage = () => {
     )
       .then((res) => res.json())
       .then((res) => {
-        const trailer = res.results?.find(
+        const trailer = res.results?.find(    // ? --> è l'operatore di optional chaining in JavaScript, che consente di accedere in modo sicuro senza causare errori. FIND --> è un metodo degli array in JavaScript che restituisce il primo elemento dell'array che soddisfa una condizione specificata in una funzione di callback.
           (video) => video.type === "Trailer" && video.site === "YouTube",
         );
-        setTrailerKey(trailer?.key || null);
+        setTrailerKey(trailer?.key || null); // KEY --> identificatore univoco del video su YouTube, che viene utilizzato per costruire l'URL del trailer. 
       })
       .catch((err) => console.error(err));
-  }, [id]);
+  }, [id]); // ogni volta che id cambia, vengono eseguite tutto lo useEffect 
 
   if (!movie) {
     return (
@@ -78,13 +78,13 @@ const Moviepage = () => {
         <div className="relative z-10">
           <h1 className="text-4xl font-bold mb-2">{movie.title}</h1>
           <p className="text-gray-300 mb-2">
-            {movie.vote_average?.toFixed(1)} · {movie.release_date} ·{" "}
-            {movie.runtime} min
+            {movie.vote_average?.toFixed(1)} · {movie.release_date} ·{" "}  {/* toFixed(1) --> arrotonda il numero ad una cifra decimale */}
+            {movie.runtime} min 
           </p>
           <p className="flex gap-2 flex-wrap mb-3">
             {movie.genres?.map((genre) => (
               <span
-                key={genre.id}
+                key={genre.id} // key--> identifica in modo univoco ogni elemento della lista, aiutando React a gestire in modo efficiente il rendering e l'aggiornamento degli elementi quando la lista cambia. In questo caso, viene utilizzato genre.id come chiave unica per ogni genere.
                 className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm"
               >
                 {genre.name}
@@ -96,8 +96,8 @@ const Moviepage = () => {
             {trailerKey && (
               <a
                 href={`https://www.youtube.com/watch?v=${trailerKey}`}
-                target="_blank"
-                rel="noopener noreferrer"
+                target="_blank" //blank --> apre il link in una nuova scheda del browser
+                rel="noopener noreferrer" //noopener --> imposta window.opener=null, eliminando il riferimento alla pagina originale e prevenendo potenziali attacchi di phishing. noreferrer --> impedisce al browser di inviare l'intestazione Referer al sito di destinazione, proteggendo ulteriormente la privacy dell'utente.
               >
                 <button className="flex items-center gap-2 bg-[#ffd400] hover:bg-[#e6bf00] text-black font-semibold py-2 px-4 rounded-full text-sm cursor-pointer">
                   <Play className="w-5 h-5" />

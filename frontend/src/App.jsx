@@ -1,12 +1,14 @@
 import Navbar from "./components/Navbar";
 import Homepage from "./pages/Homepage";
 import LoginModal from "./components/LoginModal";
-import RegisterModal from "./components/RegistrerModal";
+import RegisterModal from "./components/RegistrerModal"; // Controlla la 'r' interna di RegistrerModal.jsx!
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom"; 
 import Moviepage from "./pages/Moviepage";
 import Footer from "./components/Footer";
-import SearchPage from "./pages/Searchpage";
+import SearchPage from "./pages/Searchpage"; // 'Searchpage' con la 'p' minuscola per corrispondere al file fisico!
+import UserPage from "./pages/Userpage";
+
 
 function App() {
   const [IsLoginOpen, setIsLoginOpen] = React.useState(false);
@@ -35,18 +37,19 @@ function App() {
         }}
       />
       <Routes>
-        <Route path="/movie/:id" element={<Moviepage />} />
         <Route
           path="/"
           element={
             <Homepage onOpenRegisterModal={() => setIsRegisterOpen(true)} />
           }
         />
+        <Route path="/movie/:id" element={<Moviepage />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/profile/test1" element={<UserPage/>} />
       </Routes>
-      <Footer />
+      <Footer/>
     </div>
   );
-}
+};
 
 export default App;
