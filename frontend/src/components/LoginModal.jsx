@@ -1,8 +1,13 @@
 import React from 'react'
+import { useState } from 'react'
 
 const LoginModal = ({isOpen, onClose, onSwitchToRegister}) =>{
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     // Se isOpen è falso, non viene visualizzata interfaccia Login
     if(!isOpen) return null
+
+    console.log("Email: ", email, "Password: ", password);
 
     return(
         //Sfondo in sovrimpressione
@@ -19,11 +24,15 @@ const LoginModal = ({isOpen, onClose, onSwitchToRegister}) =>{
                     <input 
                         type="email"
                         placeholder='Email'
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         className='p-3 rounded-md bg-zinc-800 outline-none focus:ring-1 focus:ring-white text-white'
                     />
                     <input
                         type="password"
                         placeholder='Password'
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         className='p-3 rounded-md bg-zinc-800 outline-none focus:ring-1 focus:ring-white text-white'
                     />
                     <button 
@@ -34,7 +43,7 @@ const LoginModal = ({isOpen, onClose, onSwitchToRegister}) =>{
                 </form>
 
                 <p className="text-gray-400 text-sm mt-2 text-center">
-                    Non hai un account?&nbsp; 
+                    Non hai un account?&nbsp;  {/* &nbsp; --> è un'entità HTML che rappresenta uno spazio non interruzione (andare a capo), utilizzata per aggiungere spazi tra gli elementi senza permettere l'interruzione di linea.*/}
                     <span 
                         onClick={onSwitchToRegister}
                         className="text-[#ffd400] font-semibold cursor-pointer hover:underline "> 
