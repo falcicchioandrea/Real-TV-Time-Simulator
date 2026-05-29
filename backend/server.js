@@ -20,18 +20,19 @@ app.get("/", (req, res) => {
     res.send("Registrati sulla mia applicazione!"); // Risponde con un messaggio quando viene effettuata una richiesta GET alla radice (root)
 })
 
+// POST per la registrazione
 app.post("/api/registrati", async (req, res) => {
     const { username, email, password } = req.body;
 
     try { 
-        // L'utente DEVE inserire tutti i dati richiesti
+        
+        // 1. Invio dati richiesti
 
         if(!username || !email || !password){ 
             throw new Error("Tutti i campi sono richiesti!")
         }
 
-        // Voglio controllare che non si possa fare una registrazione se esistono già username e email
-        // uguali nel mio Database:
+        // 2. Credenziali non disponibili
 
         const usernameExists = await User.findOne({ username })
 
@@ -49,7 +50,7 @@ app.post("/api/registrati", async (req, res) => {
             .json({ message: "Esiste già un Utente con questa email."})
         }
 
-        // HASH&SALT della Password
+        // 3. HASH&SALT della Password
 
         const hashedPassword = await bcryptjs.hash(password, 10);
         
@@ -59,17 +60,16 @@ app.post("/api/registrati", async (req, res) => {
             password: hashedPassword,
         })
 
-        // JWT (Jason Web Token): serve per gestire la sessione dell'Utente 
-        // con un'alternativa 'stateless'
+        // 4. JWT (Jason Web Token)
 
         if(userDoc){
-            // jwt.sign( payload, secret, options )
 
+            // jwt.sign( payload, secret, options )
             const token = jwt.sign({ id: userDoc._id }, process.env.JWT_SECRET, { 
                 expiresIn: "7d",
             });
 
-            // Adesso inviamo il token all'utente attraverso un cookie (per maggiore sicurezza)
+            // Invio il token attraverso un cookie
             
             res.cookie("token", token, {
                 httpOnly: true, 
@@ -78,7 +78,6 @@ app.post("/api/registrati", async (req, res) => {
             })
         }
 
-        // Se tutti va a buon fine allora vedo su PostMan che tutto è andato correttamente
         return res
         .status(200)
         .json({user: userDoc, message: "L'Utente è stato creato con successo!"});
@@ -90,23 +89,16 @@ app.post("/api/registrati", async (req, res) => {
 
 });
 
-// Creo la POST per l'accesso:
-// il server riceve username e password; 
+// POST per l'Accesso
 app.post("/api/accedi", async (req, res) => {
     const { username, password } = req.body;
 
     try {
         const userDoc = await User.findOne({ username });
-    // Se non esiste uno user Document con le stesse credenziali (username)
-    // allora invio un errore
 
         if(!userDoc){
             return res.status(400).json({message: "Credenziali non valide."})
         }
-
-        // Controllo se la password è valida facendo un confronto tra la password inserita dall'utente
-        // e quella dello userDoc: la funzione compareSync() della libreria bcryptjs permette di
-        // effettuare un confronto tra la password e l'hash in modo tale da trovare una corrispondenza
 
         const isPasswordValid = await bcryptjs.compareSync(
             password, 
@@ -121,22 +113,20 @@ app.post("/api/accedi", async (req, res) => {
         // JWT (identica alla POST di registrazione)
 
         if(userDoc){
+            
             // jwt.sign( payload, secret, options )
-
             const token = jwt.sign({ id: userDoc._id }, process.env.JWT_SECRET, { 
                 expiresIn: "7d",
             });
 
-            // Adesso inviamo il token all'utente attraverso un cookie (per maggiore sicurezza)
-            
+            // Invio il token attraverso un cookie
             res.cookie("token", token, {
                 httpOnly: true, 
                 secure: process.env.NODE_ENV === "production",
                 sameSite: "strict",
             })
         }
-
-        // Se tutti va a buon fine allora vedo su PostMan che tutto è andato correttamente
+        
         return res
         .status(200)
         .json({user: userDoc, message: "Accesso effettuato correttamente!"});
@@ -148,8 +138,7 @@ app.post("/api/accedi", async (req, res) => {
     }
 })
 
-// Questa nuova rotta 'fetch-user' serve a React per chiedere al server: "C'è un utente loggato in questo momento?"
-
+// GET per il Fetch dell'Utente
 app.get("/api/fetch-user", async (req, res) => {
 
     const { token } = req.cookies;
@@ -188,12 +177,7 @@ app.get("/api/fetch-user", async (req, res) => {
     }
 })
 
-// Creo una POST per il Logout
-// 1. Il metodo clearCookie invia un comando speciale nell'header della risposta HTTP diretto al browser:
-// "Prendi il cookie che si chiama "token" e cancellalo immediatamente".
-// Tecnicamente, il server rimanda indietro lo stesso cookie ma con una data di scadenza passata (es. anno 1970).
-// Il browser, vedendo che il cookie è già "scaduto", lo elimina all'istante dalla sua memoria.
-// 2. 
+// POST per il Logout
 app.post("/api/esci", async (req, res) => {
     res.clearCookie("token");
     res.status(200).json({ message: "Logout avvenuto correttamente."})
