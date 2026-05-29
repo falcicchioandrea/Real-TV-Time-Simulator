@@ -4,6 +4,7 @@ import dotenv from "dotenv"; // Importa il modulo dotenv per gestire le variabil
 import User from "./models/user.model.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import cookieParser from "cookie-parser";
 
 dotenv.config(); // Carica le variabili d'ambiente dal file .env
 
@@ -12,6 +13,11 @@ const app = express(); // Crea un'app Express
 // Middleware che permette di parsare i dati che l'utente invia in formato JSON
 
 app.use(express.json());
+
+// Middleware per tradurre il cookie in formato JSON in modo che Node.js possa interpretarlo
+// correttamente
+
+app.use(cookieParser());
 
 const PORT = process.env.PORT || 5000; // Definisce la porta su cui il server ascolterà
 
@@ -151,24 +157,12 @@ app.post("/api/accedi", async (req, res) => {
 
 app.get("/api/fetch-user", async (req, res) => {
 
-    // 1. Il Recupero del Cookie: const { token } = req.cookies;
-    // Il client (React) fa una richiesta GET a /api/fetch-user. Il browser, in automatico allega il cookie alla richiesta. 
-    // Con questa riga, Express estrae il token direttamente dal "vassoio" dei cookie ricevuti.
     const { token } = req.cookies;
 
-    // Avremo bisogno del middleware cookie-parser
-
-    // 2. Se la variabile token è vuota, significa che l'utente non ha mai fatto il login, oppure il cookie è scaduto, o l'utente lo ha cancellato.
-    // Il server interrompe subito l'esecuzione e restituisce un codice 401 Unauthorized (Non autorizzato).
     if(!token){
         return res.status(401).json({ message: "Nessun token fornito."})
     }
 
-    // 3. Se il token esiste, entra in gioco il blocco try:
-    // Il server prende il token e lo "decifra" usando la stessa chiave segreta (JWT_SECRET) con cui lo aveva creato.
-    // Se il token è autentico, dentro la variabile decoded ci sarà esattamente l'oggetto inserito nel payload durante il login (ovvero l'ID dell'utente: { id: "..." }).
-    // Se il token è contraffatto o scaduto: Il metodo jwt.verify lancerà un errore (un'eccezione) e il codice salterà immediatamente dentro il blocco catch
-    
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -176,35 +170,13 @@ app.get("/api/fetch-user", async (req, res) => {
             return res.status(401).json( { message: "Token non valido."})
         }
 
-    // 4. Il Recupero dal Database: User.findById(decoded.id).select("-password"):
-    // User.findById(decoded.id): dice a Mongoose di cercare nella collezione degli utenti (User)
-    // quel documento specifico che ha esattamente l'_id uguale a quello decodificato dal token.
-    // Inoltre, evito di mostrare la password grazie alla funzione .select("-password") perché non ha senso far
-    // viaggiare informazioni sensibili come la password. Serve solamente sapere chi è loggato attualmente
-
     const userDoc = await User.findById(decoded.id).select("-password"); 
     
-    // 5. Il Controllo di Esistenza: if(!userDoc) { ... }
-    // Anche se il token è valido, potrebbe succedere un caso limite: l'utente esisteva quando ha fatto il login,
-    // ma nel frattempo un amministratore lo ha cancellato dal database.
-    // Se User.findById non trova nulla, restituisce null. Questo if intercetta il problema, blocca la richiesta e 
-    // risponde con un errore (Error 404: Not Found!).
     if(!userDoc){
         return res.status(404).json({ message: "No user found."});
     }
 
-    // 6. La Risposta di Successo: res.status(200).json({ user: userDoc })
-    // Se l'utente viene trovato, tutto è andato per il verso giusto!
-    // Il server risponde con lo stato 200 OK e invia a React un oggetto 
-    // JSON contenente tutti i dati dell'utente (senza password)
-
-    // Ora React riceverà questo oggetto, lo salverà nel suo stato globale 
-    // (magari usando un Context o Redux) e potrà finalmente mostrare a schermo 
-    // il nome dell'utente, la sua foto profilo e i suoi film salvati
     res.status(200).json({ user: userDoc })
-
-    // Il blocco catch è fondamentale perché "cattura" qualsiasi imprevisto 
-    // che possa far crashare il server durante le operazioni precedenti.
 
     } catch(error) {
         console.log("Errore durante il fetching dell'utente: ", error.message);
