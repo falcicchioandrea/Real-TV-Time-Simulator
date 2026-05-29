@@ -77,7 +77,7 @@ const Moviepage = () => {
         <div className="relative z-10">
           <h1 className="text-4xl font-bold mb-2">{movie.title}</h1>
           <p className="text-gray-300 mb-2">
-            {movie.vote_average?.toFixed(1)} · {movie.release_date} ·{" "}
+            ⭐{movie.vote_average?.toFixed(1)} · {movie.release_date} ·{" "}
             {/* toFixed(1) --> arrotonda il numero ad una cifra decimale */}
             {movie.runtime} min
           </p>
