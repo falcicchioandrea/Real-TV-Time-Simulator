@@ -1,10 +1,11 @@
 import Logo from "../assets/logo.png";
-import { Search } from "lucide-react"; // Importa l'icona di ricerca da lucide-react come se fosse un componente React
+import { Search, User } from "lucide-react"; // Importa l'icona di ricerca da lucide-react come se fosse un componente React
 import { Link } from "react-router"; // Importa il componente Link da react-router per la navigazione tra le pagine
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"; 
 
 const Navbar = ({ onOpenLoginModal, onOpenRegisterModal }) => {
+  const id = 1; 
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate(); 
   const handleSearch = (e) => {
@@ -42,6 +43,11 @@ const Navbar = ({ onOpenLoginModal, onOpenRegisterModal }) => {
         </div>
         {/* Gruppo destro */}
         <div className="flex items-center space-x-4 relative">
+          <Link to={`/profile/test1`}>
+            <button className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white">
+              <User size={20} />
+            </button>
+          </Link>
           <button
             className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white"
             onClick={() => onOpenLoginModal()}
