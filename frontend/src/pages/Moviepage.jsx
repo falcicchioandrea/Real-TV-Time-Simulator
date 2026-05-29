@@ -5,9 +5,7 @@ import { Play, Heart } from "lucide-react";
 const Moviepage = () => {
   const { id } = useParams(); // useParams è un hook fornito da react-router-dom che consente di accedere ai parametri dinamici presenti nell'URL. In questo caso, viene utilizzato per estrarre l'id del film dalla URL, che è necessario per effettuare le richieste API e recuperare i dettagli del film specifico da visualizzare sulla pagina.
   const [movie, setMovie] = useState(null);
-  const [recommendations, setRecommendations] = useState([]);
   const [trailerKey, setTrailerKey] = useState(null);
-  const [isFavorite, setIsFavorite] = useState(false);
 
   const options = {
     method: "GET",
@@ -38,13 +36,14 @@ const Moviepage = () => {
     )
       .then((res) => res.json())
       .then((res) => {
-        const trailer = res.results?.find(    // ? --> è l'operatore di optional chaining in JavaScript, che consente di accedere in modo sicuro senza causare errori. FIND --> è un metodo degli array in JavaScript che restituisce il primo elemento dell'array che soddisfa una condizione specificata in una funzione di callback.
+        const trailer = res.results?.find(
+          // ? --> è l'operatore di optional chaining in JavaScript, che consente di accedere in modo sicuro senza causare errori. FIND --> è un metodo degli array in JavaScript che restituisce il primo elemento dell'array che soddisfa una condizione specificata in una funzione di callback.
           (video) => video.type === "Trailer" && video.site === "YouTube",
         );
-        setTrailerKey(trailer?.key || null); // KEY --> identificatore univoco del video su YouTube, che viene utilizzato per costruire l'URL del trailer. 
+        setTrailerKey(trailer?.key || null); // KEY --> identificatore univoco del video su YouTube, che viene utilizzato per costruire l'URL del trailer.
       })
       .catch((err) => console.error(err));
-  }, [id]); // ogni volta che id cambia, vengono eseguite tutto lo useEffect 
+  }, [id]); // ogni volta che id cambia, vengono eseguite tutto lo useEffect
 
   if (!movie) {
     return (
@@ -78,8 +77,9 @@ const Moviepage = () => {
         <div className="relative z-10">
           <h1 className="text-4xl font-bold mb-2">{movie.title}</h1>
           <p className="text-gray-300 mb-2">
-            {movie.vote_average?.toFixed(1)} · {movie.release_date} ·{" "}  {/* toFixed(1) --> arrotonda il numero ad una cifra decimale */}
-            {movie.runtime} min 
+            {movie.vote_average?.toFixed(1)} · {movie.release_date} ·{" "}
+            {/* toFixed(1) --> arrotonda il numero ad una cifra decimale */}
+            {movie.runtime} min
           </p>
           <p className="flex gap-2 flex-wrap mb-3">
             {movie.genres?.map((genre) => (
@@ -110,6 +110,47 @@ const Moviepage = () => {
             </button>
           </div>
         </div>
+      </div>
+      <div className="p-8">
+        <h2 className="text-2xl font-bold mb-4">Dettagli del Film</h2>
+        <ul className="grid grid-rows-2 grid-flow-col gap-4 max-w-lg">
+          <li className="bg-gray-800 rounded-lg p-4">
+            <p className="text-gray-400 text-xs uppercase mb-1">Stato</p>
+            <p className="font-semibold">{movie.status}</p>
+          </li>
+          <li className="bg-gray-800 rounded-lg p-4">
+            <p className="text-gray-400 text-xs uppercase mb-1">
+              Data di uscita
+            </p>
+            <p className="font-semibold">{movie.release_date}</p>
+          </li>
+          <li className="bg-gray-800 rounded-lg p-4">
+            <p className="text-gray-400 text-xs uppercase mb-1">
+              Lingua originale
+            </p>
+            <p className="font-semibold">
+              {movie.original_language?.toUpperCase()}
+            </p>
+          </li>
+          <li className="bg-gray-800 rounded-lg p-4">
+            <p className="text-gray-400 text-xs uppercase mb-1">Tagline</p>
+            <p className="font-semibold italic">
+              {movie.tagline || "Nessuna tagline disponibile"}
+            </p>
+          </li>
+          <li className="bg-gray-800 rounded-lg p-4">
+            <p className="text-gray-400 text-xs uppercase mb-1">Budget</p>
+            <p className="font-semibold">
+              ${movie.budget?.toLocaleString() || "Nessun budget disponibile"}
+            </p>
+          </li>
+          <li className="bg-gray-800 rounded-lg p-4">
+            <p className="text-gray-400 text-xs uppercase mb-1">Incasso</p>
+            <p className="font-semibold">
+              ${movie.revenue?.toLocaleString() || "Nessun incasso disponibile"}
+            </p>
+          </li>
+        </ul>
       </div>
     </div>
   );
