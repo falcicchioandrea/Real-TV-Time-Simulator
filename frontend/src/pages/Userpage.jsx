@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router";
-import {Heart} from "lucide-react"
+import { Heart } from "lucide-react"
 import { Swiper, SwiperSlide } from "swiper/react";
 
 const UserPage = () => {
@@ -32,7 +32,10 @@ const UserPage = () => {
         <h2 className="font-medium"><span className="text-gray-400">Email:</span> test@email.com</h2> 
       </div>
 
-      <h2 className="pb-4 font-medium text-xl">I miei film preferiti</h2>
+      <h2 className="pb-4 font-medium text-xl flex items-center gap-2">  
+        <Heart className="text-red-600 fill-red-600" size={24}></Heart>
+        I miei film preferiti
+      </h2>
       
       <Swiper slidesPerView="auto" spaceBetween={16}> 
         {favFilms.map((item) => (
@@ -42,13 +45,10 @@ const UserPage = () => {
                 <img
                   src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                   alt={item.title}
-                  className="h-44 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer rounded-md"
+                  className="h-44 w-full hover:border-2 object-cover cursor-pointer rounded-md"
                 />
                 
               </Link>
-              <button className="absolute top-2 right-2 font-semibold py-2 px-2 rounded-full border transition-colors cursor-pointer bg-[#e6bf00]">
-                  <Heart className={"*:w-3.5 h-3.5"} />
-              </button>
             </div>
               
             <h2 className="text-center pt-2 text-sm truncate">{item.title}</h2>

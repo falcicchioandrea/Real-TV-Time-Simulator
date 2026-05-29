@@ -36,7 +36,7 @@ const SearchPage = () => {
   console.log(results);
   return (
     <div className="text-black md:px-4">
-      <h2 className="pb-5 pt-5 font-medium text-xl cursor-pointer">
+      <h2 className="pb-5 pt-5 font-medium text-xl">
         Stai cercando: {query}
       </h2>
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-4">
@@ -50,9 +50,9 @@ const SearchPage = () => {
               <img
                 src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                 alt={item.title}
-                className="aspect-2/3 w-full hover:border-2 hover:border-yellow-400 object-cover cursor-pointer"
+                className="aspect-2/3 w-full hover:border-2 object-cover cursor-pointer"
               />
-              <h2 className="text-center pt-2 text-sm">{item.title}</h2>
+              <h2 className="text-center pt-2 pb-3 text-sm">{item.title}</h2>
             </Link>
           ))
         )}
