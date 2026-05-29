@@ -1,22 +1,25 @@
-﻿import React, { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Play, Heart } from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react"; // componenti per far scorrere film ; Swiper è il contenitore principale che gestisce lo scorrimento, mentre SwiperSlide rappresenta ogni singolo elemento (in questo caso, ogni film) all'interno dello scorrimento.
+import "swiper/css"; // Importa gli stili CSS di base per il funzionamento di Swiper, che includono le regole necessarie per il layout e l'animazione dello scorrimento. Senza questa importazione, lo scorrimento potrebbe non funzionare correttamente o non essere visualizzato come previsto.
+import { Link } from "react-router";
 
 const Moviepage = () => {
   const { id } = useParams(); // useParams è un hook fornito da react-router-dom che consente di accedere ai parametri dinamici presenti nell'URL. In questo caso, viene utilizzato per estrarre l'id del film dalla URL, che è necessario per effettuare le richieste API e recuperare i dettagli del film specifico da visualizzare sulla pagina.
   const [movie, setMovie] = useState(null);
   const [trailerKey, setTrailerKey] = useState(null);
-
-  const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNjcwM2Q5YzZmY2ViMjg5Mzg4OTMwZTYzN2JkNDA2NCIsIm5iZiI6MTc3ODM0MjY3My43MTgwMDAyLCJzdWIiOiI2OWZmNWIxMWRkZTYwM2ZmNTg1NzI0MmEiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.Hs8GxHz2S_koJDHkWqSa9hOEdsGiQWKgv1XJlVOdC3k",
-    },
-  };
+  const [recommendations, setRecommendations] = useState([]);
 
   useEffect(() => {
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNjcwM2Q5YzZmY2ViMjg5Mzg4OTMwZTYzN2JkNDA2NCIsIm5iZiI6MTc3ODM0MjY3My43MTgwMDAyLCJzdWIiOiI2OWZmNWIxMWRkZTYwM2ZmNTg1NzI0MmEiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.Hs8GxHz2S_koJDHkWqSa9hOEdsGiQWKgv1XJlVOdC3k",
+      },
+    };
     fetch(`https://api.themoviedb.org/3/movie/${id}?language=en-US`, options)
       .then((res) => res.json())
       .then((res) => setMovie(res))
@@ -64,9 +67,6 @@ const Moviepage = () => {
           backgroundPosition: "center",
         }}
       >
-        {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-linear-to-t from-[#181818] via-[#181818]/40 to-transparent" />
-
         {/* Movie image poster */}
         <img
           src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
@@ -111,6 +111,7 @@ const Moviepage = () => {
           </div>
         </div>
       </div>
+      {/* Movie details section */}
       <div className="p-8">
         <h2 className="text-2xl font-bold mb-4">Dettagli del Film</h2>
         <ul className="grid grid-rows-2 grid-flow-col gap-4 max-w-lg">
@@ -151,6 +152,26 @@ const Moviepage = () => {
             </p>
           </li>
         </ul>
+      </div>
+      {/* Recommendations section */}
+      <div className="p-8">
+        <h2 className="text-2xl font-bold mb-4">Film Consigliati</h2>
+        <Swiper slidesPerView="auto" spaceBetween={16}>
+          {" "}
+          {/* slidesPerView="auto" consente a Swiper di calcolare automaticamente il numero di slide da visualizzare in base alla larghezza del contenitore e alla larghezza di ogni slide. spaceBetween={16} aggiunge uno spazio di 16 pixel tra ogni slide, migliorando la leggibilità e l'estetica dello scorrimento. Queste opzioni insieme permettono di creare un layout fluido e adattabile per la visualizzazione dei film. */}
+          {recommendations.map((item) => (
+            <SwiperSlide key={item.id} style={{ width: "128px" }}>
+              <Link to={`/movie/${item.id}`}>
+                <img
+                  src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                  alt={item.title}
+                  className="h-44 w-full hover:border-2 object-cover cursor-pointer"
+                />
+              </Link>
+              <h2 className="text-center pt-2 text-sm">{item.title}</h2>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
     </div>
   );
