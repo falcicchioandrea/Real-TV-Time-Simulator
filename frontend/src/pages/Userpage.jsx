@@ -37,24 +37,18 @@ const UserPage = () => {
         I miei film preferiti
       </h2>
       
-      <Swiper slidesPerView="auto" spaceBetween={16}> 
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-4">
         {favFilms.map((item) => (
-          <SwiperSlide key={item.id} style={{ width: "128px" }}>
-            <div classname="relative">
-              <Link to={`/movie/${item.id}`}>
+          <Link key={item.id} to={`/movie/${item.id}`}>
                 <img
-                  src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                  alt={item.title}
-                  className="h-44 w-full hover:border-2 object-cover cursor-pointer rounded-md"
-                />
-                
-              </Link>
-            </div>
-              
-            <h2 className="text-center pt-2 text-sm truncate">{item.title}</h2>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+                src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                alt={item.title}
+                className="aspect-2/3 w-full hover:border-2 object-cover cursor-pointer"
+              />
+          <h2 className="text-center pt-2 text-sm truncate">{item.title}</h2>
+          </Link>
+        ))};
+      </div>
     </div>
   );
 };
