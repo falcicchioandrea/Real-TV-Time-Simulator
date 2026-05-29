@@ -79,7 +79,7 @@ app.post("/api/registrati", async (req, res) => {
         }
 
         return res
-        .status(200)
+        .status(201)
         .json({user: userDoc, message: "L'Utente è stato creato con successo!"});
         
     } catch(error){
@@ -172,7 +172,7 @@ app.get("/api/fetch-user", async (req, res) => {
         console.log("Errore durante il fetching dell'utente: ", error.message);
 
         return res
-        .status(400)
+        .status(401)
         .json({ message: error.message})
     }
 })
