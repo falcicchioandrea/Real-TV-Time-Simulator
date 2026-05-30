@@ -5,12 +5,17 @@ import User from "./models/user.model.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 dotenv.config(); // Carica le variabili d'ambiente dal file .env
 
 const app = express(); // Crea un'app Express
 
 // Middlewares
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+}));
 app.use(express.json());
 app.use(cookieParser());
 

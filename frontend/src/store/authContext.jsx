@@ -93,6 +93,8 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const clearError = () => setError(null);
+
   useEffect(() => {
     fetchUser();
   }, []); // eseguito una volta all'avvio dell'applicazione
@@ -109,6 +111,7 @@ export function AuthProvider({ children }) {
         signup,
         login,
         logout,
+        clearError,
       }}
     >
       {children}

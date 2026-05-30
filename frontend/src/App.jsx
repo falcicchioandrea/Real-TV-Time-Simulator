@@ -44,7 +44,7 @@ function App() {
         />
         <Route path="/movie/:id" element={<Moviepage />} />
         <Route path="/search" element={<SearchPage />} />
-        <Route path="/profile/test1" element={<UserPage />} />
+        <Route path="/profile/:username" element={<UserPage />} />
       </Routes>
       <Footer />
     </div>
