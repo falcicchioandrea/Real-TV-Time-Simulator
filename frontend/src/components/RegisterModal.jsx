@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../store/authContext.jsx";
 
 const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
@@ -8,7 +8,14 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [localError, setlocalError] = useState(""); // Stato per gestire errori locali (es. password non corrispondenti)
 
-  const { signup, isLoading, error } = useAuth();
+  const { signup, isLoading, error, clearError } = useAuth();
+
+  useEffect(() => {
+    // Pulisce il messaggio di errore quando il modal viene chiuso
+    if (!isOpen) {
+      clearError();
+    }
+  }, [isOpen]);
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Impedisce il comportamento predefinito del form (ricaricare la pagina)
@@ -87,10 +94,10 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
             onChange={(e) => setConfirmPassword(e.target.value)} // Aggiorna lo stato della conferma password quando l'input cambia
             className="p-3 rounded-md bg-zinc-800 outline-none focus:ring-1 focus:ring-white text-white"
           />
-          {error ||
-            (localError && (
-              <p className="text-red-500 text-sm">{error || localError}</p>
-            ))}{" "}
+          {/* Rendering condizionale: se la condizione è vera, renderizza l'elemento, altrimenti non renderizzare null */}
+          {(localError || error) && (
+            <p className="text-red-500 text-sm">{localError || error}</p>
+          )}
           {/* Mostra il messaggio di errore se presente */}
           <button
             type="submit"

@@ -1,11 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../store/authContext.jsx";
 
 const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   // Estrazione delle funzioni dal context
-  const { login, isLoading, error } = useAuth();
+  const { login, isLoading, error, clearError } = useAuth();
+
+  useEffect(() => {
+    // Pulisce il messaggio di errore quando il modal viene chiuso
+    if (!isOpen) {
+      clearError();
+    }
+  }, [isOpen]);
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Impedisce il comportamento predefinito del form (ricaricare la pagina)
