@@ -2,9 +2,7 @@ import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-export const prova_registrati = (req, res) => {
-    res.send("Registrati sulla mia applicazione!"); // Risponde con un messaggio quando viene effettuata una richiesta GET alla radice (root)
-}
+
 
 export const registrati = async (req, res) => {
     const { username, email, password } = req.body;

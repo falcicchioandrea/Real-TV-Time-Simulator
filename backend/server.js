@@ -12,6 +12,10 @@ const PORT = process.env.PORT || 5000; // Definisce la porta su cui il server as
 app.use(express.json());
 app.use(cookieParser());
 
+app.get('/', (req, res) => {
+    res.send("Registrati sulla mia applicazione!"); // Risponde con un messaggio quando viene effettuata una richiesta GET alla radice (root)
+});
+
 app.use('/user-api', userRouter);
 
 app.listen(PORT, () => {
