@@ -12,7 +12,9 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
     try {
       await login(username, password); // Chiama la funzione di login dal context
       onClose(); // Chiude il modal dopo un login riuscito
-    } catch {}
+    } catch {
+      // L'errore viene gestito altrove
+    }
   };
 
   // Se isOpen è falso, non viene visualizzata interfaccia Login

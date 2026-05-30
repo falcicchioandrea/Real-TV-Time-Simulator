@@ -22,7 +22,9 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
     try {
       await signup(username, email, password); // Chiama la funzione di registrazione dal context
       onClose(); // Chiude il modal dopo una registrazione riuscita
-    } catch {}
+    } catch {
+      // L'errore viene gestito altrove
+    }
   };
 
   // Se isOpen è falso, non viene visualizzata interfaccia Login

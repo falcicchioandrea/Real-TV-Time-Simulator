@@ -96,6 +96,7 @@ export function AuthProvider({ children }) {
   const clearError = () => setError(null);
 
   useEffect(() => {
+    // eslint-disable-next-line
     fetchUser();
   }, []); // eseguito una volta all'avvio dell'applicazione
 
@@ -119,6 +120,7 @@ export function AuthProvider({ children }) {
   );
 }
 
+// eslint-disable-next-line
 export function useAuth() {
   return useContext(AuthContext);
 }
