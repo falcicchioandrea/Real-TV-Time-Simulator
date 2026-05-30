@@ -1,8 +1,20 @@
 import { useState } from "react";
+import { useAuth } from "../store/authContext.jsx";
 
 const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  // Estrazione delle funzioni dal context
+  const { login, isLoading, error } = useAuth();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Impedisce il comportamento predefinito del form (ricaricare la pagina)
+    try {
+      await login(username, password); // Chiama la funzione di login dal context
+      onClose(); // Chiude il modal dopo un login riuscito
+    } catch {}
+  };
+
   // Se isOpen è falso, non viene visualizzata interfaccia Login
   if (!isOpen) return null;
 
@@ -22,9 +34,12 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
           Accedi al tuo account
         </h2>
         {/* Form di login */}
-        <form className="flex flex-col gap-4 text-white">
+        <form
+          className="flex flex-col gap-4 text-white"
+          onSubmit={handleSubmit}
+        >
           <input
-            type="username"
+            type="text"
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -37,11 +52,14 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
             onChange={(e) => setPassword(e.target.value)}
             className="p-3 rounded-md bg-zinc-800 outline-none focus:ring-1 focus:ring-white text-white"
           />
+          {/* Mostra il messaggio di errore se presente */}
+          {error && <p className="text-red-500 text-sm">{error}</p>}
           <button
             type="submit"
+            disabled={isLoading} // Disabilita il pulsante durante il caricamento
             className=" font-bold text-black bg-[#ffd400] mr-20 ml-20 rounded-lg hover:bg-yellow-500 cursor-pointer transition-colors p-1"
           >
-            Accedi
+            {isLoading ? "Caricamento..." : "Accedi"}
           </button>
         </form>
 
