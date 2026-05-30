@@ -26,12 +26,91 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [message, setMessage] = useState(null);
+
+  const signup = async (username, email, password) => {
+    setIsLoading(true);
+    setMessage(null);
+
+    try {
+      const response = await axios.post("/api/registrati", {
+        username,
+        email,
+        password,
+      });
+      setUser(response.data.user); // Se la registrazione ha successo, settiamo l'utente con i dati ricevuti dal backend
+      setMessage(response.data.message); // Impostiamo il messaggio di successo ricevuto dal backend
+      setIsLoading(false);
+    } catch (err) {
+      setIsLoading(false);
+      setError(
+        err.response?.data?.message ||
+          "Si è verificato un errore durante la registrazione.",
+      ); // Impostiamo il messaggio di errore ricevuto dal backend o un messaggio generico se non disponibile
+      throw err; // Rilanciamo l'errore per gestirlo anche nei componenti che chiamano questa funzione
+    }
+  };
+
+  const login = async (username, password) => {
+    setIsLoading(true);
+    setMessage(null);
+    setError(null);
+    try {
+      const response = await axios.post("/api/accedi", { username, password });
+      setUser(response.data.user); // Se il login ha successo, settiamo l'utente con i dati ricevuti dal backend
+      setMessage(response.data.message); // Impostiamo il messaggio di successo ricevuto dal backend
+      setIsLoading(false);
+    } catch (err) {
+      setIsLoading(false);
+      setError(
+        err.response?.data?.message ||
+          "Si è verificato un errore durante il login.",
+      );
+      throw err;
+    }
+  };
+
+  const logout = async () => {
+    setIsLoading(true);
+    setMessage(null);
+    setError(null);
+    try {
+      const response = await axios.post("/api/esci");
+      const message =
+        response.data.message || "Logout effettuato con successo.";
+      setMessage(message);
+      setIsLoading(false);
+      setUser(null); // Rimuoviamo l'utente dallo stato, indicando che non c'è più una sessione attiva
+    } catch (err) {
+      setIsLoading(false);
+      setError(
+        err.response?.data?.message ||
+          "Si è verificato un errore durante il logout.",
+      );
+      throw err;
+    }
+  };
+
   useEffect(() => {
     fetchUser();
   }, []); // eseguito una volta all'avvio dell'applicazione
 
   return (
-    <AuthContext.Provider value={{ user, setUser, fetchingUser }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        setUser,
+        fetchingUser,
+        isLoading,
+        error,
+        message,
+        signup,
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
