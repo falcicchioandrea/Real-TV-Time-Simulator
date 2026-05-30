@@ -6,11 +6,19 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [localError, setlocalError] = useState(""); // Stato per gestire errori locali (es. password non corrispondenti)
 
   const { signup, isLoading, error } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Impedisce il comportamento predefinito del form (ricaricare la pagina)
+
+    if (password !== confirmPassword) {
+      setlocalError("Le password non corrispondono!");
+      return;
+    }
+    setlocalError(null);
+
     try {
       await signup(username, email, password); // Chiama la funzione di registrazione dal context
       onClose(); // Chiude il modal dopo una registrazione riuscita
@@ -77,7 +85,10 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
             onChange={(e) => setConfirmPassword(e.target.value)} // Aggiorna lo stato della conferma password quando l'input cambia
             className="p-3 rounded-md bg-zinc-800 outline-none focus:ring-1 focus:ring-white text-white"
           />
-          {error && <p className="text-red-500 text-sm">{error}</p>}{" "}
+          {error ||
+            (localError && (
+              <p className="text-red-500 text-sm">{error || localError}</p>
+            ))}{" "}
           {/* Mostra il messaggio di errore se presente */}
           <button
             type="submit"
