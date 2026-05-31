@@ -6,7 +6,8 @@ import cors from "cors";
 
 dotenv.config(); // Carica le variabili d'ambiente dal file .env (DEVONO ESSERE CARICATE PRIMA)
 
-import userRouter from "./routes/routerUser.js" // ALTRO MODO-->const userRouter = require('./routes/routerUser.js') con "type": "commonjs"
+import userRouter from "./routers/routerUser.js" // ALTRO MODO-->const userRouter = require('./routes/routerUser.js') con "type": "commonjs"
+import favoriteRouter from "./routers/routerFavorite.js"
 
 const app = express(); // Crea un'app Express
 const PORT = process.env.PORT || 5000; // Definisce la porta su cui il server ascolterà
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/user-api', userRouter);
+app.use('favorite-api', favoriteRouter);
 
 app.listen(PORT, () => {
     connectToDB(); // Connette al database quando il server inizia ad ascoltare

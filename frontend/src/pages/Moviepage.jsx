@@ -4,12 +4,14 @@ import { Play, Heart } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react"; // componenti per far scorrere film ; Swiper è il contenitore principale che gestisce lo scorrimento, mentre SwiperSlide rappresenta ogni singolo elemento (in questo caso, ogni film) all'interno dello scorrimento.
 import "swiper/css"; // Importa gli stili CSS di base per il funzionamento di Swiper, che includono le regole necessarie per il layout e l'animazione dello scorrimento. Senza questa importazione, lo scorrimento potrebbe non funzionare correttamente o non essere visualizzato come previsto.
 import { Link } from "react-router";
+import { handleToggleFavorite } from "../../handles/handleFavorites";
 
 const Moviepage = () => {
   const { id } = useParams(); // useParams è un hook fornito da react-router-dom che consente di accedere ai parametri dinamici presenti nell'URL. In questo caso, viene utilizzato per estrarre l'id del film dalla URL, che è necessario per effettuare le richieste API e recuperare i dettagli del film specifico da visualizzare sulla pagina.
   const [movie, setMovie] = useState(null);
   const [trailerKey, setTrailerKey] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     const options = {
@@ -46,6 +48,16 @@ const Moviepage = () => {
         setTrailerKey(trailer?.key || null); // KEY --> identificatore univoco del video su YouTube, che viene utilizzato per costruire l'URL del trailer.
       })
       .catch((err) => console.error(err));
+
+      fetch("/user-api/fetch-user")
+        .then((res) => res.json())
+        .then((data) => {
+          // Se l'utente è loggato e l'array contiene l'id corrente
+          if (data.user && data.user.favoriteMovies?.includes(Number(id))) {
+            setIsFavorite(true);
+          }
+        })
+        .catch((err) => console.log("Utente non loggato"));
   }, [id]); // ogni volta che id cambia, vengono eseguite tutto lo useEffect
 
   if (!movie) {
@@ -98,8 +110,10 @@ const Moviepage = () => {
                 </button>
               </a>
             )}
-            <button className="flex items-center gap-2 font-semibold py-2 px-4 rounded-full text-sm border transition-colors cursor-pointer hover:bg-[#e6bf00]">
-              <Heart className={"*:w-5 h-5"} /> Add to Favorites
+            <button 
+              className="flex items-center gap-2 font-semibold py-2 px-4 rounded-full text-sm border transition-colors cursor-pointer ${isFavorite ? 'bg-red-600 border-red-600 hover:bg-red-700' : 'hover:bg-[#e6bf00]'}"
+              onClick={handleToggleFavorite}>
+              <Heart className={`w-5 h-5 ${isFavourite ? "fill-red-600 ì" : "" }`}/> Add to Favorites
             </button>
           </div>
         </div>
