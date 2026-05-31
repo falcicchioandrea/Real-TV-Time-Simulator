@@ -79,13 +79,6 @@ const Moviepage = () => {
           backgroundPosition: "center",
         }}
       >
-        {/* Movie image poster */}
-        <img
-          src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
-          className="relative z-10 shrink-0 rounded-lg shadow-lg w-48 hidden md:block"
-          alt={movie.title}
-        />
-
         <div className="relative z-10">
           <h1 className="text-4xl font-bold mb-2">{movie.title}</h1>
           <p className="text-gray-300 mb-2">
