@@ -4,7 +4,6 @@ import { Play, Heart, ListChevronsDownUpIcon } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react"; // componenti per far scorrere film ; Swiper è il contenitore principale che gestisce lo scorrimento, mentre SwiperSlide rappresenta ogni singolo elemento (in questo caso, ogni film) all'interno dello scorrimento.
 import "swiper/css"; // Importa gli stili CSS di base per il funzionamento di Swiper, che includono le regole necessarie per il layout e l'animazione dello scorrimento. Senza questa importazione, lo scorrimento potrebbe non funzionare correttamente o non essere visualizzato come previsto.
 import { Link } from "react-router";
-import { handleToggleFavorite } from "../../handles/handleFavorites";
 import { useAuth } from "../store/authContext";
 
 const Moviepage = () => {
@@ -12,8 +11,13 @@ const Moviepage = () => {
   const [movie, setMovie] = useState(null);
   const [trailerKey, setTrailerKey] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
-  const [isFavorite, setIsFavorite] = useState(false);
+
   const { user, toggleFavorite } = useAuth();     // Estraiamo l'utente loggato e la funzione setUser dal contesto globale
+
+
+  // 1. CORRETTO: Calcolo dinamico e derivato di isFavorite.
+  // Converte sia gli ID nell'array che l'ID dell'URL in stringhe per evitare conflitti di tipo (String vs Number)
+  const isFavorite = user?.favoriteMovies?.map(String).includes(String(id)) || false;
 
   useEffect(() => {
     const options = {
@@ -24,6 +28,12 @@ const Moviepage = () => {
           "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNjcwM2Q5YzZmY2ViMjg5Mzg4OTMwZTYzN2JkNDA2NCIsIm5iZiI6MTc3ODM0MjY3My43MTgwMDAyLCJzdWIiOiI2OWZmNWIxMWRkZTYwM2ZmNTg1NzI0MmEiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.Hs8GxHz2S_koJDHkWqSa9hOEdsGiQWKgv1XJlVOdC3k",
       },
     };
+
+    // Reset degli stati del film quando cambia l'ID (es. quando clicchi su un film consigliato)
+    setMovie(null);
+    setTrailerKey(null);
+    setRecommendations([]);
+
     fetch(`https://api.themoviedb.org/3/movie/${id}?language=en-US`, options)
       .then((res) => res.json())
       .then((res) => setMovie(res))
@@ -51,16 +61,6 @@ const Moviepage = () => {
       })
       .catch((err) => console.error(err));
   }, [id]); // ogni volta che id cambia, vengono eseguite tutto lo useEffect
-
-
-  useEffect(() => {
-    const listaPreferiti = user?.favoriteMovies || [];
-    if (user && listaPreferiti.includes(Number(id))) {
-      setIsFavorite(true);
-    } else {
-      setIsFavorite(false);
-    }
-  }, [user, id]); // Reagisce all'istante se l'utente cambia o aggiunge/rimuove un film
 
   if (!movie) {
     return (
@@ -113,9 +113,18 @@ const Moviepage = () => {
               </a>
             )}
             <button 
-              className="flex items-center gap-2 font-semibold py-2 px-4 rounded-full text-sm border transition-colors cursor-pointer ${isFavorite ? 'bg-red-600 border-red-600 hover:bg-red-700' : 'hover:bg-[#e6bf00]'}"
-              onClick={toggleFavorite}>
-              <Heart className={`w-5 h-5 ${isFavorite ? "fill-red-600" : "" }`}/> Add to Favorites
+              className={`flex items-center gap-2 bg-[#ffd400] hover:bg-[#e6bf00] text-black font-semibold py-2 px-4 rounded-full text-sm cursor-pointer ${
+                isFavorite 
+                  ? 'bg-red-600 border-red-600 text-white hover:bg-red-700' 
+                  : 'border-neutral-300 hover:bg-[#e6bf00] text-black'
+              }`}
+              onClick={()=>toggleFavorite(id)}
+            >
+              {/* Se è preferito coloriamo sia il bordo che il riempimento di bianco (visto lo sfondo rosso) */}
+              <Heart className={`w-5 h-5 ${isFavorite ? "fill-white stroke-white" : "stroke-current"}`}/> 
+              
+              {/* Ottimizzazione: Rendiamo dinamico anche il testo in base allo stato */}
+              {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
             </button>
           </div>
         </div>
