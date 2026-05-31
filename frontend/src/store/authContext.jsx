@@ -99,6 +99,9 @@ export function AuthProvider({ children }) {
   // (es. "Registrazione completata!"), oppure null.
   const [message, setMessage] = useState(null);
 
+  const [isLoginOpen, setIsLoginOpen] = useState(false);   // Controlla se la finestra di Login deve essere visibile sullo schermo
+  const [isSignupOpen, setIsSignupOpen] = useState(false); // Controlla se la finestra di Registrazione (Signup) deve essere visibile
+
   // ----------------------------------------------------------
   // FUNZIONE: fetchUser
   // ----------------------------------------------------------
@@ -150,6 +153,7 @@ export function AuthProvider({ children }) {
 
       // La registrazione è andata a buon fine:
       setUser(response.data.user); // salva i dati utente nello stato globale
+      setIsSignupOpen(false);
       setMessage(response.data.message); // salva il messaggio di successo
       setIsLoading(false);
     } catch (err) {
@@ -189,6 +193,7 @@ export function AuthProvider({ children }) {
       const response = await axios.post("/api/accedi", { username, password });
 
       setUser(response.data.user); // salva i dati utente nello stato globale
+      setIsLoginOpen(false)
       setMessage(response.data.message); // salva il messaggio di successo
       setIsLoading(false);
     } catch (err) {
@@ -233,7 +238,7 @@ export function AuthProvider({ children }) {
         err.response?.data?.message ||
           "Si è verificato un errore durante il logout.",
       );
-      throw err; // rilancia l'errore al componente chiamante
+      throw err; // rilancia l'errore al componente chiamante che si occuperà della grafica
     }
   };
 
@@ -245,6 +250,28 @@ export function AuthProvider({ children }) {
   // il messaggio sparisce non appena comincia a riscrivere.
   const clearError = () => setError(null);
 
+  // FUNZIONI: gestione finestre (Open / Close / Switch)
+  // ----------------------------------------------------------
+  const openLogin = () => {
+    setError(null);
+    setMessage(null);
+    setIsSignupOpen(false); // Chiude il signup se è aperto
+    setIsLoginOpen(true);   // Apre il login
+  };
+
+  const openSignup = () => {
+    setError(null);
+    setMessage(null);
+    setIsLoginOpen(false);   // Chiude il login se è aperto
+    setIsSignupOpen(true);  // Apre il signup
+  };
+
+  const closeAuth = () => {
+    setError(null);
+    setMessage(null);
+    setIsLoginOpen(false);
+    setIsSignupOpen(false);
+  };
   // ----------------------------------------------------------
   // EFFETTO: verifica sessione all'avvio
   // ----------------------------------------------------------
@@ -283,6 +310,11 @@ export function AuthProvider({ children }) {
         login, // funzione per autenticare un utente esistente
         logout, // funzione per terminare la sessione
         clearError, // funzione per azzerare il messaggio di errore
+        isLoginOpen,
+        isSignupOpen,
+        openLogin,
+        openSignup,
+        closeAuth
       }}
     >
       {/* "children" è tutto ciò che viene scritto dentro <AuthProvider>
