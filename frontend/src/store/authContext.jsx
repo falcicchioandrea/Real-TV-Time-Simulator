@@ -16,7 +16,7 @@
 // tutto — senza bisogno di props intermedie.
 // ============================================================
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, use } from "react";
 // createContext → crea il canale di comunicazione globale
 // useContext    → permette ai componenti di leggere dal canale
 // useState      → crea variabili di stato reattive (quando cambiano, React ri-renderizza)
@@ -272,6 +272,38 @@ export function AuthProvider({ children }) {
     setIsLoginOpen(false);
     setIsSignupOpen(false);
   };
+
+  // FUNZIONE: toggleFavorite  -_>Aggiunge o rimuove un film dai preferiti dell'utente corrente.
+  const toggleFavorite = async (movieId) => {
+    if (!user) {
+      setIsLoginOpen(true);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.post("/favorite-api/favouriteToggle", { movieId });
+
+      setUser({
+        username: user.username,
+        email: user.email,
+        password: user.password,
+        favoriteMovies: response.data.favoriteMovies, // o response.data.favoriteMovies a seconda del tuo backend
+      });
+
+      setIsLoading(false);
+    } catch (err) {
+      setIsLoading(false);
+      setError(
+        err.response?.data?.message ||
+          "Impossibile aggiornare i preferiti in questo momento.",
+      );
+      throw err; // Rilancia l'errore se un componente locale vuole gestirlo (es. mostrare un toast)
+    }
+  };
+
   // ----------------------------------------------------------
   // EFFETTO: verifica sessione all'avvio
   // ----------------------------------------------------------
@@ -314,7 +346,8 @@ export function AuthProvider({ children }) {
         isSignupOpen,
         openLogin,
         openSignup,
-        closeAuth
+        closeAuth,
+        toggleFavorite //LOGICA DEI PREFERITI GLOBALE
       }}
     >
       {/* "children" è tutto ciò che viene scritto dentro <AuthProvider>
