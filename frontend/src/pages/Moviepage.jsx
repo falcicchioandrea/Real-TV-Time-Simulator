@@ -1,10 +1,11 @@
 ﻿import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Play, Heart } from "lucide-react";
+import { useParams } from "react-router";
+import { Play, Heart, ListChevronsDownUpIcon } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react"; // componenti per far scorrere film ; Swiper è il contenitore principale che gestisce lo scorrimento, mentre SwiperSlide rappresenta ogni singolo elemento (in questo caso, ogni film) all'interno dello scorrimento.
 import "swiper/css"; // Importa gli stili CSS di base per il funzionamento di Swiper, che includono le regole necessarie per il layout e l'animazione dello scorrimento. Senza questa importazione, lo scorrimento potrebbe non funzionare correttamente o non essere visualizzato come previsto.
 import { Link } from "react-router";
 import { handleToggleFavorite } from "../../handles/handleFavorites";
+import { useAuth } from "../store/authContext";
 
 const Moviepage = () => {
   const { id } = useParams(); // useParams è un hook fornito da react-router-dom che consente di accedere ai parametri dinamici presenti nell'URL. In questo caso, viene utilizzato per estrarre l'id del film dalla URL, che è necessario per effettuare le richieste API e recuperare i dettagli del film specifico da visualizzare sulla pagina.
@@ -12,6 +13,7 @@ const Moviepage = () => {
   const [trailerKey, setTrailerKey] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
   const [isFavorite, setIsFavorite] = useState(false);
+  const { user, toggleFavorite } = useAuth();     // Estraiamo l'utente loggato e la funzione setUser dal contesto globale
 
   useEffect(() => {
     const options = {
@@ -48,17 +50,17 @@ const Moviepage = () => {
         setTrailerKey(trailer?.key || null); // KEY --> identificatore univoco del video su YouTube, che viene utilizzato per costruire l'URL del trailer.
       })
       .catch((err) => console.error(err));
-
-      fetch("/user-api/fetch-user")
-        .then((res) => res.json())
-        .then((data) => {
-          // Se l'utente è loggato e l'array contiene l'id corrente
-          if (data.user && data.user.favoriteMovies?.includes(Number(id))) {
-            setIsFavorite(true);
-          }
-        })
-        .catch((err) => console.log("Utente non loggato"));
   }, [id]); // ogni volta che id cambia, vengono eseguite tutto lo useEffect
+
+
+  useEffect(() => {
+    const listaPreferiti = user?.favoriteMovies || [];
+    if (user && listaPreferiti.includes(Number(id))) {
+      setIsFavorite(true);
+    } else {
+      setIsFavorite(false);
+    }
+  }, [user, id]); // Reagisce all'istante se l'utente cambia o aggiunge/rimuove un film
 
   if (!movie) {
     return (
@@ -112,8 +114,8 @@ const Moviepage = () => {
             )}
             <button 
               className="flex items-center gap-2 font-semibold py-2 px-4 rounded-full text-sm border transition-colors cursor-pointer ${isFavorite ? 'bg-red-600 border-red-600 hover:bg-red-700' : 'hover:bg-[#e6bf00]'}"
-              onClick={handleToggleFavorite}>
-              <Heart className={`w-5 h-5 ${isFavourite ? "fill-red-600 ì" : "" }`}/> Add to Favorites
+              onClick={toggleFavorite}>
+              <Heart className={`w-5 h-5 ${isFavorite ? "fill-red-600" : "" }`}/> Add to Favorites
             </button>
           </div>
         </div>
