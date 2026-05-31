@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../store/authContext.jsx";
+import { set } from "mongoose";
 
 const RegisterModal = () => {
   const [username, setUsername] = useState("");
@@ -11,9 +12,12 @@ const RegisterModal = () => {
   const { signup, isLoading, error, clearError, isSignupOpen, openSignup, openLogin, closeAuth } = useAuth();
 
   useEffect(() => {
-    // Pulisce il messaggio di errore quando il modal viene chiuso
+    // Pulisce il messaggio di errore e azzera i campi del form quando il modal viene chiuso
     if (!isSignupOpen) {
       clearError();
+      setUsername(""); 
+      setEmail("");    
+      setPassword(""); 
     }
   }, [isSignupOpen]);
 
