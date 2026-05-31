@@ -1,4 +1,3 @@
-import React from "react";
 import { CheckSquare, Eye, Bell, Search } from "lucide-react";
 
 const Hero = ({ onOpenRegisterModal }) => {

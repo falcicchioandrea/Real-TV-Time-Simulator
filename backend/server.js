@@ -2,6 +2,7 @@ import dotenv from "dotenv"; // Importa il modulo dotenv per gestire le variabil
 import express from "express"; // Importa il modulo Express: posso farlo solo se ho "type": "module" in package.json
 import { connectToDB } from "./config/db.js"; // Importa la funzione per connettersi al database
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 dotenv.config(); // Carica le variabili d'ambiente dal file .env (DEVONO ESSERE CARICATE PRIMA)
 
@@ -11,6 +12,10 @@ const app = express(); // Crea un'app Express
 const PORT = process.env.PORT || 5000; // Definisce la porta su cui il server ascolterà
 
 // Middlewares
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+}));
 app.use(express.json());
 app.use(cookieParser());
 

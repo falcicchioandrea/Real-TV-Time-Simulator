@@ -3,22 +3,22 @@ import { Swiper, SwiperSlide } from "swiper/react"; // componenti per far scorre
 import "swiper/css"; // Importa gli stili CSS di base per il funzionamento di Swiper, che includono le regole necessarie per il layout e l'animazione dello scorrimento. Senza questa importazione, lo scorrimento potrebbe non funzionare correttamente o non essere visualizzato come previsto.
 import { Link } from "react-router";
 
+const options = {
+  // Opzioni per la richiesta fetch e gli headers
+  method: "GET",
+  headers: {
+    accept: "application/json", // Indica che il client si aspetta una risposta in formato JSON dal server.
+    // Fornisce un token di autorizzazione per autenticare la richiesta al server. In questo caso, è un token JWT (JSON Web Token) che consente l'accesso alle risorse protette dell'API. Il token viene passato come stringa nell'intestazione Authorization, preceduto dalla parola "Bearer" per indicare il tipo di token utilizzato. SENZA questo token, la richiesta SAREBBE RIFIUTATA dal server (401 Unauthorized)
+    Authorization:
+      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNjcwM2Q5YzZmY2ViMjg5Mzg4OTMwZTYzN2JkNDA2NCIsIm5iZiI6MTc3ODM0MjY3My43MTgwMDAyLCJzdWIiOiI2OWZmNWIxMWRkZTYwM2ZmNTg1NzI0MmEiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.Hs8GxHz2S_koJDHkWqSa9hOEdsGiQWKgv1XJlVOdC3k",
+  },
+};
+
 const CardList = () => {
   const [nowPlaying, setNowPlaying] = useState([]);
   const [popular, setPopular] = useState([]);
   const [topRated, setTopRated] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
-
-  const options = {
-    // Opzioni per la richiesta fetch e gli headers
-    method: "GET",
-    headers: {
-      accept: "application/json", // Indica che il client si aspetta una risposta in formato JSON dal server.
-      // Fornisce un token di autorizzazione per autenticare la richiesta al server. In questo caso, è un token JWT (JSON Web Token) che consente l'accesso alle risorse protette dell'API. Il token viene passato come stringa nell'intestazione Authorization, preceduto dalla parola "Bearer" per indicare il tipo di token utilizzato. SENZA questo token, la richiesta SAREBBE RIFIUTATA dal server (401 Unauthorized)
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNjcwM2Q5YzZmY2ViMjg5Mzg4OTMwZTYzN2JkNDA2NCIsIm5iZiI6MTc3ODM0MjY3My43MTgwMDAyLCJzdWIiOiI2OWZmNWIxMWRkZTYwM2ZmNTg1NzI0MmEiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.Hs8GxHz2S_koJDHkWqSa9hOEdsGiQWKgv1XJlVOdC3k",
-    },
-  };
 
   useEffect(() => {
     fetch(

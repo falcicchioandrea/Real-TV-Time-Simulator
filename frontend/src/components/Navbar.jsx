@@ -2,18 +2,22 @@ import Logo from "../assets/logo.png";
 import { Search, User } from "lucide-react"; // Importa l'icona di ricerca da lucide-react come se fosse un componente React
 import { Link } from "react-router"; // Importa il componente Link da react-router per la navigazione tra le pagine
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../store/authContext.jsx";
 
 const Navbar = ({ onOpenLoginModal, onOpenRegisterModal }) => {
-  const id = 1; 
   const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const handleSearch = (e) => {
-    if (e.key === "Enter" && searchQuery.trim() !== "") {  // .trim() rimuove gli spazi bianchi all'inizio e alla fine della stringa, assicurandosi che la ricerca non venga eseguita se l'utente ha inserito solo spazi
+    if (e.key === "Enter" && searchQuery.trim() !== "") {
+      // .trim() rimuove gli spazi bianchi all'inizio e alla fine della stringa, assicurandosi che la ricerca non venga eseguita se l'utente ha inserito solo spazi
       navigate(`/search?q=${searchQuery.trim()}`); // Naviga alla pagina di ricerca con la query come parametro nella URL
     }
   };
   const resetFormValue = () => setSearchQuery("");
+
+  // Estrazione
+  const { user, logout } = useAuth();
 
   return (
     <>
@@ -42,26 +46,40 @@ const Navbar = ({ onOpenLoginModal, onOpenRegisterModal }) => {
           </div>
         </div>
         {/* Gruppo destro */}
-        <div className="flex items-center space-x-4 relative">
-          <Link to={`/profile/test1`}>
-            <button className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white">
-              <User size={20} />
+        {user ? (
+          // Cosa mostrare se l'utente è loggato
+          <div className="flex items-center space-x-4 relative">
+            <Link to={`/profile/${user.username}`}>
+              <button className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white flex items-center gap-2">
+                <User size={20} />
+                {user.username}
+              </button>
+            </Link>
+            <button
+              className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white"
+              onClick={logout}
+            >
+              Esci
             </button>
-          </Link>
-          <button
-            className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white"
-            onClick={() => onOpenLoginModal()}
-          >
-            Accedi
-          </button>
-          <span className="text-black/50">|</span>
-          <button
-            className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white"
-            onClick={() => onOpenRegisterModal()}
-          >
-            Registrati
-          </button>
-        </div>
+          </div>
+        ) : (
+          // Cosa mostrare se l'utente non è loggato
+          <div className="flex items-center space-x-4 relative">
+            <button
+              className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white"
+              onClick={() => onOpenLoginModal()}
+            >
+              Accedi
+            </button>
+            <span className="text-black/50">|</span>
+            <button
+              className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white"
+              onClick={() => onOpenRegisterModal()}
+            >
+              Registrati
+            </button>
+          </div>
+        )}
       </nav>
     </>
   );
