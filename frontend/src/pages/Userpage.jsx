@@ -44,7 +44,6 @@ const UserPage = () => {
         <Heart className="text-red-600 fill-red-600" size={24}></Heart>I miei
         film preferiti
       </h2>
-
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-4">
         {favFilms.map((item) => (
           <Link key={item.id} to={`/movie/${item.id}`}>
@@ -55,7 +54,7 @@ const UserPage = () => {
             />
             <h2 className="text-center pt-2 text-sm truncate">{item.title}</h2>
           </Link>
-        ))}
+        ))};
       </div>
     </div>
   );
