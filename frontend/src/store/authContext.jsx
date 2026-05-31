@@ -117,7 +117,7 @@ export function AuthProvider({ children }) {
     try {
       // GET /api/fetch-user: il backend legge il cookie di sessione
       // e restituisce i dati dell'utente se la sessione è valida
-      const response = await axios.get("/api/fetch-user");
+      const response = await axios.get("/user-api/fetch-user");
       setUser(response.data.user);
     } catch {
       // La richiesta fallisce → nessuna sessione attiva → utente non loggato
@@ -145,7 +145,7 @@ export function AuthProvider({ children }) {
       // POST /api/registrati: invia i dati di registrazione al backend.
       // La sintassi { username, email, password } è shorthand per
       // { username: username, email: email, password: password }
-      const response = await axios.post("/api/registrati", {
+      const response = await axios.post("/user-api/registrati", {
         username,
         email,
         password,
@@ -190,7 +190,7 @@ export function AuthProvider({ children }) {
     setError(null); // pulisce eventuali errori precedenti
     try {
       // POST /api/accedi: invia username e password al backend
-      const response = await axios.post("/api/accedi", { username, password });
+      const response = await axios.post("/user-api/accedi", { username, password });
 
       setUser(response.data.user); // salva i dati utente nello stato globale
       setIsLoginOpen(false)
@@ -221,7 +221,7 @@ export function AuthProvider({ children }) {
     setError(null);
     try {
       // POST /api/esci: il backend invalida il cookie di sessione
-      const response = await axios.post("/api/esci");
+      const response = await axios.post("/user-api/esci");
 
       // Usa il messaggio del backend se disponibile, altrimenti un fallback
       const message =
@@ -290,7 +290,7 @@ export function AuthProvider({ children }) {
         username: user.username,
         email: user.email,
         password: user.password,
-        favoriteMovies: response.data.favoriteMovies, // o response.data.favoriteMovies a seconda del tuo backend
+        favoriteMovies: response.data.favoriteMovies
       });
 
       setIsLoading(false);
