@@ -34,7 +34,15 @@ io.on('connection', socket => {   // Quando un client si connette, il server che
         }
         visualizzatoriFilm[idFilm]++; // Incrementa il contatore degli utenti che visualizzano quel film
         io.to(idFilm).emit('aggiorna_contatore', visualizzatoriFilm[idFilm]);  // Invia a tutti i client nella stanza del film l'aggiornamento del contatore in tempo reale
-    })
+    });
+    socket.on('esci_film', (idFilm) => {  // Quando un client esce da un film, il contatore deve essere decrementato
+        if (visualizzatoriFilm[idFilm]) {
+            visualizzatoriFilm[idFilm]--; // Decrementa il contatore degli utenti che visualizzano quel film
+            io.to(idFilm).emit('aggiorna_contatore', visualizzatoriFilm[idFilm]); // Invia a tutti i client nella stanza del film l'aggiornamento del contatore in tempo reale      
+        }
+    socket.leave(idFilm); // Il client lascia la stanza del film
+    stanzaCorrente = null; // Ritorna sulla Homepage o fa il logout, quindi non è più in una stanza specifica
+    });
 })
 
 // Middlewares
