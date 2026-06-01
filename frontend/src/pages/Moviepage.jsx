@@ -80,6 +80,23 @@ const Moviepage = () => {
         .catch((err) => console.log("Utente non loggato"));
   }, [id]); // ogni volta che id cambia, vengono eseguite tutto lo useEffect
 
+   useEffect(() => {
+    // 1. Diciamo al server che siamo entrati nella pagina di questo film
+    socket.emit('entra_film', id);
+
+    // 2. Rimaniamo in ascolto del contatore aggiornato inviato dal server
+    socket.on('aggiorna_contatore', (valoreAggiornato) => {
+    setVisualizzatori(valoreAggiornato);
+
+    // 3. Quando usciamo dalla pagina, diciamo al server che siamo usciti
+    return () => {
+      socket.emit('esci_film', id);
+     socket.off('aggiorna_contatore');
+    };
+  });
+    
+}, [id]); 
+
   if (!movie) {
     return (
       <div className="flex items-center justify-center h-screen">
