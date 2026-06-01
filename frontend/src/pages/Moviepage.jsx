@@ -4,14 +4,21 @@ import { Play, Heart, ListChevronsDownUpIcon } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react"; // componenti per far scorrere film ; Swiper è il contenitore principale che gestisce lo scorrimento, mentre SwiperSlide rappresenta ogni singolo elemento (in questo caso, ogni film) all'interno dello scorrimento.
 import "swiper/css"; // Importa gli stili CSS di base per il funzionamento di Swiper, che includono le regole necessarie per il layout e l'animazione dello scorrimento. Senza questa importazione, lo scorrimento potrebbe non funzionare correttamente o non essere visualizzato come previsto.
 import { Link } from "react-router";
-
+import { io } from "socket.io-client";
 import { useAuth } from "../store/authContext";
+
+const socket = io("http://localhost:5000"); // Viene effettuato un HANDSHAKE con il server Socket.IO in ascolto su http://localhost:5000,
+// stabilendo una connessione WebSocket che consente la comunicazione in tempo reale tra il client e il server. 
+// Questa connessione è essenziale per implementare funzionalità come l'aggiornamento in tempo reale del numero di visualizzatori di un film, 
+// poiché permette al client di inviare e ricevere eventi senza dover effettuare richieste HTTP tradizionali.
+// Deve essere fatto FUORI dal componente Moviepage per evitare di creare una connessione ogni volta che il componente viene aggiornato
 
 const Moviepage = () => {
   const { id } = useParams(); // useParams è un hook fornito da react-router-dom che consente di accedere ai parametri dinamici presenti nell'URL. In questo caso, viene utilizzato per estrarre l'id del film dalla URL, che è necessario per effettuare le richieste API e recuperare i dettagli del film specifico da visualizzare sulla pagina.
   const [movie, setMovie] = useState(null);
   const [trailerKey, setTrailerKey] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
+  const [visualizzatori, setVisualizzatori] = useState(1); // Lo metto ad 1 perché almeno l'utente che sta visualizzando è attivo
 
   const { user, toggleFavorite } = useAuth();     // Estraiamo l'utente loggato e la funzione setUser dal contesto globale
 
