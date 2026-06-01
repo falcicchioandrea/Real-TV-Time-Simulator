@@ -8,7 +8,7 @@ import { io } from "socket.io-client";
 import { useAuth } from "../store/authContext";
 import { Eye } from "lucide-react";
 
-const socket = io("http://localhost:5000"); // Viene effettuato un HANDSHAKE con il server Socket.IO in ascolto su http://localhost:5000,
+const socket = io("https://real-tv-time-simulator-1.onrender.com"); // Viene effettuato un HANDSHAKE con il server Socket.IO in ascolto su http://localhost:5000,
 // stabilendo una connessione WebSocket che consente la comunicazione in tempo reale tra il client e il server. 
 // Questa connessione è essenziale per implementare funzionalità come l'aggiornamento in tempo reale del numero di visualizzatori di un film, 
 // poiché permette al client di inviare e ricevere eventi senza dover effettuare richieste HTTP tradizionali.
