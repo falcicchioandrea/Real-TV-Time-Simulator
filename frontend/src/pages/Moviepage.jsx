@@ -19,7 +19,7 @@ const Moviepage = () => {
   const [movie, setMovie] = useState(null);
   const [trailerKey, setTrailerKey] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
-  const [visualizzatori, setVisualizzatori] = useState(1); // Lo metto ad 1 perché almeno l'utente che sta visualizzando è attivo
+  const [visualizzatori, setVisualizzatori] = useState(0); 
 
   const { user, toggleFavorite } = useAuth();     // Estraiamo l'utente loggato e la funzione setUser dal contesto globale
 
@@ -88,14 +88,13 @@ const Moviepage = () => {
     // 2. Rimaniamo in ascolto del contatore aggiornato inviato dal server
     socket.on('aggiorna_contatore', (valoreAggiornato) => {
     setVisualizzatori(valoreAggiornato);
+    });
 
     // 3. Quando usciamo dalla pagina, diciamo al server che siamo usciti
     return () => {
       socket.emit('esci_film', id);
      socket.off('aggiorna_contatore');
     };
-  });
-    
 }, [id]); 
 
   if (!movie) {

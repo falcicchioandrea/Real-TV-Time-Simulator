@@ -35,6 +35,7 @@ io.on('connection', socket => {   // Quando un client si connette, il server che
             visualizzatoriFilm[idFilm] = 0;
         }
         visualizzatoriFilm[idFilm]++; // Incrementa il contatore degli utenti che visualizzano quel film
+
         io.to(idFilm).emit('aggiorna_contatore', visualizzatoriFilm[idFilm]);  // Invia a tutti i client nella stanza del film l'aggiornamento del contatore in tempo reale
     });
 
@@ -108,7 +109,9 @@ app.use('/user-api', userRouter);
 app.use('/favorite-api', favoriteRouter);
 
 
-app.listen(PORT, () => {
+// CORREZIONE STRUTTURALE: Avviamo 'server' e non 'app'.
+// In questo modo sia le rotte Express che i WebSocket di Socket.io si accendono insieme sulla porta 5000.
+server.listen(PORT, () => {
     connectToDB(); // Connette al database quando il server inizia ad ascoltare
     console.log(`Il server è in ascolto sulla porta: ${PORT}`); // Avvia il server e stampa un messaggio di conferma
 })
