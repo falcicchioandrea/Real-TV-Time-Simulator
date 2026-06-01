@@ -60,6 +60,7 @@ app.get('/', (req, res) => {
 app.use('/user-api', userRouter);
 app.use('/favorite-api', favoriteRouter);
 
+
 app.listen(PORT, () => {
     connectToDB(); // Connette al database quando il server inizia ad ascoltare
     console.log(`Il server è in ascolto sulla porta: ${PORT}`); // Avvia il server e stampa un messaggio di conferma

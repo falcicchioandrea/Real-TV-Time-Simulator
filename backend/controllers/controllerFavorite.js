@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 
 export const favoriteToggle = async (req,res)=>{
+
     const {token} = req.cookies;
     const {movieId} = req.body;
 

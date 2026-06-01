@@ -4,6 +4,7 @@ import { Play, Heart, ListChevronsDownUpIcon } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react"; // componenti per far scorrere film ; Swiper è il contenitore principale che gestisce lo scorrimento, mentre SwiperSlide rappresenta ogni singolo elemento (in questo caso, ogni film) all'interno dello scorrimento.
 import "swiper/css"; // Importa gli stili CSS di base per il funzionamento di Swiper, che includono le regole necessarie per il layout e l'animazione dello scorrimento. Senza questa importazione, lo scorrimento potrebbe non funzionare correttamente o non essere visualizzato come previsto.
 import { Link } from "react-router";
+
 import { useAuth } from "../store/authContext";
 
 const Moviepage = () => {
@@ -11,6 +12,7 @@ const Moviepage = () => {
   const [movie, setMovie] = useState(null);
   const [trailerKey, setTrailerKey] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const { user, toggleFavorite } = useAuth();     // Estraiamo l'utente loggato e la funzione setUser dal contesto globale
 
@@ -60,6 +62,16 @@ const Moviepage = () => {
         setTrailerKey(trailer?.key || null); // KEY --> identificatore univoco del video su YouTube, che viene utilizzato per costruire l'URL del trailer.
       })
       .catch((err) => console.error(err));
+
+      fetch("/user-api/fetch-user")
+        .then((res) => res.json())
+        .then((data) => {
+          // Se l'utente è loggato e l'array contiene l'id corrente
+          if (data.user && data.user.favoriteMovies?.includes(Number(id))) {
+            setIsFavorite(true);
+          }
+        })
+        .catch((err) => console.log("Utente non loggato"));
   }, [id]); // ogni volta che id cambia, vengono eseguite tutto lo useEffect
 
   if (!movie) {
