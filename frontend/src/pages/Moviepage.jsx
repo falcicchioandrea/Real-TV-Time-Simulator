@@ -6,6 +6,7 @@ import "swiper/css"; // Importa gli stili CSS di base per il funzionamento di Sw
 import { Link } from "react-router";
 import { io } from "socket.io-client";
 import { useAuth } from "../store/authContext";
+import { Eye } from "lucide-react";
 
 const socket = io("http://localhost:5000"); // Viene effettuato un HANDSHAKE con il server Socket.IO in ascolto su http://localhost:5000,
 // stabilendo una connessione WebSocket che consente la comunicazione in tempo reale tra il client e il server. 
@@ -133,6 +134,13 @@ const Moviepage = () => {
               </span>
             ))}
           </p>
+          {/* BADGE IN TEMPO REALE */}
+          <div className="inline-flex items-center gap-2 rounded-full font-semibold">
+            <Eye className="w-5 h-5" />
+            <span>
+              {visualizzatori} {visualizzatori === 1 ? 'utente lo sta' : 'utenti lo stanno'} guardando ora
+            </span>
+          </div>
           <p className="text-gray-300 max-w-2xl mb-4">{movie.overview}</p>
           <div className="flex gap-3">
             {trailerKey && (

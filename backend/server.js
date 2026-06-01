@@ -88,7 +88,7 @@ app.use(cors({
 //
 // 3. Il browser abbassa le difese e permette all'interfaccia utente (React) 
 // di ricevere, leggere e visualizzare i dati elaborati dal server. 
-    origin: "http://localhost:5174", 
+    origin: ["http://localhost:5173", "http://localhost:5174"],
 
     // 2. Il server inserisce l'header "Access-Control-Allow-Credentials".
     // Permette lo scambio bidirezionale dei cookie di sessione (sia in lettura -->server può leggere cookie del browser  che in scrittura--> server può allegare cookie e inviarlo al browser) 
