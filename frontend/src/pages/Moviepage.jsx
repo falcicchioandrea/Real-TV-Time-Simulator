@@ -12,7 +12,6 @@ const Moviepage = () => {
   const [movie, setMovie] = useState(null);
   const [trailerKey, setTrailerKey] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
-  const [isFavorite, setIsFavorite] = useState(false);
 
   const { user, toggleFavorite } = useAuth();     // Estraiamo l'utente loggato e la funzione setUser dal contesto globale
 

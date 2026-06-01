@@ -16,13 +16,14 @@
 // tutto — senza bisogno di props intermedie.
 // ============================================================
 
-import { createContext, useContext, useState, useEffect, use } from "react";
+import { createContext, useContext, useState, useEffect} from "react";
 // createContext → crea il canale di comunicazione globale
 // useContext    → permette ai componenti di leggere dal canale
 // useState      → crea variabili di stato reattive (quando cambiano, React ri-renderizza)
 // useEffect     → esegue codice in risposta a eventi del ciclo di vita del componente
 
 import axios from "axios";
+import { useNavigate } from "react-router";
 // Axios è una libreria per fare richieste HTTP (alternativa a fetch).
 // Aggiunge funzionalità utili come la gestione automatica degli errori
 // e la possibilità di impostare un baseURL comune per tutte le richieste.
