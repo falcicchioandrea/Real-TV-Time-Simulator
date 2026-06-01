@@ -1,10 +1,10 @@
 import Hero from "../components/Hero";
 import CardList from "../components/CardList";
 
-const Homepage = ({ onOpenRegisterModal }) => {
+const Homepage = () => {
   return (
     <div>
-      <Hero onOpenRegisterModal={onOpenRegisterModal} />
+      <Hero/>
       <CardList />
     </div>
   );

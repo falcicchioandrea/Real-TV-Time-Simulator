@@ -14,18 +14,39 @@ const options = {
 
 const UserPage = () => {
   const [favFilms, setFavFilms] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   const { user } = useAuth(); // Ottieni l'utente autenticato dal contesto
 
   useEffect(() => {
-    fetch(
-      "https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1",
-      options,
-    )
-      .then((res) => res.json())
-      .then((res) => setFavFilms(res.results))
-      .catch((err) => console.error(err));
-  }, []); // L'array vuoto qui è vitale per bloccare il loop infinito!
+    // Se l'utente non è loggato o non ha film preferiti salvati, svuota lo stato e interrompi
+    if (!user || !user.favoriteMovies || user.favoriteMovies.length === 0) {
+      setFavFilms([]);
+      return;
+    }
+
+    const fetchAllFavorites = async () => { // SI POTREBBE PENSARE ANCHE DI GESTIRE TUTTO LATO BACKEND facendo una sola chiamata api al backend
+      setLoading(true);
+      try {
+        const listaFilmElaborati = [];
+        
+        for (const id of user.favoriteMovies) {
+          const res = await fetch(`https://api.themoviedb.org/3/movie/${id}?language=en-US`, options);
+          const datiFilm = await res.json();
+          
+          // Aggiungiamo il singolo film all'array locale
+          listaFilmElaborati.push(datiFilm);
+        }
+        // Alla fine del ciclo, salviamo tutto nello stato
+        setFavFilms(listaFilmElaborati);
+      } catch (err) {
+        console.error("Errore nel recupero:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllFavorites();
+  }, [user]); // L'array vuoto qui è vitale per bloccare il loop infinito!
 
   return (
     <div className="min-h-screen bg-black text-white p-5">
@@ -54,7 +75,7 @@ const UserPage = () => {
             />
             <h2 className="text-center pt-2 text-sm truncate">{item.title}</h2>
           </Link>
-        ))};
+        ))}
       </div>
     </div>
   );

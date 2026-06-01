@@ -16,13 +16,14 @@
 // tutto — senza bisogno di props intermedie.
 // ============================================================
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect} from "react";
 // createContext → crea il canale di comunicazione globale
 // useContext    → permette ai componenti di leggere dal canale
 // useState      → crea variabili di stato reattive (quando cambiano, React ri-renderizza)
 // useEffect     → esegue codice in risposta a eventi del ciclo di vita del componente
 
 import axios from "axios";
+import { useNavigate } from "react-router";
 // Axios è una libreria per fare richieste HTTP (alternativa a fetch).
 // Aggiunge funzionalità utili come la gestione automatica degli errori
 // e la possibilità di impostare un baseURL comune per tutte le richieste.
@@ -99,6 +100,9 @@ export function AuthProvider({ children }) {
   // (es. "Registrazione completata!"), oppure null.
   const [message, setMessage] = useState(null);
 
+  const [isLoginOpen, setIsLoginOpen] = useState(false);   // Controlla se la finestra di Login deve essere visibile sullo schermo
+  const [isSignupOpen, setIsSignupOpen] = useState(false); // Controlla se la finestra di Registrazione (Signup) deve essere visibile
+
   // ----------------------------------------------------------
   // FUNZIONE: fetchUser
   // ----------------------------------------------------------
@@ -114,7 +118,7 @@ export function AuthProvider({ children }) {
     try {
       // GET /api/fetch-user: il backend legge il cookie di sessione
       // e restituisce i dati dell'utente se la sessione è valida
-      const response = await axios.get("/api/fetch-user");
+      const response = await axios.get("/user-api/fetch-user");
       setUser(response.data.user);
     } catch {
       // La richiesta fallisce → nessuna sessione attiva → utente non loggato
@@ -142,7 +146,7 @@ export function AuthProvider({ children }) {
       // POST /api/registrati: invia i dati di registrazione al backend.
       // La sintassi { username, email, password } è shorthand per
       // { username: username, email: email, password: password }
-      const response = await axios.post("/api/registrati", {
+      const response = await axios.post("/user-api/registrati", {
         username,
         email,
         password,
@@ -150,6 +154,7 @@ export function AuthProvider({ children }) {
 
       // La registrazione è andata a buon fine:
       setUser(response.data.user); // salva i dati utente nello stato globale
+      setIsSignupOpen(false);
       setMessage(response.data.message); // salva il messaggio di successo
       setIsLoading(false);
     } catch (err) {
@@ -186,9 +191,10 @@ export function AuthProvider({ children }) {
     setError(null); // pulisce eventuali errori precedenti
     try {
       // POST /api/accedi: invia username e password al backend
-      const response = await axios.post("/api/accedi", { username, password });
+      const response = await axios.post("/user-api/accedi", { username, password });
 
       setUser(response.data.user); // salva i dati utente nello stato globale
+      setIsLoginOpen(false)
       setMessage(response.data.message); // salva il messaggio di successo
       setIsLoading(false);
     } catch (err) {
@@ -216,7 +222,7 @@ export function AuthProvider({ children }) {
     setError(null);
     try {
       // POST /api/esci: il backend invalida il cookie di sessione
-      const response = await axios.post("/api/esci");
+      const response = await axios.post("/user-api/esci");
 
       // Usa il messaggio del backend se disponibile, altrimenti un fallback
       const message =
@@ -233,7 +239,7 @@ export function AuthProvider({ children }) {
         err.response?.data?.message ||
           "Si è verificato un errore durante il logout.",
       );
-      throw err; // rilancia l'errore al componente chiamante
+      throw err; // rilancia l'errore al componente chiamante che si occuperà della grafica
     }
   };
 
@@ -244,6 +250,60 @@ export function AuthProvider({ children }) {
   // Utile quando l'utente inizia a correggere un campo dopo un errore:
   // il messaggio sparisce non appena comincia a riscrivere.
   const clearError = () => setError(null);
+
+  // FUNZIONI: gestione finestre (Open / Close / Switch)
+  // ----------------------------------------------------------
+  const openLogin = () => {
+    setError(null);
+    setMessage(null);
+    setIsSignupOpen(false); // Chiude il signup se è aperto
+    setIsLoginOpen(true);   // Apre il login
+  };
+
+  const openSignup = () => {
+    setError(null);
+    setMessage(null);
+    setIsLoginOpen(false);   // Chiude il login se è aperto
+    setIsSignupOpen(true);  // Apre il signup
+  };
+
+  const closeAuth = () => {
+    setError(null);
+    setMessage(null);
+    setIsLoginOpen(false);
+    setIsSignupOpen(false);
+  };
+
+  // FUNZIONE: toggleFavorite  -_>Aggiunge o rimuove un film dai preferiti dell'utente corrente.
+  const toggleFavorite = async (movieId) => {
+    if (!user) {
+      setIsLoginOpen(true);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.post("/favorite-api/favouriteToggle", { movieId });
+
+      setUser({
+        username: user.username,
+        email: user.email,
+        password: user.password,
+        favoriteMovies: response.data.favoriteMovies
+      });
+
+      setIsLoading(false);
+    } catch (err) {
+      setIsLoading(false);
+      setError(
+        err.response?.data?.message ||
+          "Impossibile aggiornare i preferiti in questo momento.",
+      );
+      throw err; // Rilancia l'errore se un componente locale vuole gestirlo (es. mostrare un toast)
+    }
+  };
 
   // ----------------------------------------------------------
   // EFFETTO: verifica sessione all'avvio
@@ -283,6 +343,12 @@ export function AuthProvider({ children }) {
         login, // funzione per autenticare un utente esistente
         logout, // funzione per terminare la sessione
         clearError, // funzione per azzerare il messaggio di errore
+        isLoginOpen,
+        isSignupOpen,
+        openLogin,
+        openSignup,
+        closeAuth,
+        toggleFavorite //LOGICA DEI PREFERITI GLOBALE
       }}
     >
       {/* "children" è tutto ciò che viene scritto dentro <AuthProvider>

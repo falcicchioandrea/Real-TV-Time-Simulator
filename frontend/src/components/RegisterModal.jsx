@@ -1,25 +1,29 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../store/authContext.jsx";
 
-const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
+const RegisterModal = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [localError, setlocalError] = useState(""); // Stato per gestire errori locali (es. password non corrispondenti)
 
-  const { signup, isLoading, error, clearError } = useAuth();
+  const { signup, isLoading, error, clearError, isSignupOpen, openSignup, openLogin, closeAuth } = useAuth();
 
   useEffect(() => {
-    // Pulisce il messaggio di errore quando il modal viene chiuso
-    if (!isOpen) {
+    // Pulisce il messaggio di errore e azzera i campi del form quando il modal viene chiuso
+    if (!isSignupOpen) {
       clearError();
+      setlocalError("");
+      setUsername(""); 
+      setEmail("");    
+      setPassword(""); 
+      setConfirmPassword("")
     }
-  }, [isOpen]);
+  }, [isSignupOpen]);
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Impedisce il comportamento predefinito del form (ricaricare la pagina)
-
     if (password !== confirmPassword) {
       setlocalError("Le password non corrispondono!");
       return;
@@ -28,14 +32,14 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
 
     try {
       await signup(username, email, password); // Chiama la funzione di registrazione dal context
-      onClose(); // Chiude il modal dopo una registrazione riuscita
+      closeAuth(); // Chiude il modal dopo una registrazione riuscita
     } catch {
-      // L'errore viene gestito altrove
+      // L'errore viene gestito altrove (nella funzione sign up nel auth context)
     }
   };
 
   // Se isOpen è falso, non viene visualizzata interfaccia Login
-  if (!isOpen) return null;
+  if (!isSignupOpen) return null;
 
   console.log(
     "Username: ",
@@ -53,7 +57,7 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
     <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 flex items-center justify-center z-50">
       <div className="bg-zinc-900 m-4 w-96 h-auto p-8 rounded-2xl relative">
         <button
-          onClick={onClose}
+          onClick={closeAuth}
           className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition cursor-pointer"
         >
           X
@@ -111,7 +115,7 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
         <p className="text-gray-400 text-sm mt-2 text-center">
           Hai già un account?&nbsp;
           <span
-            onClick={onSwitchToLogin}
+            onClick={openLogin}
             className="text-[#ffd400] font-semibold cursor-pointer hover:underline"
           >
             Accedi

@@ -2,17 +2,14 @@ import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-
-
 export const registrati = async (req, res) => {
     const { username, email, password } = req.body;
 
     try { 
         
         // 1. Invio dati richiesti
-
         if(!username || !email || !password){ 
-            throw new Error("Tutti i campi sono richiesti!")
+            return res.status(400).json({ message: "Tutti i campi sono richiesti!" });
         }
 
         // 2. Credenziali non disponibili
@@ -82,7 +79,7 @@ export const accedi = async (req, res) => {
             return res.status(400).json({message: "Credenziali non valide."})
         }
 
-        const isPasswordValid = await bcryptjs.compareSync(
+        const isPasswordValid = await bcryptjs.compare( 
             password, 
             userDoc.password
         );

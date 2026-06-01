@@ -1,6 +1,10 @@
 import { CheckSquare, Eye, Bell, Search } from "lucide-react";
+import { useAuth } from "../store/authContext";
 
-const Hero = ({ onOpenRegisterModal }) => {
+const Hero = () => {
+
+  const {openSignup, user} = useAuth();
+
   return (
     <div className="relative w-full h-125 bg-[#0d0d0d]">
       <div>
@@ -22,12 +26,14 @@ const Hero = ({ onOpenRegisterModal }) => {
             <Search size={18} /> Scopri cosa guardare adesso!
           </p>
         </div>
+        {!user && (
         <button
           className="absolute cursor-pointer bottom-20 left-15 bg-[#ffd400] text-black font-bold py-4 px-10 rounded-2xl hover:bg-[#e6bf00]"
-          onClick={onOpenRegisterModal}
+          onClick={openSignup}
         >
           REGISTRATI GRATUITAMENTE
         </button>
+        )}
       </div>
     </div>
   );

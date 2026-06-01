@@ -1,31 +1,33 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../store/authContext.jsx";
 
-const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
+const LoginModal = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   // Estrazione delle funzioni dal context
-  const { login, isLoading, error, clearError } = useAuth();
+  const { login, isLoading, error, clearError, isLoginOpen, openSignup, openLogin, closeAuth } = useAuth();
 
   useEffect(() => {
-    // Pulisce il messaggio di errore quando il modal viene chiuso
-    if (!isOpen) {
+// Pulisce il messaggio di errore e svuota i campi di testo quando il modal viene chiuso
+    if (!isLoginOpen) {
       clearError();
+      setUsername(""); 
+      setPassword(""); 
     }
-  }, [isOpen]);
+  }, [isLoginOpen]);
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Impedisce il comportamento predefinito del form (ricaricare la pagina)
     try {
       await login(username, password); // Chiama la funzione di login dal context
-      onClose(); // Chiude il modal dopo un login riuscito
+      closeAuth(); // Chiude il modal dopo un login riuscito
     } catch {
       // L'errore viene gestito altrove
     }
   };
 
   // Se isOpen è falso, non viene visualizzata interfaccia Login
-  if (!isOpen) return null;
+  if (!isLoginOpen) return null;
 
   console.log("Username: ", username, "Password: ", password);
 
@@ -34,7 +36,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
     <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 flex items-center justify-center z-50">
       <div className="bg-zinc-900 m-4 w-96 h-auto p-8 rounded-2xl relative">
         <button
-          onClick={onClose}
+          onClick={closeAuth}
           className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition cursor-pointer"
         >
           X
@@ -76,7 +78,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
           Non hai un account?&nbsp;{" "}
           {/* &nbsp; --> è un'entità HTML che rappresenta uno spazio non interruzione (andare a capo), utilizzata per aggiungere spazi tra gli elementi senza permettere l'interruzione di linea.*/}
           <span
-            onClick={onSwitchToRegister}
+            onClick={openSignup}
             className="text-[#ffd400] font-semibold cursor-pointer hover:underline "
           >
             Registrati
