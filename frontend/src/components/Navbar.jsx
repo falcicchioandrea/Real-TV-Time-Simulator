@@ -20,6 +20,19 @@ const Navbar = () => {
   // Estrazione
   const { user, logout, openSignup, openLogin} = useAuth();
 
+  // FUNZIONE/HANDLE: Gestisce il click sul pulsante Esci
+  const handleLogout = async () => {
+    try {
+      // 1. Aspettiamo che il context distrugga la sessione sul backend e svuoti lo stato 'user'
+      await logout(); 
+      // 2. Una volta completato il logout, reindirizziamo l'utente alla Home Page
+      navigate("/"); 
+    } catch (err) {
+      // L'errore è già salvato nel context, ma facciamo un log per il debugging locale
+      console.error("Errore durante il reindirizzamento post-logout:", err.message);
+    }
+  };
+
   return (
     <>
       <nav className="relative z-50 bg-[#ffd400] text-black flex justify-between items-center p-4 h-20 text-sm md:text-[15px] font-medium text-nowrap">
@@ -57,7 +70,7 @@ const Navbar = () => {
             </Link>
             <button
               className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white"
-              onClick={logout}
+              onClick={handleLogout}
             >
               Esci
             </button>
