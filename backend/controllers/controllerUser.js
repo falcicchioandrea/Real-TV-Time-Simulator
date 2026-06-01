@@ -54,7 +54,7 @@ export const registrati = async (req, res) => {
             res.cookie("token", token, {
                 httpOnly: true, 
                 secure: process.env.NODE_ENV === "production",
-                sameSite: "strict",
+                sameSite: "none", // Permette l'invio del cookie anche in contesti cross-origin (es. localhost:5173 che fa richieste a localhost:5000)
             })
         }
 
