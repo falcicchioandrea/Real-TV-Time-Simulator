@@ -17,7 +17,7 @@ const server = http.createServer(app); // Crea un server HTTP che avvolge l'app 
 
 const io = new Server(server, {   // Serve a creare un server WebSocket real-time con Socket.IO
     cors: {
-        origin: "https://real-tv-time-simulator.onrender.com",
+        origin: ["http://localhost:5173", "https://real-tv-time-simulator.onrender.com"], // Specifica le origini autorizzate per le connessioni WebSocket (devono corrispondere a quelle del middleware CORS di Express)
         credentials: true
     }
 });   
