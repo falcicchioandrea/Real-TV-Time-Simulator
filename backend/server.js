@@ -3,6 +3,8 @@ import express from "express"; // Importa il modulo Express: posso farlo solo se
 import { connectToDB } from "./config/db.js"; // Importa la funzione per connettersi al database
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import http from "http"; // Importa il modulo http per creare un server HTTP 
+import { Server } from "socket.io"; // Importa il modulo socket.io per la comunicazione in tempo reale 
 
 dotenv.config(); // Carica le variabili d'ambiente dal file .env (DEVONO ESSERE CARICATE PRIMA)
 
