@@ -25,7 +25,16 @@ const io = new Server(server, {   // Serve a creare un server WebSocket real-tim
 const visualizzatoriFilm = {}; // Oggetto per tenere traccia degli utenti che visualizzano ogni film
 
 io.on('connection', socket => {   // Quando un client si connette, il server che è in ascolto assegna un socket a quel client per monitorare le sue azioni
-
+    let stanzaCorrente = null;
+    socket.on('entra_film', idFilm => {
+        stanzaCorrente = idFilm;  // Assegna la stanza corrente al film che l'utente sta visualizzando
+        socket.join(idFilm); // Questa funzione è essenziale ed è nativa di SOCKET.IO
+        if (!visualizzatoriFilm[idFilm]) {
+            visualizzatoriFilm[idFilm] = 0;
+        }
+        visualizzatoriFilm[idFilm]++; // Incrementa il contatore degli utenti che visualizzano quel film
+        io.to(idFilm).emit('aggiorna_contatore', visualizzatoriFilm[idFilm]);  // Invia a tutti i client nella stanza del film l'aggiornamento del contatore in tempo reale
+    })
 })
 
 // Middlewares
