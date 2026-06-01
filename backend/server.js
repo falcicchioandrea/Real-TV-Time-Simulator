@@ -13,6 +13,20 @@ import favoriteRouter from "./routers/routerFavorite.js"
 
 const app = express(); // Crea un'app Express
 const PORT = process.env.PORT || 5000; // Definisce la porta su cui il server ascolterà
+const server = http.createServer(app); // Crea un server HTTP che avvolge l'app Express
+
+const io = new Server(server, {   // Serve a creare un server WebSocket real-time con Socket.IO
+    cors: {
+        origin: "http://localhost:5173",
+        credentials: true
+    }
+});   
+
+const visualizzatoriFilm = {}; // Oggetto per tenere traccia degli utenti che visualizzano ogni film
+
+io.on('connection', socket => {   // Quando un client si connette, il server che è in ascolto assegna un socket a quel client per monitorare le sue azioni
+
+})
 
 // Middlewares
 app.use(cors({
