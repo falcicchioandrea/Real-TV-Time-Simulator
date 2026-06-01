@@ -25,7 +25,9 @@ const io = new Server(server, {   // Serve a creare un server WebSocket real-tim
 const visualizzatoriFilm = {}; // Oggetto per tenere traccia degli utenti che visualizzano ogni film
 
 io.on('connection', socket => {   // Quando un client si connette, il server che è in ascolto assegna un socket a quel client per monitorare le sue azioni
+    
     let stanzaCorrente = null;
+
     socket.on('entra_film', idFilm => {
         stanzaCorrente = idFilm;  // Assegna la stanza corrente al film che l'utente sta visualizzando
         socket.join(idFilm); // Questa funzione è essenziale ed è nativa di SOCKET.IO
@@ -35,6 +37,7 @@ io.on('connection', socket => {   // Quando un client si connette, il server che
         visualizzatoriFilm[idFilm]++; // Incrementa il contatore degli utenti che visualizzano quel film
         io.to(idFilm).emit('aggiorna_contatore', visualizzatoriFilm[idFilm]);  // Invia a tutti i client nella stanza del film l'aggiornamento del contatore in tempo reale
     });
+
     socket.on('esci_film', (idFilm) => {  // Quando un client esce da un film, il contatore deve essere decrementato
         if (visualizzatoriFilm[idFilm]) {
             visualizzatoriFilm[idFilm]--; // Decrementa il contatore degli utenti che visualizzano quel film
@@ -42,6 +45,17 @@ io.on('connection', socket => {   // Quando un client si connette, il server che
         }
     socket.leave(idFilm); // Il client lascia la stanza del film
     stanzaCorrente = null; // Ritorna sulla Homepage o fa il logout, quindi non è più in una stanza specifica
+    });
+
+    socket.on('disconnect', () => {
+        if (stanzaCorrente && visualizzatoriFilm[stanzaCorrente]) {
+            visualizzatoriFilm[stanzaCorrente]--;  // Se l'utente prima di disconnettersi stava visualizzando la pagina di un film, allora decrementiamo
+            
+            if (visualizzatoriFilm[stanzaCorrente] < 0) {
+            visualizzatoriFilm[stanzaCorrente] = 0;
+        }
+            io.to(stanzaCorrente).emit('aggiorna_contatore', visualizzatoriFilm[stanzaCorrente]); // Aggiorna il contatore per tutti gli utenti della stanza
+        }
     });
 })
 
