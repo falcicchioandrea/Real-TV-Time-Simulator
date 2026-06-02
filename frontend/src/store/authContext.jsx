@@ -36,7 +36,7 @@ import { useNavigate } from "react-router";
 
 // Prefisso URL comune: invece di scrivere ogni volta
 // "https://real-tv-time-simulator.onrender.com/api/accedi", basterà "/api/accedi"
-axios.defaults.baseURL = "https://real-tv-time-simulator-1.onrender.com";
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 
 // Dice al browser di includere i cookie nelle richieste HTTP.
 // È obbligatorio per le sessioni: il server manda un cookie di sessione
