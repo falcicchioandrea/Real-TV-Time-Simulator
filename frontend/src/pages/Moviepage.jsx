@@ -109,7 +109,7 @@ const Moviepage = () => {
     <div className="min-h-screen bg-[#181818] text-white">
       {/* Hero section */}
       <div
-        className="relative h-[60vh] flex items-end p-8 gap-8"
+        className="relative h-[60vh] flex items-end md:p-8 px-2 py-8 mb-8 gap-8"
         style={{
           backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
           backgroundSize: "cover",
@@ -172,49 +172,60 @@ const Moviepage = () => {
         </div>
       </div>
       {/* Movie details section */}
-      <div className="p-8">
+      <div className="p-2 md:p-8"> 
         <h2 className="text-2xl font-bold mb-4">Dettagli del Film</h2>
-        <ul className="grid grid-rows-2 grid-flow-col gap-4 max-w-lg">
-          <li className="bg-gray-800 rounded-lg p-4">
-            <p className="text-gray-400 text-xs uppercase mb-1">Stato</p>
-            <p className="font-semibold">{movie.status}</p>
+        <ul className="flex flex-wrap">
+          
+          <li className="md:w-1/3 px-2 w-1/2 mb-4">
+            <div className="bg-gray-800 rounded-lg p-4">
+              <p className="text-gray-400 text-xs uppercase mb-1">Stato</p>
+              <p className="font-semibold">{movie.status}</p>
+            </div>
           </li>
-          <li className="bg-gray-800 rounded-lg p-4">
-            <p className="text-gray-400 text-xs uppercase mb-1">
-              Data di uscita
-            </p>
-            <p className="font-semibold">{movie.release_date}</p>
+          
+          <li className="md:w-1/3 px-2 w-1/2 mb-4">
+            <div className="bg-gray-800 rounded-lg p-4">
+              <p className="text-gray-400 text-xs uppercase mb-1">Data di uscita</p>
+              <p className="font-semibold">{movie.release_date}</p>
+            </div>
           </li>
-          <li className="bg-gray-800 rounded-lg p-4">
-            <p className="text-gray-400 text-xs uppercase mb-1">
-              Lingua originale
-            </p>
-            <p className="font-semibold">
-              {movie.original_language?.toUpperCase()}
-            </p>
+          
+          <li className="md:w-1/3 px-2 w-1/2 mb-4">
+            <div className="bg-gray-800 rounded-lg p-4">
+              <p className="text-gray-400 text-xs uppercase mb-1">Lingua originale</p>
+              <p className="font-semibold">{movie.original_language?.toUpperCase()}</p>
+            </div>
           </li>
-          <li className="bg-gray-800 rounded-lg p-4">
-            <p className="text-gray-400 text-xs uppercase mb-1">Tagline</p>
-            <p className="font-semibold italic">
-              {movie.tagline || "Nessuna tagline disponibile"}
-            </p>
+          
+          <li className="md:w-1/3 px-2 w-1/2 mb-4">
+            <div className="bg-gray-800 rounded-lg p-4">
+              <p className="text-gray-400 text-xs uppercase mb-1">Tagline</p>
+              <p className="font-semibold italic">{movie.tagline || "Nessuna tagline disponibile"}</p>
+            </div>
           </li>
-          <li className="bg-gray-800 rounded-lg p-4">
-            <p className="text-gray-400 text-xs uppercase mb-1">Budget</p>
-            <p className="font-semibold">
-              ${movie.budget?.toLocaleString() || "Nessun budget disponibile"}
-            </p>
+          
+          <li className="md:w-1/3 px-2 w-1/2 mb-4">
+            <div className="bg-gray-800 rounded-lg p-4">
+              <p className="text-gray-400 text-xs uppercase mb-1">Budget</p>
+              <p className="font-semibold">
+                ${movie.budget?.toLocaleString() || "Nessun budget disponibile"}
+              </p>
+            </div>
           </li>
-          <li className="bg-gray-800 rounded-lg p-4">
-            <p className="text-gray-400 text-xs uppercase mb-1">Incasso</p>
-            <p className="font-semibold">
-              ${movie.revenue?.toLocaleString() || "Nessun incasso disponibile"}
-            </p>
+          
+          <li className="md:w-1/3 px-2 w-1/2 mb-4">
+            <div className="bg-gray-800 rounded-lg p-4">
+              <p className="text-gray-400 text-xs uppercase mb-1">Incasso</p>
+              <p className="font-semibold">
+                ${movie.revenue?.toLocaleString() || "Nessun incasso disponibile"}
+              </p>
+            </div>
           </li>
+
         </ul>
       </div>
       {/* Recommendations section */}
-      <div className="p-8">
+      <div className="p-2 md:p-8">
         <h2 className="text-2xl font-bold mb-4">Film Consigliati</h2>
         <Swiper slidesPerView="auto" spaceBetween={16}>
           {" "}
