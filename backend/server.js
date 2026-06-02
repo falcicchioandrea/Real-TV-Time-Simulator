@@ -3,6 +3,8 @@ import express from "express"; // Importa il modulo Express: posso farlo solo se
 import { connectToDB } from "./config/db.js"; // Importa la funzione per connettersi al database
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import http from "http"; // Importa il modulo http per creare un server HTTP 
+import { Server } from "socket.io"; // Importa il modulo socket.io per la comunicazione in tempo reale 
 
 dotenv.config(); // Carica le variabili d'ambiente dal file .env (DEVONO ESSERE CARICATE PRIMA)
 
@@ -11,6 +13,52 @@ import favoriteRouter from "./routers/routerFavorite.js"
 
 const app = express(); // Crea un'app Express
 const PORT = process.env.PORT || 5000; // Definisce la porta su cui il server ascolterà
+const server = http.createServer(app); // Crea un server HTTP che avvolge l'app Express
+
+const io = new Server(server, {   // Serve a creare un server WebSocket real-time con Socket.IO
+    cors: {
+        origin: "http://localhost:5173",
+        credentials: true
+    }
+});   
+
+const visualizzatoriFilm = {}; // Oggetto per tenere traccia degli utenti che visualizzano ogni film
+
+io.on('connection', socket => {   // Quando un client si connette, il server che è in ascolto assegna un socket a quel client per monitorare le sue azioni
+    
+    let stanzaCorrente = null;
+
+    socket.on('entra_film', idFilm => {
+        stanzaCorrente = idFilm;  // Assegna la stanza corrente al film che l'utente sta visualizzando
+        socket.join(idFilm); // Questa funzione è essenziale ed è nativa di SOCKET.IO
+        if (!visualizzatoriFilm[idFilm]) {
+            visualizzatoriFilm[idFilm] = 0;
+        }
+        visualizzatoriFilm[idFilm]++; // Incrementa il contatore degli utenti che visualizzano quel film
+
+        io.to(idFilm).emit('aggiorna_contatore', visualizzatoriFilm[idFilm]);  // Invia a tutti i client nella stanza del film l'aggiornamento del contatore in tempo reale
+    });
+
+    socket.on('esci_film', (idFilm) => {  // Quando un client esce da un film, il contatore deve essere decrementato
+        if (visualizzatoriFilm[idFilm]) {
+            visualizzatoriFilm[idFilm]--; // Decrementa il contatore degli utenti che visualizzano quel film
+            io.to(idFilm).emit('aggiorna_contatore', visualizzatoriFilm[idFilm]); // Invia a tutti i client nella stanza del film l'aggiornamento del contatore in tempo reale      
+        }
+    socket.leave(idFilm); // Il client lascia la stanza del film
+    stanzaCorrente = null; // Ritorna sulla Homepage o fa il logout, quindi non è più in una stanza specifica
+    });
+
+    socket.on('disconnect', () => {
+        if (stanzaCorrente && visualizzatoriFilm[stanzaCorrente]) {
+            visualizzatoriFilm[stanzaCorrente]--;  // Se l'utente prima di disconnettersi stava visualizzando la pagina di un film, allora decrementiamo
+            
+            if (visualizzatoriFilm[stanzaCorrente] < 0) {
+            visualizzatoriFilm[stanzaCorrente] = 0;
+        }
+            io.to(stanzaCorrente).emit('aggiorna_contatore', visualizzatoriFilm[stanzaCorrente]); // Aggiorna il contatore per tutti gli utenti della stanza
+        }
+    });
+})
 
 // Middlewares
 app.use(cors({
@@ -41,7 +89,7 @@ app.use(cors({
 //
 // 3. Il browser abbassa le difese e permette all'interfaccia utente (React) 
 // di ricevere, leggere e visualizzare i dati elaborati dal server. 
-    origin: "http://localhost:5173", 
+    origin: ["http://localhost:5173", "http://localhost:5174"],
 
     // 2. Il server inserisce l'header "Access-Control-Allow-Credentials".
     // Permette lo scambio bidirezionale dei cookie di sessione (sia in lettura -->server può leggere cookie del browser  che in scrittura--> server può allegare cookie e inviarlo al browser) 
@@ -61,7 +109,9 @@ app.use('/user-api', userRouter);
 app.use('/favorite-api', favoriteRouter);
 
 
-app.listen(PORT, () => {
+// CORREZIONE STRUTTURALE: Avviamo 'server' e non 'app'.
+// In questo modo sia le rotte Express che i WebSocket di Socket.io si accendono insieme sulla porta 5000.
+server.listen(PORT, () => {
     connectToDB(); // Connette al database quando il server inizia ad ascoltare
     console.log(`Il server è in ascolto sulla porta: ${PORT}`); // Avvia il server e stampa un messaggio di conferma
 })

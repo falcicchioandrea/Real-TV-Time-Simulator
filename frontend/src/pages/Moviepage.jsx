@@ -4,14 +4,22 @@ import { Play, Heart, ListChevronsDownUpIcon } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react"; // componenti per far scorrere film ; Swiper è il contenitore principale che gestisce lo scorrimento, mentre SwiperSlide rappresenta ogni singolo elemento (in questo caso, ogni film) all'interno dello scorrimento.
 import "swiper/css"; // Importa gli stili CSS di base per il funzionamento di Swiper, che includono le regole necessarie per il layout e l'animazione dello scorrimento. Senza questa importazione, lo scorrimento potrebbe non funzionare correttamente o non essere visualizzato come previsto.
 import { Link } from "react-router";
-
+import { io } from "socket.io-client";
 import { useAuth } from "../store/authContext";
+import { Eye } from "lucide-react";
+
+const socket = io("http://localhost:5000"); // Viene effettuato un HANDSHAKE con il server Socket.IO in ascolto su http://localhost:5000,
+// stabilendo una connessione WebSocket che consente la comunicazione in tempo reale tra il client e il server. 
+// Questa connessione è essenziale per implementare funzionalità come l'aggiornamento in tempo reale del numero di visualizzatori di un film, 
+// poiché permette al client di inviare e ricevere eventi senza dover effettuare richieste HTTP tradizionali.
+// Deve essere fatto FUORI dal componente Moviepage per evitare di creare una connessione ogni volta che il componente viene aggiornato
 
 const Moviepage = () => {
   const { id } = useParams(); // useParams è un hook fornito da react-router-dom che consente di accedere ai parametri dinamici presenti nell'URL. In questo caso, viene utilizzato per estrarre l'id del film dalla URL, che è necessario per effettuare le richieste API e recuperare i dettagli del film specifico da visualizzare sulla pagina.
   const [movie, setMovie] = useState(null);
   const [trailerKey, setTrailerKey] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
+  const [visualizzatori, setVisualizzatori] = useState(0); 
 
   const { user, toggleFavorite } = useAuth();     // Estraiamo l'utente loggato e la funzione setUser dal contesto globale
 
@@ -73,6 +81,22 @@ const Moviepage = () => {
         .catch((err) => console.log("Utente non loggato"));
   }, [id]); // ogni volta che id cambia, vengono eseguite tutto lo useEffect
 
+   useEffect(() => {
+    // 1. Diciamo al server che siamo entrati nella pagina di questo film
+    socket.emit('entra_film', id);
+
+    // 2. Rimaniamo in ascolto del contatore aggiornato inviato dal server
+    socket.on('aggiorna_contatore', (valoreAggiornato) => {
+    setVisualizzatori(valoreAggiornato);
+    });
+
+    // 3. Quando usciamo dalla pagina, diciamo al server che siamo usciti
+    return () => {
+      socket.emit('esci_film', id);
+     socket.off('aggiorna_contatore');
+    };
+}, [id]); 
+
   if (!movie) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -109,6 +133,13 @@ const Moviepage = () => {
               </span>
             ))}
           </p>
+          {/* BADGE IN TEMPO REALE */}
+          <div className="inline-flex items-center gap-2 rounded-full font-semibold">
+            <Eye className="w-5 h-5" />
+            <span>
+              {visualizzatori} {visualizzatori === 1 ? 'utente lo sta' : 'utenti lo stanno'} guardando ora
+            </span>
+          </div>
           <p className="text-gray-300 max-w-2xl mb-4">{movie.overview}</p>
           <div className="flex gap-3">
             {trailerKey && (
