@@ -1,4 +1,4 @@
-import { CheckSquare, Eye, Bell, Search } from "lucide-react";
+import { Heart, Users, Play, Compass } from "lucide-react";
 import { useAuth } from "../store/authContext";
 import Sfondo from "../assets/sfondo-hero.png"; 
 
@@ -24,16 +24,16 @@ const Hero = () => {
         )}
         <div className=" flex flex-col gap-3 mb-8 text-sm md:text-base">
           <p className="flex items-center gap-2">
-            <CheckSquare size={20}/> Tieni traccia di tutto quello che guardi
+            <Heart size={20}/> Salva i tuoi film preferiti in un click
           </p>
           <p className="flex items-center gap-2">
-            <Eye size={20}/> Scopri dove guardarlo
+            <Users size={20}/> Vedi quante persone stanno guardando lo stesso film ora
           </p>
           <p className="flex items-center gap-2">
-            <Bell size={20} /> Ricevi notifiche quando è disponibile
+            <Play size={20}/> Guarda il trailer prima di scegliere cosa vedere
           </p>
           <p className="flex items-center gap-2">
-            <Search size={20}/> Scopri cosa guardare adesso!
+            <Compass size={20}/> Esplora consigli personalizzati su cosa guardare dopo
           </p>
         </div>
 
