@@ -55,82 +55,40 @@ const CardList = () => {
   }, []);
 
   return (
-    <div className="text-black md:px-4">
-      <div>
-        <h2 className="pb-5 pt-5 font-medium text-xl cursor-pointer">
-          Film di tendenza
-        </h2>
-        <Swiper slidesPerView="auto" spaceBetween={16}>
-          {" "}
-          {/* slidesPerView="auto" consente a Swiper di calcolare automaticamente il numero di slide da visualizzare in base alla larghezza del contenitore e alla larghezza di ogni slide. spaceBetween={16} aggiunge uno spazio di 16 pixel tra ogni slide, migliorando la leggibilità e l'estetica dello scorrimento. Queste opzioni insieme permettono di creare un layout fluido e adattabile per la visualizzazione dei film. */}
-          {nowPlaying.map((item) => (
-            <SwiperSlide key={item.id} style={{ width: "128px" }}>
-              <Link to={`/movie/${item.id}`}>
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                  alt={item.title}
-                  className="h-44 w-full hover:border-2 object-cover cursor-pointer"
-                />
-              </Link>
-              <h2 className="text-center pt-2 text-sm">{item.title}</h2>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-
-        <h2 className="inline-block pb-5 pt-5 font-medium text-xl cursor-pointer">
-          Film popolari
-        </h2>
-        <Swiper slidesPerView="auto" spaceBetween={16}>
-          {popular.map((item) => (
-            <SwiperSlide key={item.id} style={{ width: "128px" }}>
-              <Link to={`/movie/${item.id}`}>
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                  alt={item.title}
-                  className="h-44 w-full hover:border-2 object-cover cursor-pointer"
-                />
-              </Link>
-              <h2 className="text-center pt-2 text-sm">{item.title}</h2>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-
-        <h2 className="inline-block pb-5 pt-5 font-medium text-xl cursor-pointer">
-          Film più votati
-        </h2>
-        <Swiper slidesPerView="auto" spaceBetween={16}>
-          {topRated.map((item) => (
-            <SwiperSlide key={item.id} style={{ width: "128px" }}>
-              <Link to={`/movie/${item.id}`}>
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                  alt={item.title}
-                  className="h-44 w-full hover:border-2 object-cover cursor-pointer"
-                />
-              </Link>
-              <h2 className="text-center pt-2 text-sm">{item.title}</h2>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-
-        <h2 className="inline-block pb-5 pt-5 font-medium text-xl cursor-pointer">
-          Film in arrivo
-        </h2>
-        <Swiper slidesPerView="auto" spaceBetween={16} className="pb-5">
-          {upcoming.map((item) => (
-            <SwiperSlide key={item.id} style={{ width: "128px" }}>
-              <Link to={`/movie/${item.id}`}>
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                  alt={item.title}
-                  className="h-44 w-full hover:border-2 object-cover cursor-pointer"
-                />
-              </Link>
-              <h2 className="text-center pt-2 pb-2 text-sm">{item.title}</h2>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
+    <div className="bg-[#181818] text-white px-2">
+      {/* 1. Array di configurazione dinamico */}
+      {[
+        { titolo: "Film di tendenza", dati: nowPlaying },
+        { titolo: "Film popolari", dati: popular },
+        { titolo: "Film più votati", dati: topRated },
+        { titolo: "Film in arrivo", dati: upcoming }
+      ].map((categoria, index) => (  // categoria rappresenta ogni oggetto dell'array, mentre index è la posizione dell'oggetto all'interno dell'array (0, 1, 2, 3). L'index viene utilizzato come chiave unica per ogni categoria durante il rendering.
+        
+        // 2. Unico blocco ripetuto dinamicamente per ogni categoria
+        <div key={index} className="pb-4">
+          <h2 className="pb-5 pt-5 font-medium text-xl cursor-pointer inline-block">
+            {categoria.titolo}
+          </h2>
+          
+          <Swiper slidesPerView="auto" spaceBetween={16}>
+            {categoria.dati.map((item) => (
+              <SwiperSlide key={item.id} style={{ width: "128px" }}>
+                <Link to={`/movie/${item.id}`}>
+                  <img
+                    src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                    alt={item.title}
+                    className="h-44 w-full hover:border-2 object-cover cursor-pointer"
+                  />
+                </Link>
+                {/* La classe 'truncate' impedisce ai titoli lunghi di sballare l'altezza su smartphone */}
+                <h2 className="text-center pt-2 text-sm" title={item.title}>
+                  {item.title}
+                </h2>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      ))}
     </div>
   );
 };

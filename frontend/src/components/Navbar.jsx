@@ -35,17 +35,17 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="relative z-50 bg-[#ffd400] text-black flex justify-between items-center p-4 h-20 text-sm md:text-[15px] font-medium text-nowrap">
-        {/*  Gruppo sinistro*/}
-        <div className="flex items-center space-x-4 relative">
+      <nav className="relative bg-[#ffd400] text-black flex justify-between items-center h-18 px-0.5 py-5 md:p-4 text-sm md:text-[15px] font-medium">
+        {/*  Gruppo sinistro*/}  
+        <div className="flex items-center">
           <Link to="/">
             <img
               src={Logo}
               alt="Logo"
-              className="w-40 cursor-pointer brightness-125"
+              className="w-40 cursor-pointer pr-3"
             />
           </Link>
-          <div className="flex items-center border-b border-black">
+          <div className="flex items-center border-b border-black w-32 md:w-60">
             <Search size={16} className="mr-2" />
             <input
               className="bg-transparent outline-none text-black placeholder-black/70 w-full"
@@ -59,9 +59,9 @@ const Navbar = () => {
             />
           </div>
         </div>
-        {/* Gruppo destro */}
+        {/* Gruppo destro */} 
         {user ? ( // se user esiste (quindi è loggato) mostra:
-          <div className="flex items-center space-x-4 relative">
+          <div className="flex items-center gap-3 relative">
             <Link to={`/profile/${user.username}`}>
               <button className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white flex items-center gap-2">
                 <User size={20} />
@@ -76,7 +76,7 @@ const Navbar = () => {
             </button>
           </div>
         ) : ( // se non è loggato mostra:
-          <div className="flex items-center space-x-4 relative">
+          <div className="flex items-center gap:4 sm:gap-1 relative">
             <button
               className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white"
               onClick={openLogin}
