@@ -30,15 +30,13 @@ const Hero = () => {
             <Heart size={20} /> Salva i tuoi film preferiti in un click
           </p>
           <p className="flex items-center gap-2">
-            <Users size={20} /> Vedi quante persone sono interessate allo stesso
-            film in real-time
+            <Users size={20} /> Scopri cosa stanno guardando gli altri, adesso.
           </p>
           <p className="flex items-center gap-2">
             <Play size={20} /> Guarda il trailer prima di scegliere cosa vedere
           </p>
           <p className="flex items-center gap-2">
-            <Compass size={20} /> Esplora consigli personalizzati su cosa
-            guardare dopo
+            <Compass size={20} /> Esplora consigli su cosa guardare dopo
           </p>
         </div>
 
