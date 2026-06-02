@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect } from "react";
 import { useParams } from "react-router";
-import { Play, Heart, ListChevronsDownUpIcon } from "lucide-react";
+import { Play, Heart, Star } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react"; // componenti per far scorrere film ; Swiper è il contenitore principale che gestisce lo scorrimento, mentre SwiperSlide rappresenta ogni singolo elemento (in questo caso, ogni film) all'interno dello scorrimento.
 import "swiper/css"; // Importa gli stili CSS di base per il funzionamento di Swiper, che includono le regole necessarie per il layout e l'animazione dello scorrimento. Senza questa importazione, lo scorrimento potrebbe non funzionare correttamente o non essere visualizzato come previsto.
 import { Link } from "react-router";
@@ -9,8 +9,8 @@ import { useAuth } from "../store/authContext";
 import { Eye } from "lucide-react";
 
 const socket = io(import.meta.env.VITE_BACKEND_URL); // Viene effettuato un HANDSHAKE con il server Socket.IO in ascolto su http://localhost:5000,
-// stabilendo una connessione WebSocket che consente la comunicazione in tempo reale tra il client e il server. 
-// Questa connessione è essenziale per implementare funzionalità come l'aggiornamento in tempo reale del numero di visualizzatori di un film, 
+// stabilendo una connessione WebSocket che consente la comunicazione in tempo reale tra il client e il server.
+// Questa connessione è essenziale per implementare funzionalità come l'aggiornamento in tempo reale del numero di visualizzatori di un film,
 // poiché permette al client di inviare e ricevere eventi senza dover effettuare richieste HTTP tradizionali.
 // Deve essere fatto FUORI dal componente Moviepage per evitare di creare una connessione ogni volta che il componente viene aggiornato
 
@@ -19,14 +19,14 @@ const Moviepage = () => {
   const [movie, setMovie] = useState(null);
   const [trailerKey, setTrailerKey] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
-  const [visualizzatori, setVisualizzatori] = useState(0); 
+  const [visualizzatori, setVisualizzatori] = useState(0);
 
-  const { user, toggleFavorite } = useAuth();     // Estraiamo l'utente loggato e la funzione setUser dal contesto globale
-
+  const { user, toggleFavorite } = useAuth(); // Estraiamo l'utente loggato e la funzione setUser dal contesto globale
 
   // 1. CORRETTO: Calcolo dinamico e derivato di isFavorite.
   // Converte sia gli ID nell'array che l'ID dell'URL in stringhe per evitare conflitti di tipo (String vs Number)
-  const isFavorite = user?.favoriteMovies?.map(String).includes(String(id)) || false;
+  const isFavorite =
+    user?.favoriteMovies?.map(String).includes(String(id)) || false;
 
   useEffect(() => {
     const options = {
@@ -70,37 +70,37 @@ const Moviepage = () => {
       })
       .catch((err) => console.error(err));
 
-      fetch("/user-api/fetch-user")
-        .then((res) => res.json())
-        .then((data) => {
-          // Se l'utente è loggato e l'array contiene l'id corrente
-          if (data.user && data.user.favoriteMovies?.includes(Number(id))) {
-            setIsFavorite(true);
-          }
-        })
-        .catch((err) => console.log("Utente non loggato"));
+    fetch("/user-api/fetch-user")
+      .then((res) => res.json())
+      .then((data) => {
+        // Se l'utente è loggato e l'array contiene l'id corrente
+        if (data.user && data.user.favoriteMovies?.includes(Number(id))) {
+          setIsFavorite(true);
+        }
+      })
+      .catch((err) => console.log("Utente non loggato"));
   }, [id]); // ogni volta che id cambia, vengono eseguite tutto lo useEffect
 
-   useEffect(() => {
+  useEffect(() => {
     // 1. Diciamo al server che siamo entrati nella pagina di questo film
-    socket.emit('entra_film', id);
+    socket.emit("entra_film", id);
 
     // 2. Rimaniamo in ascolto del contatore aggiornato inviato dal server
-    socket.on('aggiorna_contatore', (valoreAggiornato) => {
-    setVisualizzatori(valoreAggiornato);
+    socket.on("aggiorna_contatore", (valoreAggiornato) => {
+      setVisualizzatori(valoreAggiornato);
     });
 
     // 3. Quando usciamo dalla pagina, diciamo al server che siamo usciti
     return () => {
-      socket.emit('esci_film', id);
-     socket.off('aggiorna_contatore');
+      socket.emit("esci_film", id);
+      socket.off("aggiorna_contatore");
     };
-}, [id]); 
+  }, [id]);
 
   if (!movie) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <span className="text-yellow-500 text-xl">Loading...</span>
+        <span className="text-yellow-500 text-xl">Caricamento...</span>
       </div>
     );
   }
@@ -118,8 +118,8 @@ const Moviepage = () => {
       >
         <div className="relative z-10">
           <h1 className="text-4xl font-bold mb-2">{movie.title}</h1>
-          <p className="text-gray-300 mb-2">
-            ⭐{movie.vote_average?.toFixed(1)} · {movie.release_date} ·{" "}
+          <p className="flex items-center gap-1 text-gray-300 mb-2">
+            <Star className="w-4 h-4 fill-yellow-400 stroke-yellow-400" />{movie.vote_average?.toFixed(1)} · {movie.release_date} ·{" "}
             {/* toFixed(1) --> arrotonda il numero ad una cifra decimale */}
             {movie.runtime} min
           </p>
@@ -137,7 +137,8 @@ const Moviepage = () => {
           <div className="inline-flex items-center gap-2 rounded-full font-semibold">
             <Eye className="w-5 h-5" />
             <span>
-              {visualizzatori} {visualizzatori === 1 ? 'utente lo sta' : 'utenti lo stanno'} guardando ora
+              {visualizzatori}{" "}
+              {visualizzatori === 1 ? "utente è qui" : "utenti sono qui"}{" "}
             </span>
           </div>
           <p className="text-gray-300 max-w-2xl mb-4">{movie.overview}</p>
@@ -150,60 +151,69 @@ const Moviepage = () => {
               >
                 <button className="flex items-center gap-2 bg-[#ffd400] hover:bg-[#e6bf00] text-black font-semibold py-2 px-4 rounded-full text-sm cursor-pointer">
                   <Play className="w-5 h-5" />
-                  Watch Trailer
+                  Guarda Trailer
                 </button>
               </a>
             )}
-            <button 
+            <button
               className={`flex items-center gap-2 bg-[#ffd400] hover:bg-[#e6bf00] text-black font-semibold py-2 px-4 rounded-full text-sm cursor-pointer ${
-                isFavorite 
-                  ? 'bg-red-600 border-red-600 text-white hover:bg-red-700' 
-                  : 'border-neutral-300 hover:bg-[#e6bf00] text-black'
+                isFavorite
+                  ? "bg-red-600 border-red-600 text-white hover:bg-red-700"
+                  : "border-neutral-300 hover:bg-[#e6bf00] text-black"
               }`}
-              onClick={()=>toggleFavorite(id)}
+              onClick={() => toggleFavorite(id)}
             >
               {/* Se è preferito coloriamo sia il bordo che il riempimento di bianco (visto lo sfondo rosso) */}
-              <Heart className={`w-5 h-5 ${isFavorite ? "fill-white stroke-white" : "stroke-current"}`}/> 
-              
+              <Heart
+                className={`w-5 h-5 ${isFavorite ? "fill-white stroke-white" : "stroke-current"}`}
+              />
+
               {/* Ottimizzazione: Rendiamo dinamico anche il testo in base allo stato */}
-              {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+              {isFavorite ? "Rimuovi dai Preferiti" : "Aggiungi ai Preferiti"}
             </button>
           </div>
         </div>
       </div>
       {/* Movie details section */}
-      <div className="p-2 md:p-8"> 
+      <div className="p-2 md:p-8">
         <h2 className="text-2xl font-bold mb-4">Dettagli del Film</h2>
         <ul className="flex flex-wrap">
-          
           <li className="md:w-1/3 px-2 w-1/2 mb-4">
             <div className="bg-gray-800 rounded-lg p-4">
               <p className="text-gray-400 text-xs uppercase mb-1">Stato</p>
               <p className="font-semibold">{movie.status}</p>
             </div>
           </li>
-          
+
           <li className="md:w-1/3 px-2 w-1/2 mb-4">
             <div className="bg-gray-800 rounded-lg p-4">
-              <p className="text-gray-400 text-xs uppercase mb-1">Data di uscita</p>
+              <p className="text-gray-400 text-xs uppercase mb-1">
+                Data di uscita
+              </p>
               <p className="font-semibold">{movie.release_date}</p>
             </div>
           </li>
-          
+
           <li className="md:w-1/3 px-2 w-1/2 mb-4">
             <div className="bg-gray-800 rounded-lg p-4">
-              <p className="text-gray-400 text-xs uppercase mb-1">Lingua originale</p>
-              <p className="font-semibold">{movie.original_language?.toUpperCase()}</p>
+              <p className="text-gray-400 text-xs uppercase mb-1">
+                Lingua originale
+              </p>
+              <p className="font-semibold">
+                {movie.original_language?.toUpperCase()}
+              </p>
             </div>
           </li>
-          
+
           <li className="md:w-1/3 px-2 w-1/2 mb-4">
             <div className="bg-gray-800 rounded-lg p-4">
               <p className="text-gray-400 text-xs uppercase mb-1">Tagline</p>
-              <p className="font-semibold italic">{movie.tagline || "Nessuna tagline disponibile"}</p>
+              <p className="font-semibold italic">
+                {movie.tagline || "Nessuna tagline disponibile"}
+              </p>
             </div>
           </li>
-          
+
           <li className="md:w-1/3 px-2 w-1/2 mb-4">
             <div className="bg-gray-800 rounded-lg p-4">
               <p className="text-gray-400 text-xs uppercase mb-1">Budget</p>
@@ -212,16 +222,17 @@ const Moviepage = () => {
               </p>
             </div>
           </li>
-          
+
           <li className="md:w-1/3 px-2 w-1/2 mb-4">
             <div className="bg-gray-800 rounded-lg p-4">
               <p className="text-gray-400 text-xs uppercase mb-1">Incasso</p>
               <p className="font-semibold">
-                ${movie.revenue?.toLocaleString() || "Nessun incasso disponibile"}
+                $
+                {movie.revenue?.toLocaleString() ||
+                  "Nessun incasso disponibile"}
               </p>
             </div>
           </li>
-
         </ul>
       </div>
       {/* Recommendations section */}
