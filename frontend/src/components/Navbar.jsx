@@ -18,32 +18,31 @@ const Navbar = () => {
   const resetFormValue = () => setSearchQuery("");
 
   // Estrazione
-  const { user, logout, openSignup, openLogin} = useAuth();
+  const { user, logout, openSignup, openLogin } = useAuth();
 
   // FUNZIONE/HANDLE: Gestisce il click sul pulsante Esci
   const handleLogout = async () => {
     try {
       // 1. Aspettiamo che il context distrugga la sessione sul backend e svuoti lo stato 'user'
-      await logout(); 
+      await logout();
       // 2. Una volta completato il logout, reindirizziamo l'utente alla Home Page
-      navigate("/"); 
+      navigate("/");
     } catch (err) {
       // L'errore è già salvato nel context, ma facciamo un log per il debugging locale
-      console.error("Errore durante il reindirizzamento post-logout:", err.message);
+      console.error(
+        "Errore durante il reindirizzamento post-logout:",
+        err.message,
+      );
     }
   };
 
   return (
     <>
       <nav className="relative bg-[#ffd400] text-black flex justify-between items-center h-18 px-0.5 py-5 md:p-4 text-sm md:text-[15px] font-medium">
-        {/*  Gruppo sinistro*/}  
+        {/*  Gruppo sinistro*/}
         <div className="flex items-center">
           <Link to="/">
-            <img
-              src={Logo}
-              alt="Logo"
-              className="w-40 cursor-pointer pr-3"
-            />
+            <img src={Logo} alt="Logo" className="w-40 cursor-pointer pr-3" />
           </Link>
           <div className="flex items-center border-b border-black w-32 md:w-60">
             <Search size={16} className="mr-2" />
@@ -59,7 +58,7 @@ const Navbar = () => {
             />
           </div>
         </div>
-        {/* Gruppo destro */} 
+        {/* Gruppo destro */}
         {user ? ( // se user esiste (quindi è loggato) mostra:
           <div className="flex items-center gap-3 relative">
             <Link to={`/profile/${user.username}`}>
@@ -69,13 +68,14 @@ const Navbar = () => {
               </button>
             </Link>
             <button
-              className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white"
+              className="cursor-pointer px-3 py-1 rounded-md hover:bg-[red] hover:text-white"
               onClick={handleLogout}
             >
               Esci
             </button>
           </div>
-        ) : ( // se non è loggato mostra:
+        ) : (
+          // se non è loggato mostra:
           <div className="flex items-center gap:4 sm:gap-1 relative">
             <button
               className="cursor-pointer px-3 py-1 rounded-md hover:bg-[black] hover:text-white"
