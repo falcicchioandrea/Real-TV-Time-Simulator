@@ -55,7 +55,7 @@ const CardList = () => {
   }, []);
 
   return (
-    <div className="text-black px-2">
+    <div className="bg-[#181818] text-white px-2">
       {/* 1. Array di configurazione dinamico */}
       {[
         { titolo: "Film di tendenza", dati: nowPlaying },
@@ -65,7 +65,7 @@ const CardList = () => {
       ].map((categoria, index) => (  // categoria rappresenta ogni oggetto dell'array, mentre index è la posizione dell'oggetto all'interno dell'array (0, 1, 2, 3). L'index viene utilizzato come chiave unica per ogni categoria durante il rendering.
         
         // 2. Unico blocco ripetuto dinamicamente per ogni categoria
-        <div key={index} className="mb-4">
+        <div key={index} className="pb-4">
           <h2 className="pb-5 pt-5 font-medium text-xl cursor-pointer inline-block">
             {categoria.titolo}
           </h2>

@@ -59,7 +59,7 @@ const Navbar = () => {
             />
           </div>
         </div>
-        {/* Gruppo destro */}
+        {/* Gruppo destro */} 
         {user ? ( // se user esiste (quindi è loggato) mostra:
           <div className="flex items-center gap-3 relative">
             <Link to={`/profile/${user.username}`}>
