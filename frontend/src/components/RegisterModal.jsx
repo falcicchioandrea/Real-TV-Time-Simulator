@@ -8,17 +8,26 @@ const RegisterModal = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [localError, setlocalError] = useState(""); // Stato per gestire errori locali (es. password non corrispondenti)
 
-  const { signup, isLoading, error, clearError, isSignupOpen, openSignup, openLogin, closeAuth } = useAuth();
+  const {
+    signup,
+    isLoading,
+    error,
+    clearError,
+    isSignupOpen,
+    openSignup,
+    openLogin,
+    closeAuth,
+  } = useAuth();
 
   useEffect(() => {
     // Pulisce il messaggio di errore e azzera i campi del form quando il modal viene chiuso
     if (!isSignupOpen) {
       clearError();
       setlocalError("");
-      setUsername(""); 
-      setEmail("");    
-      setPassword(""); 
-      setConfirmPassword("")
+      setUsername("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
     }
   }, [isSignupOpen]);
 
@@ -63,7 +72,7 @@ const RegisterModal = () => {
           X
         </button>
         <h2 className="text-xl text-center font-bold text-white mb-4">
-          Registrati a TV Time
+          Registrati a MovieTrack
         </h2>
         {/* Form di registrazione */}
         <form

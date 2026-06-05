@@ -52,9 +52,9 @@ export const registrati = async (req, res) => {
             // Invio il token attraverso un cookie
             
             res.cookie("token", token, {
-                httpOnly: true, 
+                httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
-                sameSite: "none", // Permette l'invio del cookie anche in contesti cross-origin (es. localhost:5173 che fa richieste a localhost:5000)
+                sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             })
         }
 
@@ -100,12 +100,12 @@ export const accedi = async (req, res) => {
 
             // Invio il token attraverso un cookie
             res.cookie("token", token, {
-                httpOnly: true, 
+                httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
-                sameSite: "none", // Permette l'invio del cookie anche in contesti cross-origin (es. localhost:5173 che fa richieste a localhost:5000)
+                sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             })
         }
-        
+
         return res
         .status(200)
         .json({user: userDoc, message: "Accesso effettuato correttamente!"});

@@ -17,7 +17,7 @@ const server = http.createServer(app); // Crea un server HTTP che avvolge l'app 
 
 const io = new Server(server, {   // Serve a creare un server WebSocket real-time con Socket.IO
     cors: {
-        origin: "https://real-tv-time-simulator.onrender.com", // Specifica le origini autorizzate per le connessioni WebSocket (devono corrispondere a quelle del middleware CORS di Express)
+        origin: ["https://real-tv-time-simulator.onrender.com", "http://localhost:5173"],
         credentials: true
     }
 });   
@@ -89,7 +89,7 @@ app.use(cors({
 //
 // 3. Il browser abbassa le difese e permette all'interfaccia utente (React) 
 // di ricevere, leggere e visualizzare i dati elaborati dal server. 
-    origin: "https://real-tv-time-simulator.onrender.com", // Specifica l'origine autorizzata per le richieste CORS (devono corrispondere a quelle del server Socket.IO)
+    origin: ["https://real-tv-time-simulator.onrender.com", "http://localhost:5173"],
 
     // 2. Il server inserisce l'header "Access-Control-Allow-Credentials".
     // Permette lo scambio bidirezionale dei cookie di sessione (sia in lettura -->server può leggere cookie del browser  che in scrittura--> server può allegare cookie e inviarlo al browser) 
