@@ -10,7 +10,7 @@ const options = {
     accept: "application/json", // Indica che il client si aspetta una risposta in formato JSON dal server.
     // Fornisce un token di autorizzazione per autenticare la richiesta al server. In questo caso, è un token JWT (JSON Web Token) che consente l'accesso alle risorse protette dell'API. Il token viene passato come stringa nell'intestazione Authorization, preceduto dalla parola "Bearer" per indicare il tipo di token utilizzato. SENZA questo token, la richiesta SAREBBE RIFIUTATA dal server (401 Unauthorized)
     Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNjcwM2Q5YzZmY2ViMjg5Mzg4OTMwZTYzN2JkNDA2NCIsIm5iZiI6MTc3ODM0MjY3My43MTgwMDAyLCJzdWIiOiI2OWZmNWIxMWRkZTYwM2ZmNTg1NzI0MmEiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.Hs8GxHz2S_koJDHkWqSa9hOEdsGiQWKgv1XJlVOdC3k",
+      `Bearer ${import.meta.env.VITE_TMDB_API_KEY}`,
   },
 };
 
