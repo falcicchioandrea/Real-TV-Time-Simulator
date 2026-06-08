@@ -4,8 +4,6 @@ Progetto realizzato per il corso di Fondamenti Web.
 
 Tieni traccia dei film e delle serie che guardi ed esplora i film consigliati.
 
-Progetto realizzato per il corso di Fondamenti Web.
-
 **Live:** [real-tv-time-simulator.onrender.com](https://real-tv-time-simulator.onrender.com/)
 
 ## Stack
