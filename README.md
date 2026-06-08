@@ -1,12 +1,36 @@
-# Real-TV-Time-Simulator
+# Real TV Time Simulator
 
-This project aims to create a new version of the application TV Time which is useful to monitor your screentime and allows you to memorize every film and series you watch.
+Progetto realizzato per il corso di Fondamenti Web.
 
-## Stack tecnologico
+Tieni traccia dei film e delle serie che guardi ed esplora i film consigliati.
 
-L'applicazione verrà realizzata seguendo i principi dello stack tecnologico MERN:
+Progetto realizzato per il corso di Fondamenti Web.
 
-- **MongoDB**: Database utilizzato per memorizzare i dati dell'applicazione.
-- **Express**: Framework web utilizzato per il backend.
-- **React**: Libreria JavaScript utilizzata per il frontend.
-- **Node.js**: Piattaforma JavaScript utilizzata per lo sviluppo generale del software.
+**Live:** [real-tv-time-simulator.onrender.com](https://real-tv-time-simulator.onrender.com/)
+
+## Stack
+
+- **Frontend:** React, Tailwind CSS, Vite
+- **Backend:** Node.js, Express
+- **Database:** MongoDB
+- **Realtime:** Socket.io
+
+## Avviare in locale
+
+```bash
+# Backend
+cd backend && npm install && npm start
+
+# Frontend
+cd frontend && npm install && npm run dev
+```
+
+Oppure con Docker:
+
+```bash
+docker compose up
+```
+
+## Variabili d'ambiente
+
+Crea un file `.env` in `backend/` e `frontend/`.
