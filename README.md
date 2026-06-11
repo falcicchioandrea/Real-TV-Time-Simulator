@@ -22,20 +22,16 @@ Per il corretto funzionamento dell'applicazione in locale o in ambiente containe
 ### 1. Backend Config (`backend/.env`)
 Crea un file chiamato `.env` all'interno della cartella `backend/`:
 
-| Variabile | Descrizione | Esempio / Valore di Default |
-| :--- | :--- | :--- |
-| `PORT` | Porta su cui rimarrà in ascolto il server Node.js | `5000` |
-| `MONGODB_URI` | Stringa di connessione al database MongoDB | `mongodb+srv://...` |
-| `JWT_SECRET` | Chiave segreta utilizzata per firmare i JSON Web Token | `chiave_arbitraria` |
-| `NODE_ENV` | Ambiente di esecuzione dell'applicazione | `development` o `production` |
+`PORT` --> Porta su cui rimarrà in ascolto il server Node.js (`5000`)
+`MONGODB_URI` --> Stringa di connessione al database MongoDB (`mongodb+srv://...`)
+`JWT_SECRET` -->Chiave segreta utilizzata per firmare i JSON Web Token (`chiave_arbitraria`)
+`NODE_ENV` --> Ambiente di esecuzione dell'applicazione (`development` o `production`)
 
 ### 2. Frontend Config (`frontend/.env`)
 Crea un file chiamato `.env` all'interno della cartella `frontend/`:
 
-| Variabile | Descrizione | Esempio / Valore di Default |
-| :--- | :--- | :--- |
-| `VITE_API_URL` | Endpoint di base del backend per le chiamate API e l'handshake di Socket.IO | `http://localhost:5000` |
-| `VITE_TMDB_API_KEY` | Chiave API personale per autenticare le richieste verso l'API di The Movie Database | `3a1b2c...` |
+`VITE_API_URL` --> Endpoint di base del backend per le chiamate API e l'handshake di Socket.IO (`http://localhost:5000`)
+`VITE_TMDB_API_KEY` --> Chiave API personale per autenticare le richieste verso l'API di The Movie Database (`3a1b2c...`)
 
 
 ---
@@ -68,7 +64,9 @@ Il progetto include una configurazione multi-container tramite Docker Compose ch
 cd backend
 npm install
 npm run dev  # Avvia il server tramite nodemon (auto-reload attivo)
-
+```
+#### Terminale 2: Frontend Setup
+```bash
 cd frontend
 npm install
 npm run dev  # Avvia l'ambiente di sviluppo locale di Vite
