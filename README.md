@@ -2,7 +2,7 @@
 
 Progetto realizzato per il corso di Fondamenti Web.
 
-**Real TV Time Simulator** è un'applicazione web full-stack (MERN) che permette agli utenti di monitorare i film che guardano ed esplorare i film consigliati creando una propria bacheca di film preferiti
+**Real TV Time Simulator** è un'applicazione web full-stack (MERN) che permette agli utenti di esplorare i film consigliati creando una propria bacheca di film preferiti.
 
 
 **Live Demo:** [real-tv-time-simulator.onrender.com](https://real-tv-time-simulator.onrender.com/)
