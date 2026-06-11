@@ -17,12 +17,7 @@ function App() {
       <LoginModal/>
       <RegisterModal/>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <Homepage/>
-          }
-        />
+        <Route path="/" element={<Homepage/>}/>
         <Route path="/movie/:id" element={<Moviepage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/profile/:username" element={<UserPage />} />
