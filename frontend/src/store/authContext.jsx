@@ -3,6 +3,10 @@
 // ============================================================
 // Questo file implementa il sistema di autenticazione globale
 // dell'applicazione usando il pattern "Context + Provider" di React.
+
+//Il React Context è una funzionalità nativa di React che permette di condividere dati globali 
+// tra molti componenti senza dover passare manualmente le informazioni (le props) dall'alto verso il basso 
+// attraverso ogni singolo livello della struttura.
 //
 // PROBLEMA CHE RISOLVE:
 // Senza questo file, per passare l'utente loggato da App.jsx
@@ -11,8 +15,8 @@
 // Questo si chiama "prop drilling" ed è difficile da mantenere.
 //
 // SOLUZIONE:
-// Il Context di React crea un "canale" globale: chiunque voglia
-// sapere chi è loggato chiama semplicemente useAuth() e riceve
+// Il Context di React crea un "canale" globale al quale si possono connettere i componenti: 
+// chiunque voglia sapere chi è loggato chiama semplicemente useAuth() e riceve
 // tutto — senza bisogno di props intermedie.
 // ============================================================
 
@@ -169,7 +173,7 @@ export function AuthProvider({ children }) {
           "Si è verificato un errore durante la registrazione.",
       );
 
-      // "throw err" rilancia l'errore al componente che ha chiamato signup().
+      // "throw err" rilancia l'errore al componente che ha chiamato signup()  (la sigupPage).
       // Permette al form di registrazione di aggiungere la propria logica
       // (es. non navigare alla pagina successiva se c'è stato un errore).
       throw err;
@@ -282,7 +286,6 @@ export function AuthProvider({ children }) {
       setIsLoginOpen(true);
       return;
     }
-
     setIsLoading(true);
     setError(null);
 

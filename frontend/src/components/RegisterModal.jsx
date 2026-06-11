@@ -50,7 +50,11 @@ const RegisterModal = () => {
   // Se isOpen è falso, non viene visualizzata interfaccia Login
   if (!isSignupOpen) return null;
 
-  console.log(
+  //scrittura nella console del browser ogni volta che l'utente preme il singolo carattere;
+  //ogni volta che l'utente preme un tasto (es. scrive la "A" di "Angelica"), la funzione onChange aggiorna lo stato. 
+  // Modificando lo stato, React distrugge e rifà il rendering (re-render) di tutto il componente RegisterModal, 
+  // rieseguendo da cima a fondo tutte le righe di codice, incluso il tuo console.log.
+  console.log(  
     "Username: ",
     username,
     "Email: ",
