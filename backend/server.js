@@ -22,7 +22,7 @@ const io = new Server(server, {
   // Serve a creare un server WebSocket real-time con Socket.IO
   cors: {
     origin: [
-      import.meta.env.FRONTEND_URL,
+      process.env.FRONTEND_URL,
     ],
     credentials: true,
   },
@@ -102,7 +102,7 @@ app.use(
     // 3. Il browser abbassa le difese e permette all'interfaccia utente (React)
     // di ricevere, leggere e visualizzare i dati elaborati dal server.
     origin: [
-      import.meta.env.FRONTEND_URL,
+      process.env.FRONTEND_URL,
     ],
 
     // 2. Il server inserisce l'header "Access-Control-Allow-Credentials".
