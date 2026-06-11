@@ -15,7 +15,7 @@ const options = {
 };
 
 const CardList = () => {
-  const [nowPlaying, setNowPlaying] = useState([]);
+  const [nowPlaying, setNowPlaying] = useState([]);  // quattro array dei quattro caroselli
   const [popular, setPopular] = useState([]);
   const [topRated, setTopRated] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
@@ -62,25 +62,27 @@ const CardList = () => {
         { titolo: "Film popolari", dati: popular },
         { titolo: "Film più votati", dati: topRated },
         { titolo: "Film in arrivo", dati: upcoming }
-      ].map((categoria, index) => (  // categoria rappresenta ogni oggetto dell'array, mentre index è la posizione dell'oggetto all'interno dell'array (0, 1, 2, 3). L'index viene utilizzato come chiave unica per ogni categoria durante il rendering.
-        
+      ].map((categoria, index) => (  // CICLO ESTERNO per ogni categoria; categoria rappresenta ogni oggetto dell'array (4 categorie), 
+      // mentre index è la posizione dell'oggetto(categoria) all'interno dell'array (0, 1, 2, 3). 
+      // L'index viene utilizzato come chiave unica per ogni categoria durante il rendering.
+
         // 2. Unico blocco ripetuto dinamicamente per ogni categoria
         <div key={index} className="pb-4">
           <h2 className="pb-5 pt-5 font-medium text-xl cursor-pointer">
             {categoria.titolo}
           </h2>
-          
-          <Swiper slidesPerView="auto" spaceBetween={16}>
-            {categoria.dati.map((item) => (
-              <SwiperSlide key={item.id} style={{ width: "128px" }}>
-                <Link to={`/movie/${item.id}`}>
+          {/*Swiper--> componente princ. della libreria swiper per lo scorrimento */}
+          <Swiper slidesPerView="auto" spaceBetween={16}> {/*n. slide automatico(larghezza slide, spazio tra slides 16 px) */}
+            {categoria.dati.map((item) => (  //CICLO INTERNO per ogni film della categoria
+              //Unico Blocco per ogni film
+              <SwiperSlide key={item.id} style={{ width: "128px" }}> 
+                <Link to={`/movie/${item.id}`}>    {/* ogni locandina è cliccabile--> renderizza al film */}
                   <img
                     src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                     alt={item.title}
                     className="aspect-2/3 hover:border-2 object-cover cursor-pointer"
                   />
                 </Link>
-                {/* La classe 'truncate' impedisce ai titoli lunghi di sballare l'altezza su smartphone */}
                 <h2 className="text-center pt-2 text-sm" title={item.title}>
                   {item.title}
                 </h2>

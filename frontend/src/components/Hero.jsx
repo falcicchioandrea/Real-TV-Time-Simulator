@@ -39,8 +39,6 @@ const Hero = () => {
             <Compass size={20} /> Esplora consigli su cosa guardare dopo
           </p>
         </div>
-
-        {/* Bottone: larghezza 100% su mobile (w-full), auto su PC (md:w-auto) */}
         {!user && (
           <button
             className="cursor-pointer bg-[#ffd400] text-black font-bold py-3 px-6 rounded-2xl hover:bg-[#e6bf00]"
