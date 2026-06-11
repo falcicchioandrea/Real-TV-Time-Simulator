@@ -44,13 +44,11 @@ const SearchPage = () => {
   console.log(results);
   return (
     <div className="text-black md:px-4">
-      <h2 className="pb-5 pt-5 font-medium text-xl">Stai cercando: {query}</h2>
+      <h2 className="pb-5 pl-2 pt-5 font-medium text-xl">Stai cercando: {query}</h2>
       <div className="grid grid-cols-3 px-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
-        {filteredResults.length === 0 ? (
-          <div className="flex items-center justify-center col-span-full h-screen">
-            <h3 className="text-lg font-medium">Nessun risultato trovato</h3>
-          </div>
-        ) : (
+        {filteredResults.length === 0 ? (  //allora 
+            <h3 className="text-lg font-medium col-span-full h-screen">Nessun risultato trovato</h3>
+        ) : ( //else
           filteredResults.map((item) => (
             <Link key={item.id} to={`/movie/${item.id}`}>
               <img
