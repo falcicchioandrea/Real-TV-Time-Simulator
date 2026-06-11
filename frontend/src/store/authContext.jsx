@@ -16,14 +16,13 @@
 // tutto — senza bisogno di props intermedie.
 // ============================================================
 
-import { createContext, useContext, useState, useEffect} from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 // createContext → crea il canale di comunicazione globale
 // useContext    → permette ai componenti di leggere dal canale
 // useState      → crea variabili di stato reattive (quando cambiano, React ri-renderizza)
 // useEffect     → esegue codice in risposta a eventi del ciclo di vita del componente
 
 import axios from "axios";
-import { useNavigate } from "react-router";
 // Axios è una libreria per fare richieste HTTP (alternativa a fetch).
 // Aggiunge funzionalità utili come la gestione automatica degli errori
 // e la possibilità di impostare un baseURL comune per tutte le richieste.
@@ -100,7 +99,7 @@ export function AuthProvider({ children }) {
   // (es. "Registrazione completata!"), oppure null.
   const [message, setMessage] = useState(null);
 
-  const [isLoginOpen, setIsLoginOpen] = useState(false);   // Controlla se la finestra di Login deve essere visibile sullo schermo
+  const [isLoginOpen, setIsLoginOpen] = useState(false); // Controlla se la finestra di Login deve essere visibile sullo schermo
   const [isSignupOpen, setIsSignupOpen] = useState(false); // Controlla se la finestra di Registrazione (Signup) deve essere visibile
 
   // ----------------------------------------------------------
@@ -191,10 +190,13 @@ export function AuthProvider({ children }) {
     setError(null); // pulisce eventuali errori precedenti
     try {
       // POST /api/accedi: invia username e password al backend
-      const response = await axios.post("/user-api/accedi", { username, password });
+      const response = await axios.post("/user-api/accedi", {
+        username,
+        password,
+      });
 
       setUser(response.data.user); // salva i dati utente nello stato globale
-      setIsLoginOpen(false)
+      setIsLoginOpen(false);
       setMessage(response.data.message); // salva il messaggio di successo
       setIsLoading(false);
     } catch (err) {
@@ -257,14 +259,14 @@ export function AuthProvider({ children }) {
     setError(null);
     setMessage(null);
     setIsSignupOpen(false); // Chiude il signup se è aperto
-    setIsLoginOpen(true);   // Apre il login
+    setIsLoginOpen(true); // Apre il login
   };
 
   const openSignup = () => {
     setError(null);
     setMessage(null);
-    setIsLoginOpen(false);   // Chiude il login se è aperto
-    setIsSignupOpen(true);  // Apre il signup
+    setIsLoginOpen(false); // Chiude il login se è aperto
+    setIsSignupOpen(true); // Apre il signup
   };
 
   const closeAuth = () => {
@@ -285,13 +287,15 @@ export function AuthProvider({ children }) {
     setError(null);
 
     try {
-      const response = await axios.post("/favorite-api/favouriteToggle", { movieId });
+      const response = await axios.post("/favorite-api/favouriteToggle", {
+        movieId,
+      });
 
       setUser({
         username: user.username,
         email: user.email,
         password: user.password,
-        favoriteMovies: response.data.favoriteMovies
+        favoriteMovies: response.data.favoriteMovies,
       });
 
       setIsLoading(false);
@@ -348,7 +352,7 @@ export function AuthProvider({ children }) {
         openLogin,
         openSignup,
         closeAuth,
-        toggleFavorite //LOGICA DEI PREFERITI GLOBALE
+        toggleFavorite, //LOGICA DEI PREFERITI GLOBALE
       }}
     >
       {/* "children" è tutto ciò che viene scritto dentro <AuthProvider>
