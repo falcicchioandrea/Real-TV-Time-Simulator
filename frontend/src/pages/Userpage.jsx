@@ -66,13 +66,13 @@ const UserPage = () => {
         <Heart className="text-red-600 fill-red-600" size={24}></Heart>I miei
         film preferiti
       </h2>
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-4">
+      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-4">
         {favFilms.map((item) => (
           <Link key={item.id} to={`/movie/${item.id}`}>  {/*per ogni film viene generato un tag Link indirizzato a '/movie/id' */}
             <img
               src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
               alt={item.title}
-              className="aspect-2/3 w-full hover:border-2 object-cover cursor-pointer"
+              className="aspect-2/3 hover:border-2 object-cover cursor-pointer"
             />
             <h2 className="text-center pt-2 text-sm truncate">{item.title}</h2>
           </Link>
@@ -98,4 +98,7 @@ truncate: Gestisce i testi troppo lunghi (es. i titoli dei film). Se il titolo s
 
 fill-red-600: È una classe specifica per le icone (come il cuore di Lucide-React).      
               Colora interamente l'interno dell'icona di rosso. Di base le icone nascono solo come contorno; con il fill il cuore diventa pieno
+
+grid --> contenitore a griglia
+grid-cols-3--> layout a tre colonne
   */}
