@@ -66,7 +66,7 @@ const CardList = () => {
         
         // 2. Unico blocco ripetuto dinamicamente per ogni categoria
         <div key={index} className="pb-4">
-          <h2 className="pb-5 pt-5 font-medium text-xl cursor-pointer inline-block">
+          <h2 className="pb-5 pt-5 font-medium text-xl cursor-pointer">
             {categoria.titolo}
           </h2>
           
@@ -77,7 +77,7 @@ const CardList = () => {
                   <img
                     src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                     alt={item.title}
-                    className="h-44 w-full hover:border-2 object-cover cursor-pointer"
+                    className="aspect-2/3 hover:border-2 object-cover cursor-pointer"
                   />
                 </Link>
                 {/* La classe 'truncate' impedisce ai titoli lunghi di sballare l'altezza su smartphone */}
