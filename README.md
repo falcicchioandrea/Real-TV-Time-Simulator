@@ -13,7 +13,7 @@ Progetto realizzato per il corso di Fondamenti Web.
 - **Backend:** Node.js, Express
 - **Database:** MongoDB
 - **Realtime:** Socket.io 
-* **Deployment & Containerizzazione:** Render, Docker, Docker Compose
+- **Deployment & Containerizzazione:** Render, Docker, Docker Compose
 
 ## Variabili d'ambiente
 
