@@ -17,7 +17,7 @@ const Navbar = () => {
 
   const resetFormValue = () => setSearchQuery("");
 
-  // Estrazione
+  // Estrazione dello  Authcontext
   const { user, logout, openSignup, openLogin } = useAuth();
 
   // FUNZIONE/HANDLE: Gestisce il click sul pulsante Esci
@@ -51,7 +51,7 @@ const Navbar = () => {
               type="text"
               aria-label="Cerca titoli"
               placeholder="Cerca titoli"
-              value={searchQuery}
+              value={searchQuery}  //valore dell'input
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleSearch} // onKeyDown--> Rileva le lettere, i numeri, le frecce direzionali, la barra spaziatrice, ma anche i tasti "invisibili" o di sistema che non scrivono testo
               onBlur={resetFormValue} // Resetta il valore del campo di ricerca quando perde focus
