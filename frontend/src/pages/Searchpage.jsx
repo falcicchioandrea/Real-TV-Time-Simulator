@@ -33,7 +33,6 @@ const SearchPage = () => {
     .filter((item) => item?.poster_path)
     .filter((item) => item?.title);
 
-  console.log(results);
   return (
     <div className="text-black md:px-4">
       <h2 className="pb-5 pt-5 font-medium text-xl">Stai cercando: {query}</h2>

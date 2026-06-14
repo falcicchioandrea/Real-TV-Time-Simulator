@@ -52,17 +52,6 @@ const RegisterModal = () => {
   // Non renderizza nulla se la modale è chiusa
   if (!isSignupOpen) return null;
 
-  console.log(
-    "Username: ",
-    username,
-    "Email: ",
-    email,
-    "Password: ",
-    password,
-    "Confirm Password: ",
-    confirmPassword,
-  );
-
   return (
     // Overlay scuro a tutto schermo
     <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 flex items-center justify-center z-50">

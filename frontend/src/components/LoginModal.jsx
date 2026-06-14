@@ -5,7 +5,16 @@ import { useAuth } from "../store/authContext.jsx";
 const LoginModal = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { login, isLoading, error, clearError, isLoginOpen, openSignup, openLogin, closeAuth } = useAuth();
+  const {
+    login,
+    isLoading,
+    error,
+    clearError,
+    isLoginOpen,
+    openSignup,
+    openLogin,
+    closeAuth,
+  } = useAuth();
 
   // Alla chiusura della modale azzera errori e campi
   useEffect(() => {
@@ -28,8 +37,6 @@ const LoginModal = () => {
 
   // Non renderizza nulla se la modale è chiusa
   if (!isLoginOpen) return null;
-
-  console.log("Username: ", username, "Password: ", password);
 
   return (
     // Overlay scuro a tutto schermo
