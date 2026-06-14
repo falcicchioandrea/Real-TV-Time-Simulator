@@ -1,42 +1,42 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { Heart } from "lucide-react";
-import { useAuth } from "../store/authContext.jsx"; // Importa il contesto di autenticazione
+import { useAuth } from "../store/authContext.jsx";
 
+// Pagina profilo: mostra i dati dell'utente e la sua lista di film preferiti
 const options = {
   method: "GET",
   headers: {
     accept: "application/json",
-    Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNjcwM2Q5YzZmY2ViMjg5Mzg4OTMwZTYzN2JkNDA2NCIsIm5iZiI6MTc3ODM0MjY3My43MTgwMDAyLCJzdWIiOiI2OWZmNWIxMWRkZTYwM2ZmNTg1NzI0MmEiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.Hs8GxHz2S_koJDHkWqSa9hOEdsGiQWKgv1XJlVOdC3k",
+    Authorization: `Bearer ${import.meta.env.VITE_TMDB_API_KEY}`,
   },
 };
 
 const UserPage = () => {
   const [favFilms, setFavFilms] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { user } = useAuth(); // Ottieni l'utente autenticato dal contesto
+  const { user } = useAuth();
 
+  // Recupera da TMDB i dettagli di ogni film salvato tra i preferiti dell'utente
   useEffect(() => {
-    // Se l'utente non è loggato o non ha film preferiti salvati, svuota lo stato e interrompi
     if (!user || !user.favoriteMovies || user.favoriteMovies.length === 0) {
       setFavFilms([]);
       return;
     }
 
-    const fetchAllFavorites = async () => { // SI POTREBBE PENSARE ANCHE DI GESTIRE TUTTO LATO BACKEND facendo una sola chiamata api al backend
+    const fetchAllFavorites = async () => {
       setLoading(true);
       try {
         const listaFilmElaborati = [];
-        
+
         for (const id of user.favoriteMovies) {
-          const res = await fetch(`https://api.themoviedb.org/3/movie/${id}?language=en-US`, options);
+          const res = await fetch(
+            `https://api.themoviedb.org/3/movie/${id}?language=en-US`,
+            options,
+          );
           const datiFilm = await res.json();
-          
-          // Aggiungiamo il singolo film all'array locale
           listaFilmElaborati.push(datiFilm);
         }
-        // Alla fine del ciclo, salviamo tutto nello stato
         setFavFilms(listaFilmElaborati);
       } catch (err) {
         console.error("Errore nel recupero:", err);
@@ -46,7 +46,7 @@ const UserPage = () => {
     };
 
     fetchAllFavorites();
-  }, [user]); // L'array vuoto qui è vitale per bloccare il loop infinito!
+  }, [user]); // Si rigenera la lista ogni volta che cambiano i preferiti
 
   return (
     <div className="min-h-screen bg-black text-white p-5">
@@ -55,7 +55,6 @@ const UserPage = () => {
         <h2 className="font-medium mb-1">
           <span className="text-gray-400">Nome utente:</span> {user?.username}
         </h2>
-        {/* 2. CORRETTO: text-gray-400 sistemato */}
         <h2 className="font-medium">
           <span className="text-gray-400">Email:</span> {user?.email}
         </h2>

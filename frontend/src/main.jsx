@@ -5,6 +5,7 @@ import App from "./App.jsx";
 import { BrowserRouter } from "react-router";
 import { AuthProvider } from "./store/authContext.jsx";
 
+// Punto di ingresso: monta l'app avvolgendola nel provider di autenticazione e nel router
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>

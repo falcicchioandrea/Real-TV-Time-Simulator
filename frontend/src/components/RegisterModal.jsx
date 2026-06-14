@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../store/authContext.jsx";
 
+// Modale di registrazione: valida i campi (incluso il confronto password) e crea l'account
 const RegisterModal = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [localError, setlocalError] = useState(""); // Stato per gestire errori locali (es. password non corrispondenti)
+  const [localError, setlocalError] = useState(""); // Errori validati lato client (es. password diverse)
 
   const {
     signup,
@@ -19,8 +20,8 @@ const RegisterModal = () => {
     closeAuth,
   } = useAuth();
 
+  // Alla chiusura della modale azzera errori e campi del form
   useEffect(() => {
-    // Pulisce il messaggio di errore e azzera i campi del form quando il modal viene chiuso
     if (!isSignupOpen) {
       clearError();
       setlocalError("");
@@ -32,7 +33,8 @@ const RegisterModal = () => {
   }, [isSignupOpen]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Impedisce il comportamento predefinito del form (ricaricare la pagina)
+    e.preventDefault();
+    // Le due password devono coincidere prima di inviare la registrazione
     if (password !== confirmPassword) {
       setlocalError("Le password non corrispondono!");
       return;
@@ -40,14 +42,14 @@ const RegisterModal = () => {
     setlocalError(null);
 
     try {
-      await signup(username, email, password); // Chiama la funzione di registrazione dal context
-      closeAuth(); // Chiude il modal dopo una registrazione riuscita
+      await signup(username, email, password);
+      closeAuth(); // Chiude la modale dopo una registrazione riuscita
     } catch {
-      // L'errore viene gestito altrove (nella funzione sign up nel auth context)
+      // Errore già gestito nel context
     }
   };
 
-  // Se isOpen è falso, non viene visualizzata interfaccia Login
+  // Non renderizza nulla se la modale è chiusa
   if (!isSignupOpen) return null;
 
   console.log(
@@ -62,7 +64,7 @@ const RegisterModal = () => {
   );
 
   return (
-    //Sfondo in sovrimpressione
+    // Overlay scuro a tutto schermo
     <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 flex items-center justify-center z-50">
       <div className="bg-zinc-900 m-4 w-96 h-auto p-8 rounded-2xl relative">
         <button
@@ -82,40 +84,39 @@ const RegisterModal = () => {
           <input
             type="text"
             placeholder="Nome utente"
-            value={username} // Imposta il valore dell'input al nome utente dallo stato
-            onChange={(e) => setUsername(e.target.value)} // Aggiorna lo stato del nome utente quando l'input cambia
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             className="p-3 rounded-md bg-zinc-800 outline-none focus:ring-1 focus:ring-white text-white"
           />
           <input
             type="email"
             placeholder="Email"
-            value={email} // Imposta il valore dell'input all'email dallo stato
-            onChange={(e) => setEmail(e.target.value)} // Aggiorna lo stato dell'email quando l'input cambia
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="p-3 rounded-md bg-zinc-800 outline-none focus:ring-1 focus:ring-white text-white"
           />
           <input
             type="password"
             placeholder="Password"
-            value={password} // Imposta il valore dell'input alla password dallo stato
-            onChange={(e) => setPassword(e.target.value)} // Aggiorna lo stato della password quando l'input cambia
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="p-3 rounded-md bg-zinc-800 outline-none focus:ring-1 focus:ring-white text-white"
           />
           <input
             type="password"
             placeholder="Conferma password"
-            value={confirmPassword} // Imposta il valore dell'input alla conferma password dallo stato
-            onChange={(e) => setConfirmPassword(e.target.value)} // Aggiorna lo stato della conferma password quando l'input cambia
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             className="p-3 rounded-md bg-zinc-800 outline-none focus:ring-1 focus:ring-white text-white"
           />
-          {/* Rendering condizionale: se la condizione è vera, renderizza l'elemento, altrimenti non renderizzare null */}
+          {/* Mostra l'eventuale errore di validazione o del server */}
           {(localError || error) && (
             <p className="text-red-500 text-sm">{localError || error}</p>
           )}
-          {/* Mostra il messaggio di errore se presente */}
           <button
             type="submit"
             className=" font-bold text-black bg-[#ffd400] mr-20 ml-20 rounded-lg hover:bg-yellow-500 cursor-pointer transition-colors p-1"
-            disabled={isLoading} // Disabilita il pulsante durante il caricamento
+            disabled={isLoading}
           >
             {isLoading ? "Caricamento..." : "Registrati"}
           </button>

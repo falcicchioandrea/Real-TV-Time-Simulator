@@ -2,18 +2,18 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Link } from "react-router";
 
+// Pagina di ricerca: interroga TMDB con il termine passato nella query string (?q=)
 const options = {
   method: "GET",
   headers: {
     accept: "application/json",
-    Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNjcwM2Q5YzZmY2ViMjg5Mzg4OTMwZTYzN2JkNDA2NCIsIm5iZiI6MTc3ODM0MjY3My43MTgwMDAyLCJzdWIiOiI2OWZmNWIxMWRkZTYwM2ZmNTg1NzI0MmEiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.Hs8GxHz2S_koJDHkWqSa9hOEdsGiQWKgv1XJlVOdC3k",
+    Authorization: `Bearer ${import.meta.env.VITE_TMDB_API_KEY}`,
   },
 };
 
 const SearchPage = () => {
-  const [searchParams] = useSearchParams(); // useSearchParams --> è un hook fornito da react-router-dom che consente di accedere e manipolare i parametri della query string presenti nell'URL.
-  const query = searchParams.get("q"); // get--> preleva il valore del parametro "q"
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get("q"); // Termine di ricerca preso dall'URL
   const [results, setResults] = useState([]);
 
   useEffect(() => {

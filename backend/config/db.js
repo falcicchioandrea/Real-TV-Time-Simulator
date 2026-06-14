@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// Connette l'app a MongoDB; in caso di errore termina il processo
 export async function connectToDB () {
     try {
         const conn = await mongoose.connect(process.env.MONGO_URI); 

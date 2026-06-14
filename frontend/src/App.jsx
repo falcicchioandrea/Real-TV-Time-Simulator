@@ -1,14 +1,15 @@
 import Navbar from "./components/Navbar";
 import Homepage from "./pages/Homepage";
 import LoginModal from "./components/LoginModal";
-import RegisterModal from "./components/RegisterModal"; // Controlla la 'r' interna di RegistrerModal.jsx!
+import RegisterModal from "./components/RegisterModal";
 import React from "react";
 import { Route, Routes } from "react-router";
 import Moviepage from "./pages/Moviepage";
 import Footer from "./components/Footer";
-import SearchPage from "./pages/Searchpage"; // 'Searchpage' con la 'p' minuscola per corrispondere al file fisico!
+import SearchPage from "./pages/Searchpage";
 import UserPage from "./pages/Userpage";
 
+// Componente radice: struttura comune (navbar, modali, footer) e routing tra le pagine
 function App() {
 
   return (

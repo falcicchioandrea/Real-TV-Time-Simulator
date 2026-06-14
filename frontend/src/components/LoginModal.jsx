@@ -1,38 +1,38 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../store/authContext.jsx";
 
+// Modale di login: raccoglie le credenziali e le invia tramite il context di autenticazione
 const LoginModal = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  // Estrazione delle funzioni dal context
   const { login, isLoading, error, clearError, isLoginOpen, openSignup, openLogin, closeAuth } = useAuth();
 
+  // Alla chiusura della modale azzera errori e campi
   useEffect(() => {
-// Pulisce il messaggio di errore e svuota i campi di testo quando il modal viene chiuso
     if (!isLoginOpen) {
       clearError();
-      setUsername(""); 
-      setPassword(""); 
+      setUsername("");
+      setPassword("");
     }
   }, [isLoginOpen]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Impedisce il comportamento predefinito del form (ricaricare la pagina)
+    e.preventDefault();
     try {
-      await login(username, password); // Chiama la funzione di login dal context
-      closeAuth(); // Chiude il modal dopo un login riuscito
+      await login(username, password);
+      closeAuth(); // Chiude la modale dopo un login riuscito
     } catch {
-      // L'errore viene gestito altrove
+      // Errore già gestito nel context
     }
   };
 
-  // Se isOpen è falso, non viene visualizzata interfaccia Login
+  // Non renderizza nulla se la modale è chiusa
   if (!isLoginOpen) return null;
 
   console.log("Username: ", username, "Password: ", password);
 
   return (
-    //Sfondo in sovrimpressione
+    // Overlay scuro a tutto schermo
     <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 flex items-center justify-center z-50">
       <div className="bg-zinc-900 m-4 w-96 h-auto p-8 rounded-2xl relative">
         <button
@@ -63,11 +63,10 @@ const LoginModal = () => {
             onChange={(e) => setPassword(e.target.value)}
             className="p-3 rounded-md bg-zinc-800 outline-none focus:ring-1 focus:ring-white text-white"
           />
-          {/* Mostra il messaggio di errore se presente */}
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <button
             type="submit"
-            disabled={isLoading} // Disabilita il pulsante durante il caricamento
+            disabled={isLoading}
             className=" font-bold text-black bg-[#ffd400] mr-20 ml-20 rounded-lg hover:bg-yellow-500 cursor-pointer transition-colors p-1"
           >
             {isLoading ? "Caricamento..." : "Accedi"}
@@ -76,7 +75,6 @@ const LoginModal = () => {
 
         <p className="text-gray-400 text-sm mt-2 text-center">
           Non hai un account?&nbsp;{" "}
-          {/* &nbsp; --> è un'entità HTML che rappresenta uno spazio non interruzione (andare a capo), utilizzata per aggiungere spazi tra gli elementi senza permettere l'interruzione di linea.*/}
           <span
             onClick={openSignup}
             className="text-[#ffd400] font-semibold cursor-pointer hover:underline "

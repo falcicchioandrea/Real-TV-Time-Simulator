@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
-import { Swiper, SwiperSlide } from "swiper/react"; // componenti per far scorrere film ; Swiper è il contenitore principale che gestisce lo scorrimento, mentre SwiperSlide rappresenta ogni singolo elemento (in questo caso, ogni film) all'interno dello scorrimento.
-import "swiper/css"; // Importa gli stili CSS di base per il funzionamento di Swiper, che includono le regole necessarie per il layout e l'animazione dello scorrimento. Senza questa importazione, lo scorrimento potrebbe non funzionare correttamente o non essere visualizzato come previsto.
+import { Swiper, SwiperSlide } from "swiper/react"; // Caroselli orizzontali scorrevoli
+import "swiper/css";
 import { Link } from "react-router";
 
+// Header comuni per le chiamate all'API TMDB (token di autorizzazione)
 const options = {
-  // Opzioni per la richiesta fetch e gli headers
   method: "GET",
   headers: {
-    accept: "application/json", // Indica che il client si aspetta una risposta in formato JSON dal server.
-    // Fornisce un token di autorizzazione per autenticare la richiesta al server. In questo caso, è un token JWT (JSON Web Token) che consente l'accesso alle risorse protette dell'API. Il token viene passato come stringa nell'intestazione Authorization, preceduto dalla parola "Bearer" per indicare il tipo di token utilizzato. SENZA questo token, la richiesta SAREBBE RIFIUTATA dal server (401 Unauthorized)
+    accept: "application/json",
     Authorization:
       `Bearer ${import.meta.env.VITE_TMDB_API_KEY}`,
   },
@@ -20,9 +19,10 @@ const CardList = () => {
   const [topRated, setTopRated] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
 
+  // Carica dall'API TMDB le quattro categorie di film mostrate in homepage
   useEffect(() => {
     fetch(
-      "https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1", // fetch è una funzione JavaScript che consente di effettuare richieste HTTP asincrone a un server.
+      "https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1",
       options,
     )
       .then((res) => res.json())
@@ -56,15 +56,13 @@ const CardList = () => {
 
   return (
     <div className="bg-[#181818] text-white px-2">
-      {/* 1. Array di configurazione dinamico */}
+      {/* Genera un carosello per ogni categoria di film */}
       {[
         { titolo: "Film di tendenza", dati: nowPlaying },
         { titolo: "Film popolari", dati: popular },
         { titolo: "Film più votati", dati: topRated },
         { titolo: "Film in arrivo", dati: upcoming }
-      ].map((categoria, index) => (  // categoria rappresenta ogni oggetto dell'array, mentre index è la posizione dell'oggetto all'interno dell'array (0, 1, 2, 3). L'index viene utilizzato come chiave unica per ogni categoria durante il rendering.
-        
-        // 2. Unico blocco ripetuto dinamicamente per ogni categoria
+      ].map((categoria, index) => (
         <div key={index} className="pb-4">
           <h2 className="pb-5 pt-5 font-medium text-xl cursor-pointer inline-block">
             {categoria.titolo}
@@ -80,7 +78,6 @@ const CardList = () => {
                     className="h-44 w-full hover:border-2 object-cover cursor-pointer"
                   />
                 </Link>
-                {/* La classe 'truncate' impedisce ai titoli lunghi di sballare l'altezza su smartphone */}
                 <h2 className="text-center pt-2 text-sm" title={item.title}>
                   {item.title}
                 </h2>

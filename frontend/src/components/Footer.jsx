@@ -1,3 +1,4 @@
+// Footer con la nota di copyright dell'applicazione
 const Footer = () => {
   return (
     <div className="pt-3 pb-3 bg-[#ffd400]">

@@ -1,25 +1,25 @@
-import dotenv from "dotenv"; // Importa il modulo dotenv per gestire le variabili d'ambiente (utile per MONGO_URI)
-import express from "express"; // Importa il modulo Express: posso farlo solo se ho "type": "module" in package.json
-import { connectToDB } from "./config/db.js"; // Importa la funzione per connettersi al database
+import dotenv from "dotenv";
+import express from "express";
+import { connectToDB } from "./config/db.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import http from "http"; // Importa il modulo http per creare un server HTTP
-import { Server } from "socket.io"; // Importa il modulo socket.io per la comunicazione in tempo reale
+import http from "http";
+import { Server } from "socket.io";
 
-dotenv.config(); // Carica le variabili d'ambiente dal file .env (DEVONO ESSERE CARICATE PRIMA)
+dotenv.config(); // Carica le variabili d'ambiente (.env) prima di tutto il resto
 
-import userRouter from "./routers/routerUser.js"; // ALTRO MODO-->const userRouter = require('./routes/routerUser.js') con "type": "commonjs"
+import userRouter from "./routers/routerUser.js";
 import favoriteRouter from "./routers/routerFavorite.js";
 
-import swaggerJsdoc from "swagger-jsdoc"; // Importa il modulo swagger-jsdoc per generare la documentazione API in formato OpenAPI
-import swaggerUi from "swagger-ui-express"; // Importa il modulo swagger-ui-express per servire la documentazione API generata da swagger-jsdoc
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 
-const app = express(); // Crea un'app Express
-const PORT = process.env.PORT || 5000; // Definisce la porta su cui il server ascolterà
-const server = http.createServer(app); // Crea un server HTTP che avvolge l'app Express
+const app = express();
+const PORT = process.env.PORT || 5000;
+const server = http.createServer(app); // Server HTTP che avvolge Express, condiviso con Socket.IO
 
+// Server WebSocket per la comunicazione in tempo reale
 const io = new Server(server, {
-  // Serve a creare un server WebSocket real-time con Socket.IO
   cors: {
     origin: [
       import.meta.env.FRONTEND_URL,
@@ -28,37 +28,36 @@ const io = new Server(server, {
   },
 });
 
-const visualizzatoriFilm = {}; // Oggetto per tenere traccia degli utenti che visualizzano ogni film
+const visualizzatoriFilm = {}; // Conta gli utenti presenti su ogni pagina film
 
+// Gestione real-time: ogni client entra/esce dalla "stanza" di un film e
+// il contatore degli spettatori viene aggiornato e trasmesso a tutti i presenti.
 io.on("connection", (socket) => {
-  // Quando un client si connette, il server che è in ascolto assegna un socket a quel client per monitorare le sue azioni
-
   let stanzaCorrente = null;
 
   socket.on("entra_film", (idFilm) => {
-    stanzaCorrente = idFilm; // Assegna la stanza corrente al film che l'utente sta visualizzando
-    socket.join(idFilm); // Questa funzione è essenziale ed è nativa di SOCKET.IO
+    stanzaCorrente = idFilm;
+    socket.join(idFilm); // Entra nella stanza del film (funzione nativa di Socket.IO)
     if (!visualizzatoriFilm[idFilm]) {
       visualizzatoriFilm[idFilm] = 0;
     }
-    visualizzatoriFilm[idFilm]++; // Incrementa il contatore degli utenti che visualizzano quel film
-
-    io.to(idFilm).emit("aggiorna_contatore", visualizzatoriFilm[idFilm]); // Invia a tutti i client nella stanza del film l'aggiornamento del contatore in tempo reale
+    visualizzatoriFilm[idFilm]++;
+    io.to(idFilm).emit("aggiorna_contatore", visualizzatoriFilm[idFilm]);
   });
 
   socket.on("esci_film", (idFilm) => {
-    // Quando un client esce da un film, il contatore deve essere decrementato
     if (visualizzatoriFilm[idFilm]) {
-      visualizzatoriFilm[idFilm]--; // Decrementa il contatore degli utenti che visualizzano quel film
-      io.to(idFilm).emit("aggiorna_contatore", visualizzatoriFilm[idFilm]); // Invia a tutti i client nella stanza del film l'aggiornamento del contatore in tempo reale
+      visualizzatoriFilm[idFilm]--;
+      io.to(idFilm).emit("aggiorna_contatore", visualizzatoriFilm[idFilm]);
     }
-    socket.leave(idFilm); // Il client lascia la stanza del film
-    stanzaCorrente = null; // Ritorna sulla Homepage o fa il logout, quindi non è più in una stanza specifica
+    socket.leave(idFilm);
+    stanzaCorrente = null;
   });
 
   socket.on("disconnect", () => {
+    // Se il client si disconnette mentre è su un film, lo scala dal contatore
     if (stanzaCorrente && visualizzatoriFilm[stanzaCorrente]) {
-      visualizzatoriFilm[stanzaCorrente]--; // Se l'utente prima di disconnettersi stava visualizzando la pagina di un film, allora decrementiamo
+      visualizzatoriFilm[stanzaCorrente]--;
 
       if (visualizzatoriFilm[stanzaCorrente] < 0) {
         visualizzatoriFilm[stanzaCorrente] = 0;
@@ -66,7 +65,7 @@ io.on("connection", (socket) => {
       io.to(stanzaCorrente).emit(
         "aggiorna_contatore",
         visualizzatoriFilm[stanzaCorrente],
-      ); // Aggiorna il contatore per tutti gli utenti della stanza
+      );
     }
   });
 });
@@ -74,40 +73,10 @@ io.on("connection", (socket) => {
 // Middlewares
 app.use(
   cors({
-    // ==============================================================================
-    // IL NOSTRO PROBLEMA (La trappola della Same-Origin Policy):
-    // ==============================================================================
-    // Abbiamo 3 attori in gioco:
-    // 1. Il browser (Chrome, Safari, che usa una porta temporanea, es. 54122, per fare materialmente la chiamata).
-    // 2. Il frontend React (la cui origine di nascita è http://localhost:5173, ma viene integrato nel browser una volta fatta la prima richiesta al server Vite).
-    // 3. Il server Express (il backend in ascolto su http://localhost:5000).
-    //
-    // POSSIAMO fare la richiesta: la chiamata parte dal browser(Chrome, Safari) e arriva al server Express(porta 5000).
-    // Il server Express esegue il suo codice regolarmente e rimanda indietro i dati.
-    // IL PROBLEMA: Quando la risposta torna indietro, il browser si accorge che le porte
-    // (5173 del frontend e 5000 del backend) sono diverse. Per sicurezza, il browser applica
-    // la "Same-Origin Policy": intercetta la risposta e si RIFIUTA di consegnare i dati a React.
-
-    // ==============================================================================
-    // LA SOLUZIONE (CORS come passaporto):
-    // ==============================================================================
-    // 1. Il server Express applica il middleware CORS. Questo fa sì che il server
-    // inserisca automaticamente un "timbro" nella sua risposta, ovvero l'header:
-    // "Access-Control-Allow-Origin: http://localhost:5173".
-    //
-    // 2. Il browser (che agisce da dogana di sicurezza), prima di bloccare tutto,
-    // legge questo header. Vedendolo, capisce che il server Express ha esplicitamente
-    // autorizzato l'origine 5173.
-    //
-    // 3. Il browser abbassa le difese e permette all'interfaccia utente (React)
-    // di ricevere, leggere e visualizzare i dati elaborati dal server.
+    // Abilita le richieste dal frontend (porta diversa) e lo scambio dei cookie di sessione
     origin: [
       import.meta.env.FRONTEND_URL,
     ],
-
-    // 2. Il server inserisce l'header "Access-Control-Allow-Credentials".
-    // Permette lo scambio bidirezionale dei cookie di sessione (sia in lettura -->server può leggere cookie del browser  che in scrittura--> server può allegare cookie e inviarlo al browser)
-    // tra domini/porte differenti.
     credentials: true,
   }),
 );
@@ -115,32 +84,31 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-//TEST
 app.get("/", (req, res) => {
-  res.send("Registrati sulla mia applicazione!"); // Risponde con un messaggio quando viene effettuata una richiesta GET alla radice (root)
+  res.send("Registrati sulla mia applicazione!");
 });
 
 app.use("/user-api", userRouter);
 app.use("/favorite-api", favoriteRouter);
 
-// CORREZIONE STRUTTURALE: Avviamo 'server' e non 'app'.
-// In questo modo sia le rotte Express che i WebSocket di Socket.io si accendono insieme sulla porta 5000.
+// Avvia 'server' (non 'app') così rotte Express e WebSocket partono insieme sulla stessa porta
 server.listen(PORT, () => {
-  connectToDB(); // Connette al database quando il server inizia ad ascoltare
-  console.log(`Il server è in ascolto sulla porta: ${PORT}`); // Avvia il server e stampa un messaggio di conferma
+  connectToDB();
+  console.log(`Il server è in ascolto sulla porta: ${PORT}`);
 });
 
+// Documentazione API generata automaticamente dai commenti @swagger nei router
 const swaggerOptions = {
   definition: {
-    openapi: "3.0.0", // Specifica la versione di OpenAPI
+    openapi: "3.0.0",
     info: {
       title: "MovieTrack API Docs",
       version: "1.0.0",
       description: "Documentazione delle API di MovieTrack",
     },
   },
-  apis: ["./routers/*.js"], // Specifica i file da cui swagger-jsdoc estrarrà le informazioni per generare la documentazione API
+  apis: ["./routers/*.js"],
 };
 
-const swaggerSpec = swaggerJsdoc(swaggerOptions); // Genera la documentazione API in formato OpenAPI utilizzando le opzioni specificate
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec)); // Serve la documentazione API generata da swagger-jsdoc all'endpoint /api-docs
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec)); // Espone la documentazione su /api-docs

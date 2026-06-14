@@ -2,17 +2,18 @@ import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+// Registra un nuovo utente: valida i dati, controlla username/email univoci,
+// salva la password cifrata e autentica subito tramite cookie JWT.
 export const registrati = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-    // 1. Invio dati richiesti
+    // Tutti i campi sono obbligatori
     if (!username || !email || !password) {
       return res.status(400).json({ message: "Tutti i campi sono richiesti!" });
     }
 
-    // 2. Credenziali non disponibili
-
+    // Username ed email devono essere univoci
     const usernameExists = await User.findOne({ username });
 
     if (usernameExists) {
@@ -29,8 +30,7 @@ export const registrati = async (req, res) => {
         .json({ message: "Esiste già un Utente con questa email." });
     }
 
-    // 3. HASH&SALT della Password
-
+    // Cifra la password (hash + salt) prima di salvarla
     const hashedPassword = await bcryptjs.hash(password, 10);
 
     const userDoc = await User.create({
@@ -39,15 +39,11 @@ export const registrati = async (req, res) => {
       password: hashedPassword,
     });
 
-    // 4. JWT (Jason Web Token)
-
+    // Genera il token JWT e lo invia in un cookie httpOnly (valido 7 giorni)
     if (userDoc) {
-      // jwt.sign( payload, secret, options )
       const token = jwt.sign({ id: userDoc._id }, process.env.JWT_SECRET, {
         expiresIn: "7d",
       });
-
-      // Invio il token attraverso un cookie
 
       res.cookie("token", token, {
         httpOnly: true,
@@ -56,7 +52,7 @@ export const registrati = async (req, res) => {
       });
     }
 
-    // Converti il documento in oggetto
+    // Restituisce l'utente senza la password
     const userObj = userDoc.toObject();
     delete userObj.password;
 
@@ -69,6 +65,7 @@ export const registrati = async (req, res) => {
   }
 };
 
+// Login: verifica username e password e, se corrette, imposta il cookie JWT
 export const accedi = async (req, res) => {
   const { username, password } = req.body;
 
@@ -79,21 +76,19 @@ export const accedi = async (req, res) => {
       return res.status(400).json({ message: "Credenziali non valide." });
     }
 
+    // Confronta la password in chiaro con quella cifrata salvata
     const isPasswordValid = await bcryptjs.compare(password, userDoc.password);
 
     if (!isPasswordValid) {
       return res.status(400).json({ message: "Credenziali non valide." });
     }
 
-    // JWT (identica alla POST di registrazione)
-
+    // Genera il token JWT e lo invia in un cookie httpOnly (valido 7 giorni)
     if (userDoc) {
-      // jwt.sign( payload, secret, options )
       const token = jwt.sign({ id: userDoc._id }, process.env.JWT_SECRET, {
         expiresIn: "7d",
       });
 
-      // Invio il token attraverso un cookie
       res.cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -101,7 +96,6 @@ export const accedi = async (req, res) => {
       });
     }
 
-    // Converti il documento in oggetto
     const userObj = userDoc.toObject();
     delete userObj.password;
 
@@ -110,11 +104,12 @@ export const accedi = async (req, res) => {
       message: "Accesso effettuato correttamente!",
     });
   } catch (error) {
-    console.log("Errore durante l'accesso: ", error.message); // Per testare con PostMan
+    console.log("Errore durante l'accesso: ", error.message);
     res.status(400).json({ message: error.message });
   }
 };
 
+// Restituisce l'utente loggato leggendo il token JWT dal cookie di sessione
 export const fetchUser = async (req, res) => {
   const { token } = req.cookies;
 
@@ -143,6 +138,7 @@ export const fetchUser = async (req, res) => {
   }
 };
 
+// Logout: cancella il cookie di sessione
 export const logout = async (req, res) => {
   res.clearCookie("token");
   res.status(200).json({ message: "Logout avvenuto correttamente." });

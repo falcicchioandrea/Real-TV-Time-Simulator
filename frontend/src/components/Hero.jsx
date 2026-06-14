@@ -2,11 +2,11 @@ import { Heart, Users, Play, Compass } from "lucide-react";
 import { useAuth } from "../store/authContext";
 import Sfondo from "../assets/sfondo-hero.png";
 
+// Sezione introduttiva della homepage: messaggio di benvenuto e invito a registrarsi
 const Hero = () => {
   const { openSignup, user } = useAuth();
 
   return (
-    //md = medium devices (tablet e desktop), px = padding orizzontale, py = padding verticale, gap = spazio tra elementi in un flex o grid
     <div
       className="w-full px-6 py-10 md:px-9 md:h-450]"
       style={{
@@ -40,7 +40,7 @@ const Hero = () => {
           </p>
         </div>
 
-        {/* Bottone: larghezza 100% su mobile (w-full), auto su PC (md:w-auto) */}
+        {/* Mostrata solo agli utenti non ancora registrati */}
         {!user && (
           <button
             className="cursor-pointer bg-[#ffd400] text-black font-bold py-3 px-6 rounded-2xl hover:bg-[#e6bf00]"

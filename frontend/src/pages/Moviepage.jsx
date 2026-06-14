@@ -1,30 +1,26 @@
 ﻿import { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import { Play, Heart, Star } from "lucide-react";
-import { Swiper, SwiperSlide } from "swiper/react"; // componenti per far scorrere film ; Swiper è il contenitore principale che gestisce lo scorrimento, mentre SwiperSlide rappresenta ogni singolo elemento (in questo caso, ogni film) all'interno dello scorrimento.
-import "swiper/css"; // Importa gli stili CSS di base per il funzionamento di Swiper, che includono le regole necessarie per il layout e l'animazione dello scorrimento. Senza questa importazione, lo scorrimento potrebbe non funzionare correttamente o non essere visualizzato come previsto.
+import { Swiper, SwiperSlide } from "swiper/react"; // Carosello orizzontale per i film consigliati
+import "swiper/css";
 import { Link } from "react-router";
 import { io } from "socket.io-client";
 import { useAuth } from "../store/authContext";
 import { Eye } from "lucide-react";
 
-const socket = io(import.meta.env.VITE_BACKEND_URL); // Viene effettuato un HANDSHAKE con il server Socket.IO in ascolto su http://localhost:5000,
-// stabilendo una connessione WebSocket che consente la comunicazione in tempo reale tra il client e il server.
-// Questa connessione è essenziale per implementare funzionalità come l'aggiornamento in tempo reale del numero di visualizzatori di un film,
-// poiché permette al client di inviare e ricevere eventi senza dover effettuare richieste HTTP tradizionali.
-// Deve essere fatto FUORI dal componente Moviepage per evitare di creare una connessione ogni volta che il componente viene aggiornato
+// Connessione Socket.IO creata fuori dal componente per non riaprirla ad ogni render
+const socket = io(import.meta.env.VITE_BACKEND_URL);
 
 const Moviepage = () => {
-  const { id } = useParams(); // useParams è un hook fornito da react-router-dom che consente di accedere ai parametri dinamici presenti nell'URL. In questo caso, viene utilizzato per estrarre l'id del film dalla URL, che è necessario per effettuare le richieste API e recuperare i dettagli del film specifico da visualizzare sulla pagina.
+  const { id } = useParams(); // ID del film preso dall'URL
   const [movie, setMovie] = useState(null);
   const [trailerKey, setTrailerKey] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
   const [visualizzatori, setVisualizzatori] = useState(0);
 
-  const { user, toggleFavorite } = useAuth(); // Estraiamo l'utente loggato e la funzione setUser dal contesto globale
+  const { user, toggleFavorite } = useAuth();
 
-  // 1. CORRETTO: Calcolo dinamico e derivato di isFavorite.
-  // Converte sia gli ID nell'array che l'ID dell'URL in stringhe per evitare conflitti di tipo (String vs Number)
+  // È un preferito? Confronto come stringa per evitare differenze di tipo tra array e URL
   const isFavorite =
     user?.favoriteMovies?.map(String).includes(String(id)) || false;
 
@@ -33,12 +29,11 @@ const Moviepage = () => {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization:
-          `Bearer ${import.meta.env.VITE_TMDB_API_KEY}`,
+        Authorization: `Bearer ${import.meta.env.VITE_TMDB_API_KEY}`,
       },
     };
 
-    // Reset degli stati del film quando cambia l'ID (es. quando clicchi su un film consigliato)
+    // Azzera gli stati quando cambia l'ID (es. click su un film consigliato)
     setMovie(null);
     setTrailerKey(null);
     setRecommendations([]);
@@ -62,35 +57,25 @@ const Moviepage = () => {
     )
       .then((res) => res.json())
       .then((res) => {
+        // Cerca il primo trailer YouTube tra i video del film
         const trailer = res.results?.find(
-          // ? --> è l'operatore di optional chaining in JavaScript, che consente di accedere in modo sicuro senza causare errori. FIND --> è un metodo degli array in JavaScript che restituisce il primo elemento dell'array che soddisfa una condizione specificata in una funzione di callback.
           (video) => video.type === "Trailer" && video.site === "YouTube",
         );
-        setTrailerKey(trailer?.key || null); // KEY --> identificatore univoco del video su YouTube, che viene utilizzato per costruire l'URL del trailer.
+        setTrailerKey(trailer?.key || null);
       })
       .catch((err) => console.error(err));
+  }, [id]); // Ricarica i dati ad ogni cambio di film
 
-    fetch("/user-api/fetch-user")
-      .then((res) => res.json())
-      .then((data) => {
-        // Se l'utente è loggato e l'array contiene l'id corrente
-        if (data.user && data.user.favoriteMovies?.includes(Number(id))) {
-          setIsFavorite(true);
-        }
-      })
-      .catch((err) => console.log("Utente non loggato"));
-  }, [id]); // ogni volta che id cambia, vengono eseguite tutto lo useEffect
-
+  // Gestione del contatore di spettatori in tempo reale via Socket.IO
   useEffect(() => {
-    // 1. Diciamo al server che siamo entrati nella pagina di questo film
+    // Segnala l'ingresso nella pagina del film e ascolta gli aggiornamenti del contatore
     socket.emit("entra_film", id);
 
-    // 2. Rimaniamo in ascolto del contatore aggiornato inviato dal server
     socket.on("aggiorna_contatore", (valoreAggiornato) => {
       setVisualizzatori(valoreAggiornato);
     });
 
-    // 3. Quando usciamo dalla pagina, diciamo al server che siamo usciti
+    // All'uscita dalla pagina segnala l'abbandono e rimuove il listener
     return () => {
       socket.emit("esci_film", id);
       socket.off("aggiorna_contatore");
@@ -119,21 +104,21 @@ const Moviepage = () => {
         <div className="relative z-10">
           <h1 className="text-4xl font-bold mb-2">{movie.title}</h1>
           <p className="flex items-center gap-1 text-gray-300 mb-2">
-            <Star className="w-4 h-4 fill-yellow-400 stroke-yellow-400" />{movie.vote_average?.toFixed(1)} · {movie.release_date} ·{" "}
-            {/* toFixed(1) --> arrotonda il numero ad una cifra decimale */}
+            <Star className="w-4 h-4 fill-yellow-400 stroke-yellow-400" />
+            {movie.vote_average?.toFixed(1)} · {movie.release_date} ·{" "}
             {movie.runtime} min
           </p>
           <p className="flex gap-2 flex-wrap mb-3">
             {movie.genres?.map((genre) => (
               <span
-                key={genre.id} // key--> identifica in modo univoco ogni elemento della lista, aiutando React a gestire in modo efficiente il rendering e l'aggiornamento degli elementi quando la lista cambia. In questo caso, viene utilizzato genre.id come chiave unica per ogni genere.
+                key={genre.id}
                 className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm"
               >
                 {genre.name}
               </span>
             ))}
           </p>
-          {/* BADGE IN TEMPO REALE */}
+          {/* Badge con il numero di spettatori in tempo reale */}
           <div className="inline-flex items-center gap-2 rounded-full font-semibold">
             <Eye className="w-5 h-5" />
             <span>
@@ -146,8 +131,8 @@ const Moviepage = () => {
             {trailerKey && (
               <a
                 href={`https://www.youtube.com/watch?v=${trailerKey}`}
-                target="_blank" //blank --> apre il link in una nuova scheda del browser
-                rel="noopener noreferrer" //noopener --> imposta window.opener=null, eliminando il riferimento alla pagina originale e prevenendo potenziali attacchi di phishing. noreferrer --> impedisce al browser di inviare l'intestazione Referer al sito di destinazione, proteggendo ulteriormente la privacy dell'utente.
+                target="_blank" // Apre il trailer in una nuova scheda
+                rel="noopener noreferrer" // Buona pratica di sicurezza per i link esterni
               >
                 <button className="flex items-center gap-2 bg-[#ffd400] hover:bg-[#e6bf00] text-black font-semibold py-2 px-4 rounded-full text-sm cursor-pointer">
                   <Play className="w-5 h-5" />
@@ -163,12 +148,11 @@ const Moviepage = () => {
               }`}
               onClick={() => toggleFavorite(id)}
             >
-              {/* Se è preferito coloriamo sia il bordo che il riempimento di bianco (visto lo sfondo rosso) */}
               <Heart
                 className={`w-5 h-5 ${isFavorite ? "fill-white stroke-white" : "stroke-current"}`}
               />
 
-              {/* Ottimizzazione: Rendiamo dinamico anche il testo in base allo stato */}
+              {/* Testo del bottone in base allo stato del preferito */}
               {isFavorite ? "Rimuovi dai Preferiti" : "Aggiungi ai Preferiti"}
             </button>
           </div>
@@ -239,8 +223,6 @@ const Moviepage = () => {
       <div className="p-2 md:p-8">
         <h2 className="text-2xl font-bold mb-4">Film Consigliati</h2>
         <Swiper slidesPerView="auto" spaceBetween={16}>
-          {" "}
-          {/* slidesPerView="auto" consente a Swiper di calcolare automaticamente il numero di slide da visualizzare in base alla larghezza del contenitore e alla larghezza di ogni slide. spaceBetween={16} aggiunge uno spazio di 16 pixel tra ogni slide, migliorando la leggibilità e l'estetica dello scorrimento. Queste opzioni insieme permettono di creare un layout fluido e adattabile per la visualizzazione dei film. */}
           {recommendations.map((item) => (
             <SwiperSlide key={item.id} style={{ width: "128px" }}>
               <Link to={`/movie/${item.id}`}>
