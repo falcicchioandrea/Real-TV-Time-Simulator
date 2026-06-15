@@ -1,90 +1,39 @@
-version: '3.8'
-# version: '3.8': Specifica la versione sintattica del motore Docker Compose. 
-#La versione 3.8 garantisce piena compatibilità con le funzionalità moderne dei container 
-# (come la gestione avanzata dei volumi e delle reti).
+version: "3.8"
 
 services:
-# services:: È la macro-categoria principale. Sotto questa voce andiamo a definire i singoli container indipendenti 
-# (i nostri microservizi) che coopereranno all'interno del progetto. Nel nostro caso sono tre: database, backend e frontend.
-
-  # --- 1. IL SERVIZIO DATABASE (NOVITÀ) ---
   database:
-  #database:: È il nome logico che assegniamo a questo specifico servizio all'interno della rete interna di Docker.
     image: mongo:latest
-  # image: mongo:latest: A differenza di frontend e backend, qui non costruiamo un'immagine da zero. 
-  # Diciamo a Docker di scaricare direttamente dal registro ufficiale (Docker Hub) l'immagine preconfigurata di MongoDB nella sua ultima versione (latest).
     container_name: tvtime_db
-  # container_name: tvtime_db: Fornisce un nome mnemonico e fisso al container quando viene avviato, facilitando il monitoraggio tramite terminale.
     ports:
       - "27017:27017"
-  # ports: - "27017:27017": Applica il meccanismo del Port Forwarding (Mappatura delle porte).
-  # Il formato è sempre Porta_PC_Reale:Porta_Interna_Container. Espone la porta nativa di MongoDB (27017) 
-  # verso il nostro computer fisico, permettendoci di ispezionare i dati (ad esempio usando strumenti come MongoDB Compass).
     volumes:
       - mongo_data:/data/db
-  # volumes: - mongo_data:/data/db: Questo è un Named Volume (Volume con nome). I container sono per definizione effimeri (se si distrugge il container, i dati svaniscono). 
-  # Questo comando mappa la cartella interna dove MongoDB salva i dati (/data/db) in un'area sicura e persistente gestita da Docker sul nostro hard disk reale (mongo_data). 
-  # Se spegniamo o distruggiamo il container, i dati dei preferiti non andranno persi.
 
-  # --- 2. IL SERVIZIO BACKEND ---
   backend:
     build: ./backend
-  # build: ./backend: Dice a Compose che non esiste un'immagine pronta su Internet. 
-  # Deve entrare nella cartella ./backend, trovare il file Dockerfile che abbiamo scritto noi e 
-  # compilarlo per generare l'immagine personalizzata.
     container_name: tvtime_backend
     ports:
       - "5000:5000"
-  # ports: - "5000:5000": Apre il tunnel per la porta 5000. 
-  # Diventa fondamentale per permettere sia le richieste HTTP tradizionali (Express) 
-  # sia l'handshake iniziale in tempo reale (Socket.IO) provenienti dal browser esterno.
     volumes:
       - ./backend:/app
       - /app/node_modules
-  # volumes:: Qui applichiamo un Bind Mount unito a un volume anonimo per ottimizzare la fase di sviluppo:
-  # - ./backend:/app: Sincronizza in tempo reale la cartella del codice sul PC con quella del container. 
-  # Se modifichiamo una riga di codice, la modifica si riflette istantaneamente nel container, 
-  # permettendo a nodemon di riavviare il server senza dover ricostruire l'immagine Docker.
-  # - /app/node_modules: Protegge e isola la cartella delle dipendenze interna al container, 
-  # evitando che venga sovrascritta o cancellata dai file del PC ospite.
     environment:
       - PORT=5000
       - MONGO_URI=mongodb://database:27017/tvtime
-  # environment:: Definisce le variabili d'ambiente iniettate nel container. Guarda con attenzione la stringa MONGO_URI: 
-  # al posto di localhost è stato inserito il nome del servizio database. All'interno della rete virtuale isolata creata da Docker Compose, 
-  # i container si riconoscono e comunicano tra loro utilizzando il nome del servizio come se fosse un vero e proprio indirizzo web (DNS interno).
-  
+
     depends_on:
       - database # Il backend si accende solo dopo che il database è pronto
-  # depends_on: - database: Stabilisce un vincolo di propedeuticità logica. Dice a Docker di non provare ad accendere il backend finché il container 
-  # del database non è completamente avviato e funzionante, evitando crash di connessione all'avvio.
 
-  # --- 3. IL SERVIZIO FRONTEND ---
-  # Sfrutta le stesse identiche logiche del backend per quanto riguarda la compilazione del Dockerfile locale 
-  # (build: ./frontend) e i volumi in tempo reale per lo sviluppo reattivo.
   frontend:
     build: ./frontend
     container_name: tvtime_frontend
     ports:
       - "5173:5173"
-    # ports: - "5173:5173": Mappa la porta di sviluppo di Vite (5173), consentendoci di digitare localhost:5173 
-    # nel browser del nostro PC per visualizzare l'interfaccia utente.
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    # depends_on: - backend: Garantisce che il frontend si accenda solo dopo il backend, assicurando che la connessione del client Socket.IO verso la porta 5000 
-    # trovi il server già pronto a rispondere e a ricevere gli utenti nelle stanze.
     depends_on:
       - backend
 
-# Definiamo un volume persistente per non perdere i dati di MongoDB quando spegniamo Docker
 volumes:
   mongo_data:
-# Posto alla fine del file, questo blocco dichiara formalmente a livello globale il volume mongo_data 
-# che abbiamo usato nel database. Dice a Docker di inizializzare lo spazio sul disco del PC reale e di renderlo 
-# disponibile per l'intera durata della vita dell'applicazione.
-
-# "Il file docker-compose.yml centralizza la gestione dei nostri tre livelli applicativi (Frontend, Backend e Database). 
-# Grazie alla mappatura delle porte e alla rete virtuale nativa di Docker, permette ai tre servizi di comunicare in isolamento, 
-# mentre l'uso strategico dei volumi ci consente di mantenere la persistenza dei dati sul database e il ricaricamento in tempo reale 
-# del codice durante la fase di programmazione."
