@@ -21,9 +21,7 @@ const server = http.createServer(app); // Server HTTP che avvolge Express, condi
 // Server WebSocket per la comunicazione in tempo reale
 const io = new Server(server, {
   cors: {
-    origin: [
-      import.meta.env.FRONTEND_URL,
-    ],
+    origin: [process.env.FRONTEND_URL],
     credentials: true,
   },
 });
@@ -74,9 +72,7 @@ io.on("connection", (socket) => {
 app.use(
   cors({
     // Abilita le richieste dal frontend (porta diversa) e lo scambio dei cookie di sessione
-    origin: [
-      import.meta.env.FRONTEND_URL,
-    ],
+    origin: [process.env.FRONTEND_URL],
     credentials: true,
   }),
 );
